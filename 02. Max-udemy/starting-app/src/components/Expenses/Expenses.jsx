@@ -1,4 +1,4 @@
-import ExpenseItem from "./Expense-item";
+import ExpenseItem from "./ExpenseItem";
 import Card from "../UI/Card";
 
 import "./Expenses.scss";
