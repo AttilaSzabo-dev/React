@@ -1,6 +1,6 @@
-import IventoryField from "./InventoryField";
-import DialogueField from "./DialogueField";
-import BackpackField from "./BackpackField";
+import IventoryField from "./SubFields/InventoryField";
+import DialogueField from "./SubFields/DialogueField";
+import BackpackField from "./SubFields/BackpackField";
 
 import "./MainField.scss";
 

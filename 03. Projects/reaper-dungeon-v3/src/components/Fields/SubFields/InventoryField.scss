@@ -1,0 +1,24 @@
+.inventory-field {
+  border: 1px solid red;
+  grid-row: 1;
+  grid-column: 1 / 2;
+  padding: 2rem 1rem;
+
+  &--container {
+    height: 100%;
+  }
+
+  // HEALTH, ATTACK, DEFENSE commons
+  .common-cell--border {
+    border: 1px solid purple;
+  }
+
+  .common-box--grid {
+    height: 20%;
+    border: 1px solid red;
+
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

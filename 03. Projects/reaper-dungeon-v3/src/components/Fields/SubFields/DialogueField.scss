@@ -1,0 +1,23 @@
+.dialogue-field {
+  border: 1px solid red;
+  grid-row: 1;
+  grid-column: 2 / 3;
+  padding: 2rem 1rem;
+
+  &--container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 2rem 1rem;
+  }
+
+  &--option-container {
+    height: 40%;
+    margin-top: auto;
+
+    :last-child {
+      margin-bottom: 0;
+    }
+  }
+}

@@ -1,6 +1,6 @@
-import StoryBox from "../DialogueBoxes/StoryBox";
-import OptionsBox from "../DialogueBoxes/OptionsBox";
-import Border from "../UI/Border";
+import StoryBox from "../../DialogueBoxes/StoryBox";
+import OptionsBox from "../../DialogueBoxes/OptionsBox";
+import Border from "../../UI/Border";
 
 import "./DialogueField.scss";
 
