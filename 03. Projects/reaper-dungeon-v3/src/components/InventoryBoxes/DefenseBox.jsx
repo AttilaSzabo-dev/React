@@ -1,5 +1,5 @@
-import Dummy from "../HealthBox/HealthBoxItems/Dummy";
-import Border from "../../UI/Border";
+import Dummy from "./InventoryItems/Dummy";
+import Border from "../UI/Border";
 
 import "./DefenseBox.scss";
 

@@ -1,6 +1,6 @@
-import AttackBox from "../../InventoryBoxes/AttackBox/AttackBox";
-import DefenseBox from "../../InventoryBoxes/DefenseBox/DefenseBox";
-import HealthBox from "../../InventoryBoxes/HealthBox/HealthBox";
+import AttackBox from "../../InventoryBoxes/AttackBox";
+import DefenseBox from "../../InventoryBoxes/DefenseBox";
+import HealthBox from "../../InventoryBoxes/HealthBox";
 import Border from "../../UI/Border";
 
 import "./InventoryField.scss";
