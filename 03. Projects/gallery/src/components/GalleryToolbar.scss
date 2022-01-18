@@ -1,0 +1,24 @@
+.toolbar {
+    background-color: #f1f1f1f1;
+    padding: 7px;
+    
+    .toolbar-item {
+        display: inline-flex;
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        height: 84px;
+        width: 76px;
+        padding: 10px;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        box-sizing: border-box;
+    
+        .material-icons-outlined {
+            font-size: 30px;
+        }
+    }
+}
+
