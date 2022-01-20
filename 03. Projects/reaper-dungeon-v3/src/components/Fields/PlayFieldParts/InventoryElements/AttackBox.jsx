@@ -1,18 +1,17 @@
 import Dummy from "./InventoryItems/Dummy";
-import Border from "../UI/Border";
 
 import "./AttackBox.scss";
 
 const AttackBox = () => {
   return (
-    <Border className="attack-box--container common-box--grid">
+    <div className="attack-box--container common-box--grid">
       <Dummy />
       <Dummy />
       <Dummy />
       <Dummy />
       <Dummy />
       <Dummy />
-    </Border>
+    </div>
   );
 };
 

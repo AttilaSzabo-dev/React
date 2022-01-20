@@ -1,6 +1,6 @@
-import StoryBox from "../../DialogueBoxes/StoryBox";
-import OptionsBox from "../../DialogueBoxes/OptionsBox";
-import Border from "../../UI/Border";
+import Field from "../../UI/Field";
+import StoryBox from "./DialogueElements/StoryBox";
+import OptionsBox from "./DialogueElements/OptionsBox";
 
 import "./DialogueField.scss";
 
@@ -11,16 +11,14 @@ const DialogueField = () => {
   const option_3 = "option_3";
 
   return (
-    <div className="dialogue-field">
-      <Border className="dialogue-field--container">
+    <Field className="dialogue-field">
         <StoryBox story={story} />
         <div className="dialogue-field--option-container">
           <OptionsBox option={option_1} />
           <OptionsBox option={option_2} />
           <OptionsBox option={option_3} />
         </div>
-      </Border>
-    </div>
+    </Field>
   );
 };
 

@@ -1,11 +1,11 @@
-import MainField from "./components/Fields/MainField";
+import PlayField from "./components/Fields/PlayField";
 
 import "./App.scss";
 
 function App() {
   return (
     <div>
-      <MainField />
+      <PlayField />
     </div>
   );
 }

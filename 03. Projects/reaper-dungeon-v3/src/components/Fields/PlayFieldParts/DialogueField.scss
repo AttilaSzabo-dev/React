@@ -1,0 +1,11 @@
+.dialogue-field {
+
+  &--option-container {
+    height: 40%;
+    margin-top: auto;
+
+    :last-child {
+      margin-bottom: 0;
+    }
+  }
+}

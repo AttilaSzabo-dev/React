@@ -1,12 +1,5 @@
 .inventory-field {
-  border: 1px solid red;
-  grid-row: 1;
-  grid-column: 1 / 2;
-  padding: 2rem 1rem;
-
-  &--container {
-    height: 100%;
-  }
+  padding: 0;
 
   // HEALTH, ATTACK, DEFENSE commons
   .common-cell--border {
