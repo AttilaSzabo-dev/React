@@ -1,13 +1,29 @@
-.playField {
-    width: 100vw;
-    height: 100vh;
-    padding: 2rem 1rem;
-    box-sizing: border-box;
-    background: #000 url(/images/backgrounds/main_background.jpg) no-repeat center;
-    background-size: cover;
+:root {
+  //colors
+  --field-border: #bf8b67;
+  --field-box-shadow: rgba(0, 0, 0, 1);
+  --inventory-section-border: #876445;
+  --dialogue-box-border: #876445;
+  --dialogue-box-border--hover: #916c4c54;
+  --dialogue-box-border--hover-box-shadow: rgba(255, 23, 0, 1);
+  --dialogue-box-box-shadow: rgba(0, 0, 0, 1);
 
-    display: grid;
-    grid-gap: 15px;
-    grid-template-rows: 1fr;
-    grid-template-columns: 1.5fr 3fr 1fr;
+  //transition
+  --hover-transition-all: all .4s;
+
+  //border-radius
+  --border-radius: 4px;
+}
+
+.playField {
+  width: 100vw;
+  height: 100vh;
+  padding: 2rem 1rem;
+  background: #000 url(/images/backgrounds/main_background.jpg) no-repeat center;
+  background-size: cover;
+
+  display: grid;
+  grid-gap: 15px;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1.5fr 3fr 1fr;
 }

@@ -1,17 +1,18 @@
+import InventorySections from "../../../UI/boxes/InventorySections";
 import Dummy from "./InventoryItems/Dummy";
 
 import "./DefenseBox.scss";
 
 const DefenseBox = () => {
   return (
-    <div className="defense-box--container common-box--grid">
+    <InventorySections className="defense-box--container common-box--grid">
       <Dummy />
       <Dummy />
       <Dummy />
       <Dummy />
       <Dummy />
       <Dummy />
-    </div>
+    </InventorySections>
   );
 };
 

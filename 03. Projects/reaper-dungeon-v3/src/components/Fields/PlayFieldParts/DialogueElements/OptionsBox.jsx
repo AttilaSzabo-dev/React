@@ -1,7 +1,12 @@
+import DialogueBoxes from "../../../UI/boxes/DialogueBoxes";
 import "./OptionsBox.scss";
 
 const OptionsBox = (props) => {
-  return <div className="option-box--container">{props.option}</div>;
+  return (
+    <DialogueBoxes className="option-box--container">
+      {props.option}
+    </DialogueBoxes>
+  );
 };
 
 export default OptionsBox;
