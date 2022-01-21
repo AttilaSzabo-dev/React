@@ -1,4 +1,4 @@
-import InventorySections from "../../../UI/boxes/InventorySections";
+import InventorySections from "../../../UI/InventorySections";
 import Dummy from "./InventoryItems/Dummy";
 
 import "./AttackBox.scss";

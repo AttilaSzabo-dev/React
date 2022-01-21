@@ -1,0 +1,36 @@
+.box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: .3rem;
+
+    .pic-container {
+        display: flex;
+        width: 50%;
+
+        img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+    }
+
+    .stat-container {
+        display: flex;
+        flex-direction: column;
+        width: 45%;
+        border: 1px solid purple;
+
+        .stat {
+            border: 1px solid green;
+            height: 40%;
+            color: #fff;
+            //font-size: clamp(1rem, 2.5vw, 2rem);
+            text-align: center;
+        }
+
+        .button {
+
+        }
+    }
+}

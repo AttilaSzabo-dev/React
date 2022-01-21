@@ -1,0 +1,5 @@
+.health-box--container {
+  & > div {
+    border: 1px solid red;
+  }
+}

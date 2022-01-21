@@ -1,5 +1,10 @@
 .sections {
+    height: 17%;
     background-color: #000;
     opacity: 0.9;
     border-bottom: 2px solid var(--inventory-section-border);
+
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
 }

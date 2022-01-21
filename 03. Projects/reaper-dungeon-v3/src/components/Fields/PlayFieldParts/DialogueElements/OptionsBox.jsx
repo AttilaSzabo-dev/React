@@ -1,4 +1,4 @@
-import DialogueBoxes from "../../../UI/boxes/DialogueBoxes";
+import DialogueBoxes from "../../../UI/DialogueBoxes";
 import "./OptionsBox.scss";
 
 const OptionsBox = (props) => {
