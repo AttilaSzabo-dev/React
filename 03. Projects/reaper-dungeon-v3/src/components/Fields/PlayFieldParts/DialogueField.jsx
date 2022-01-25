@@ -1,4 +1,4 @@
-import Field from "../../UI/Field";
+import Field from "../../UI/Partials/Field";
 import StoryBox from "./DialogueElements/StoryBox";
 import OptionsBox from "./DialogueElements/OptionsBox";
 

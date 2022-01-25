@@ -1,0 +1,10 @@
+.container {
+    border-top: 1px solid var(--inventory-elements-border);
+    border-left: 1px solid var(--inventory-elements-border);
+
+    span {
+      text-align: center;
+      font-size: clamp(8px, 0.8vw, 14px);
+      color: #fff;
+    }
+  }

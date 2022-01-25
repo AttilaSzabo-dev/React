@@ -1,0 +1,27 @@
+.container {
+  padding: 0.5rem 0.7rem;
+
+  .button {
+    border: 1px solid var(--inventory-elements-border);
+    background-color: #eb4511;
+    background-image: linear-gradient(315deg, #eb4511 0%, #b02e0c 74%);
+    transition: var(--hover-transition-all);
+
+    &:hover {
+      background-color: #ff0000;
+      background-image: linear-gradient(315deg, #ff0000 0%, #ffed00 74%);
+    }
+
+    :first-child {
+      font-size: 22px;
+    }
+
+    :last-child {
+      font-size: 13px;
+    }
+
+    span {
+      color: #fff;
+    }
+  }
+}

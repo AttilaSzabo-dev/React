@@ -1,4 +1,4 @@
-import DialogueBoxes from "../../../UI/DialogueBoxes";
+import DialogueBoxes from "../../../UI/Partials/DialogueBoxes";
 import "./StoryBox.scss";
 
 const StoryBox = (props) => {

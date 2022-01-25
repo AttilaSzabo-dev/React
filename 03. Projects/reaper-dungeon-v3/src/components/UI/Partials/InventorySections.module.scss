@@ -5,6 +5,6 @@
     border-bottom: 2px solid var(--inventory-section-border);
 
     display: grid;
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 50%);
     grid-template-columns: repeat(3, 1fr);
 }

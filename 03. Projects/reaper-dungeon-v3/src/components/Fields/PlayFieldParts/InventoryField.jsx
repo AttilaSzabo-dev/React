@@ -1,7 +1,7 @@
 import AttackBox from "./InventoryElements/AttackBox";
 import DefenseBox from "./InventoryElements/DefenseBox";
 import HealthBox from "./InventoryElements/HealthBox";
-import Field from "../../UI/Field";
+import Field from "../../UI/Partials/Field";
 
 import "./InventoryField.scss";
 
