@@ -1,18 +1,17 @@
 import InventorySections from "../../../UI/Partials/InventorySections";
-import Dummy from "./InventoryItems/Dummy";
+import InventorySkillBox from "./InventoryItems/InventorySkillBox";
 
 import "./HealthBox.scss";
-import InventorySkillBox from "./InventoryItems/InventorySkillBox";
 
 const HealthBox = () => {
   return (
     <InventorySections className="health-box--container">
       <InventorySkillBox />
-      <Dummy />
-      <Dummy />
-      <Dummy />
-      <Dummy />
-      <Dummy />
+      <InventorySkillBox />
+      <InventorySkillBox />
+      <InventorySkillBox />
+      <InventorySkillBox />
+      <InventorySkillBox />
     </InventorySections>
   );
 };
