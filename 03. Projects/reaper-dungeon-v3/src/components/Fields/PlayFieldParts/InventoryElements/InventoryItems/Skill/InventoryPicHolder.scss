@@ -1,0 +1,16 @@
+.skillPictureContainer {
+  //border-bottom: 1px solid var(--inventory-picture-border);
+  border-right: 1px solid var(--inventory-elements-border);
+
+  .skillPicture {
+    width: 80%;
+    height: 80%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+  }
+}
+
+.test {
+  background-image: url("../../../../../../images/skill/health/heart.png");
+}

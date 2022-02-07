@@ -1,17 +1,23 @@
 :root {
   //colors
-  --field-border: #bf8b67;
-  --field-box-shadow: rgba(0, 0, 0, 1);
-  --inventory-section-border: #876445;
-  --inventory-skill-border: #bf8b67;
-  --inventory-elements-border: #876445;
-  --dialogue-box-border: #876445;
-  --dialogue-box-border--hover: #916c4c54;
-  --dialogue-box-border--hover-box-shadow: rgba(255, 23, 0, 1);
-  --dialogue-box-box-shadow: rgba(0, 0, 0, 1);
+  --light-brown: #bf8b67;
+  --darker-brown: #876445;
+  --dark-brown: #916c4c54;
+  --black-rgba: rgba(0, 0, 0, 1);
+  --red-rgba: rgba(255, 23, 0, 1);
+
+  --field-border: var(--light-brown);
+  --field-box-shadow: var(--black-rgba);
+  --inventory-section-border: var(--darker-brown);
+  --inventory-skill-border: var(--light-brown);
+  --inventory-elements-border: var(--darker-brown);
+  --dialogue-box-border: var(--darker-brown);
+  --dialogue-box-border--hover: var(--dark-brown);
+  --dialogue-box-border--hover-box-shadow: var(--red-rgba);
+  --dialogue-box-box-shadow: var(--black-rgba);
 
   //transition
-  --hover-transition-all: all .4s;
+  --hover-transition-all: all 0.4s;
 
   //border-radius
   --border-radius: 4px;

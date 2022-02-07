@@ -1,5 +1,5 @@
 import InventorySections from "../../../UI/Partials/InventorySections";
-import InventorySkillBox from "./InventoryItems/InventorySkillBox";
+import InventorySkillBox from "./InventoryItems/Skill/InventorySkillBox";
 
 import "./HealthBox.scss";
 
