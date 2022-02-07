@@ -2,8 +2,6 @@ import { useState } from "react";
 
 import InventoryPicHolder from "./InventoryPicHolder";
 import InventorySkillButton from "./InventorySkillButton";
-import InventoryStatHolder from "./InventoryStatHolder";
-import InventoryModifierHolder from "./InventoryModifierHolder";
 
 import classes from "./InventorySkillBox.module.scss";
 
@@ -30,11 +28,12 @@ const InventorySkillBox = (props) => {
         availableStat={availableStat}
         onClick={addSkillPointsHandler}
       />
-      <InventoryStatHolder className={classes.statContainer} stat={useStat} />
-      <InventoryModifierHolder
-        className={classes.modifierContainer}
-        modifier={useStat + modifier}
-      />
+      <div className={classes.statContainer}>
+        <span>{useStat}</span>
+      </div>
+      <div className={classes.modifierContainer}>
+        <span>{useStat + modifier}</span>
+      </div>
     </div>
   );
 };
