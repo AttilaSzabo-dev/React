@@ -6,7 +6,7 @@ import "./HealthBox.scss";
 const HealthBox = () => {
   return (
     <InventorySections className="health-box--container">
-      <InventorySkillBox />
+      <InventorySkillBox image={"heart"} />
       <InventorySkillBox />
       <InventorySkillBox />
       <InventorySkillBox />

@@ -9,7 +9,6 @@ const InventorySkillBox = (props) => {
   const [useStat, setStat] = useState(100);
   const [availableStat, setAvailableStat] = useState(5);
 
-  //const stat = 100;
   const modifier = 5;
 
   const addSkillPointsHandler = () => {
@@ -22,7 +21,7 @@ const InventorySkillBox = (props) => {
 
   return (
     <div className={`${classes.box} ${props.className}`}>
-      <InventoryPicHolder className={classes.picContainer} image={"test"} />
+      <InventoryPicHolder className={classes.picContainer} image={props.image} />
       <InventorySkillButton
         className={classes.buttonContainer}
         availableStat={availableStat}
