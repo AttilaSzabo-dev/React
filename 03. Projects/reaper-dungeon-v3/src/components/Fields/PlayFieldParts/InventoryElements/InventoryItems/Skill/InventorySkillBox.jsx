@@ -7,9 +7,7 @@ import classes from "./InventorySkillBox.module.scss";
 
 const InventorySkillBox = (props) => {
   const [useStat, setStat] = useState(100);
-  const [availableStat, setAvailableStat] = useState(5);
-
-  const modifier = 5;
+  const [availableStat, setAvailableStat] = useState(10);
 
   const addSkillPointsHandler = () => {
     if (availableStat === 0) {
@@ -21,17 +19,19 @@ const InventorySkillBox = (props) => {
 
   return (
     <div className={`${classes.box} ${props.className}`}>
-      <InventoryPicHolder className={classes.picContainer} image={props.image} />
-      <InventorySkillButton
-        className={classes.buttonContainer}
-        availableStat={availableStat}
-        onClick={addSkillPointsHandler}
+      <InventoryPicHolder
+        className={classes.picContainer}
+        image={props.image}
       />
+      <div className={classes.buttonContainer}>
+        <InventorySkillButton
+          availableStat={availableStat}
+          onClick={addSkillPointsHandler}
+        />
+      </div>
+
       <div className={classes.statContainer}>
         <span>{useStat}</span>
-      </div>
-      <div className={classes.modifierContainer}>
-        <span>{useStat + modifier}</span>
       </div>
     </div>
   );
