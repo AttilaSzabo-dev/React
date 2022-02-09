@@ -1,5 +1,6 @@
 import Field from "../../UI/Partials/Field";
 import SkillBox from "./InventoryElements/SkillBox";
+import GearBox from "./InventoryElements/GearBox";
 
 import "./InventoryField.scss";
 
@@ -90,6 +91,7 @@ const IventoryField = () => {
         <SkillBox boxData={OFFENSE_DATA} />
         <SkillBox boxData={DEFENSE_DATA} />
         <SkillBox boxData={MAGIC_DATA} />
+        <GearBox />
     </Field>
   );
 };
