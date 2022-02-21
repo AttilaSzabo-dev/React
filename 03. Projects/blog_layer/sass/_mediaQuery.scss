@@ -263,15 +263,27 @@
           }
         }
 
+        .inda-slider {
+          .slider-post {
+            .header-wrapper {
+              padding: 0 10px;
+            }
+
+            .content-wrapper {
+              padding: 0 10px;
+            }
+          }
+        }
+
         .slider-button {
           bottom: 60%;
 
           &#slider_prev {
-            left: 10px;
+            left: 0;
           }
 
           &#slider_next {
-            right: 7px;
+            right: 0;
           }
         }
       }

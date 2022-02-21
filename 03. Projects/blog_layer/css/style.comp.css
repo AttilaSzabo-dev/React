@@ -807,9 +807,13 @@ body {
     width: 350px; }
     .carousel-footer .carousel-section .footer-carousel .tns-outer .tns-ovh #tns1-iw {
       margin: 0px -45px 0px 0px; }
+    .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post .header-wrapper {
+      padding: 0 10px; }
+    .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post .content-wrapper {
+      padding: 0 10px; }
     .carousel-footer .carousel-section .footer-carousel .slider-button {
       bottom: 60%; }
       .carousel-footer .carousel-section .footer-carousel .slider-button#slider_prev {
-        left: 10px; }
+        left: 0; }
       .carousel-footer .carousel-section .footer-carousel .slider-button#slider_next {
-        right: 7px; } }
+        right: 0; } }
