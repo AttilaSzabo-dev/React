@@ -156,6 +156,19 @@
     }
     .layout-article-wrapper {
       .layout-article-main-article {
+        p {
+          font-size: 15px;
+        }
+        blockquote {
+          p {
+            font-size: 16px;
+          }
+        }
+        .frame {
+          p {
+            font-size: 16px;
+          }
+        }
         .main-article-buttons-wrapper {
   
           .facebook-button {
