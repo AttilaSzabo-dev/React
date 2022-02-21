@@ -144,6 +144,9 @@
 }
 
 @media screen and (max-width: 523px) {
+  .layout-cover {
+    height: 116px;
+  }
   .layout-page {
     .layout-article-header {
       .article-header-follow {

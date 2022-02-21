@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("show-more").addEventListener("click", showMorePosts);
-
+  document.getElementById("add-cover").addEventListener("click", showCoverUpload);
+  document.getElementById("backdrop").addEventListener("click", hideCoverUpload);
+  document.getElementById("close").addEventListener("click", hideCoverUpload);
+  
   var slider = tns({
     container: ".inda-slider",
     items: 1,
@@ -39,3 +42,17 @@ document.addEventListener("DOMContentLoaded", function () {
 const showMorePosts = () => {
   document.getElementById("best-post-wrapper").classList.remove("less");
 };
+
+const showCoverUpload = () => {
+  const backdrop = document.getElementById("backdrop");
+  const modal = document.getElementById("modal");
+  backdrop.classList.remove("hide");
+  modal.classList.remove("hide");
+};
+
+const hideCoverUpload = () => {
+  const backdrop = document.getElementById("backdrop");
+  const modal = document.getElementById("modal");
+  backdrop.classList.add("hide");
+  modal.classList.add("hide");
+}
