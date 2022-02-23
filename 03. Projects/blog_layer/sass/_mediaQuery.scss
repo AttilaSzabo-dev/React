@@ -144,6 +144,9 @@
 }
 
 @media screen and (max-width: 523px) {
+  .layout-cover {
+    height: 116px;
+  }
   .layout-page {
     .layout-article-header {
       .article-header-follow {
@@ -156,6 +159,19 @@
     }
     .layout-article-wrapper {
       .layout-article-main-article {
+        p {
+          font-size: 15px;
+        }
+        blockquote {
+          p {
+            font-size: 16px;
+          }
+        }
+        .frame {
+          p {
+            font-size: 16px;
+          }
+        }
         .main-article-buttons-wrapper {
   
           .facebook-button {
@@ -250,15 +266,27 @@
           }
         }
 
+        .inda-slider {
+          .slider-post {
+            .header-wrapper {
+              padding: 0 10px;
+            }
+
+            .content-wrapper {
+              padding: 0 10px;
+            }
+          }
+        }
+
         .slider-button {
           bottom: 60%;
 
           &#slider_prev {
-            left: 10px;
+            left: 0;
           }
 
           &#slider_next {
-            right: 7px;
+            right: 0;
           }
         }
       }
