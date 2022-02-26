@@ -1,6 +1,7 @@
 :root {
   //main colors
   --orange: #f79627;
+  --darker-orange: #f7962788;
   --green: #55ad5f;
   --light-grey: #e6e6e6;
   --dark-grey: #323232;
@@ -24,6 +25,30 @@ body {
   min-height: 100%;
   background: #fff;
   color: #000;
+
+  //mozilla scrollbar
+  scrollbar-color: var(--orange) #C2D2E4;
+  scrollbar-width: thin;
+
+  //chrome, safari scrollbar
+  &::-webkit-scrollbar {
+    background: transparent;
+    width: 5px;
+}
+
+&::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+}
+
+&::-webkit-scrollbar-thumb {
+    background: var(--orange);
+    border-radius: 10px;
+
+    &:hover {
+        background: var(--darker-orange);
+    }
+}
 }
 
 body {
@@ -472,6 +497,7 @@ body {
             color: #fff;
             text-transform: uppercase;
             text-decoration: none;
+            transition: all .3s;
 
             &:after {
               position: absolute;
@@ -498,6 +524,11 @@ body {
               -moz-osx-font-smoothing: grayscale;
               /* Support for IE. */
               font-feature-settings: "liga";
+            }
+
+            &:hover {
+              background-color: var(--darker-orange);
+              color: var(--orange);
             }
           }
         }
@@ -642,7 +673,18 @@ body {
           font-weight: 600;
           line-height: 1.5;
           text-transform: uppercase;
+          transition: all .3s;
           cursor: pointer;
+
+          &:hover {
+            background-color: var(--darker-orange);
+            color: var(--orange);
+          }
+
+          &:active {
+            transform: translateY(2px);
+            transition: translate .1s;
+          }
         }
       }
       .follow-facebook-wrapper {
