@@ -3,6 +3,7 @@ import SkillBox from "./InventoryElements/SkillBox";
 import GearBox from "./InventoryElements/GearBox";
 
 import "./InventoryField.scss";
+import CharacterBox from "./InventoryElements/CharacterBox";
 
 const OFFENSE_DATA = [
   {
@@ -92,6 +93,7 @@ const IventoryField = () => {
         <SkillBox boxData={DEFENSE_DATA} />
         <SkillBox boxData={MAGIC_DATA} />
         <GearBox />
+        <CharacterBox />
     </Field>
   );
 };
