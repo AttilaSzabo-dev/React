@@ -45,6 +45,34 @@
           flex-direction: column;
           width: 350px;
 
+          &.slider-post-ad {
+            width: 330px;
+            height: 295px;
+            display: flex;
+            padding-top: 15px;
+            flex-direction: column;
+            background-color: #f1f1f1;
+
+            .body-background {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            .footer-background {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 30px;
+              margin-top: auto;
+
+              span {
+                font-family: "Open Sans", sans-serif;
+                font-size: 10px;
+                color: #999;
+              }
+            }
+          }
+
           .pic-wrapper {
             position: relative;
 

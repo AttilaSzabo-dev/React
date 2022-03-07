@@ -660,8 +660,25 @@ body {
           line-height: 1.6;
           color: var(--dark-grey); }
       .layout-page .posts-from-front-page-wrapper .posts-wrapper .front-page-ad {
-        width: 350px;
-        height: 250px; }
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        height: 282px;
+        background-color: #f1f1f1; }
+        .layout-page .posts-from-front-page-wrapper .posts-wrapper .front-page-ad .body-background {
+          display: flex;
+          justify-content: center;
+          align-items: center; }
+        .layout-page .posts-from-front-page-wrapper .posts-wrapper .front-page-ad .footer-background {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 30px;
+          margin-top: auto; }
+          .layout-page .posts-from-front-page-wrapper .posts-wrapper .front-page-ad .footer-background span {
+            font-family: "Open Sans", sans-serif;
+            font-size: 10px;
+            color: #999; }
 
 .carousel-footer {
   width: 100%;
@@ -700,6 +717,27 @@ body {
         display: flex;
         flex-direction: column;
         width: 350px; }
+        .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post.slider-post-ad {
+          width: 330px;
+          height: 295px;
+          display: flex;
+          padding-top: 15px;
+          flex-direction: column;
+          background-color: #f1f1f1; }
+          .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post.slider-post-ad .body-background {
+            display: flex;
+            justify-content: center;
+            align-items: center; }
+          .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post.slider-post-ad .footer-background {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            margin-top: auto; }
+            .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post.slider-post-ad .footer-background span {
+              font-family: "Open Sans", sans-serif;
+              font-size: 10px;
+              color: #999; }
         .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post .pic-wrapper {
           position: relative; }
           .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post .pic-wrapper img {
