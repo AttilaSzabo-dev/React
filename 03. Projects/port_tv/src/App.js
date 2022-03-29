@@ -1,23 +1,24 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import Header from './components/Header';
 
 function App() {
 
-  const [test, setTest] = useState(null);
+  const [tvEventInit, setTvEventInit] = useState();
 
-  useEffect(() => {
-    async function getData() {
-      const resp = await fetch("https://szaboa-3.dev.port.hu/tv-event/init"); 
-      setTest(await resp.json());
+  useEffect(() => {    async function getData() {
+      const resp = await fetch("tv-event/init"); 
+      setTvEventInit(await resp.json());
       
-      console.log(test);
+      //console.log(tvEventInit);
     };
     getData();
   }, []);
 
   return (
     <div>
-      
+      <Header/>
+      <p>tv event init: {tvEventInit}</p>
     </div>
   );
 }
