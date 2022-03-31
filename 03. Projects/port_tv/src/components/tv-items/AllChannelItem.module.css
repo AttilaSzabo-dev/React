@@ -1,0 +1,30 @@
+.tvItem {
+    display: flex;
+    flex-direction: row;
+}
+
+.logoWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 60px;
+    border: 1px solid #e8e8e8;
+    -webkit-box-shadow: 2px 0 0 0 rgb(160 160 160 / 70%);
+    -moz-box-shadow: 2px 0 0 0 rgba(160,160,160,0.7);
+    -o-box-shadow: 2px 0 0 0 rgba(160,160,160,0.7);
+    box-shadow: 2px 0 0 0 rgb(160 160 160 / 70%);
+}
+
+.logoWrapper img {
+    width: auto;
+    max-width: 80px;
+    max-height: 38px;
+    vertical-align: middle;
+    margin: 8px auto;
+}
+
+.channelProgramWrapper {
+    display: flex;
+    flex-direction: row;
+}
