@@ -53,6 +53,7 @@ const AllChannelsList = ({
   let content = "";
 
   if (program !== null) {
+    console.log(program);
     content = program.channels.map((item) => (
       <AllChannelItem key={item.id} logo={item.logo} programs={item.programs}/>
     ))
