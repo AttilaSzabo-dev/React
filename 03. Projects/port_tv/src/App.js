@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Link } from "react-router-dom";
 
 import AllChannelsList from "./components/tv-items/AllChannelsList";
 import "./App.css";
@@ -25,6 +25,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    console.log("fetchTvEventInit");
     fetchTvEventInit();
   }, [fetchTvEventInit]);
 
@@ -60,7 +61,9 @@ function App() {
           {content}
         </Route>
         <Route path={"/tv/test"}>
-          <p>/test</p>
+          <Link to="/tv">
+            <p>test</p>
+          </Link>
         </Route>
       </Switch>
     </>

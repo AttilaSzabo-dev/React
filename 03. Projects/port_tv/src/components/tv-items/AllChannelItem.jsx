@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 
+import ProgramItem from "./ProgramItem";
+
 import classes from "./AllChannelItem.module.css";
 
-const AllChannelItem = ({ logo }) => {
+const AllChannelItem = ({ logo, programs }) => {
   return (
     <div className={classes.tvItem}>
       <div className={classes.logoWrapper}>
@@ -10,7 +12,16 @@ const AllChannelItem = ({ logo }) => {
           <img src={logo} alt="logo" />
         </Link>
       </div>
-      <div className={classes.channelProgramWrapper}></div>
+      <div className={classes.channelProgramWrapper}>
+        {programs.map((item) => (
+          <ProgramItem
+            startTime={item.start_time}
+            endTime={item.end_time}
+            title={item.title}
+            filmUrl={item.film_url}
+          />
+        ))}
+      </div>
     </div>
   );
 };

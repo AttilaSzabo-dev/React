@@ -14,7 +14,8 @@ const AllChannelsList = ({
   showType,
 }) => {
 
-  const [program ,setProgram] = useState(null);
+  const [allProgram ,setAllProgram] = useState(null);
+  const [individualProgram ,setIndividualProgram] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -22,24 +23,24 @@ const AllChannelsList = ({
   let urlLength = 0;
 
   channels.forEach(channel => {
-    url += "channel_id%5B%5D=" + channel.id + "&";
+    url += `channel_id%5B%5D=${channel.id}&`;
     ++urlLength;
     if (urlLength === channels.length) {
-      url += "date=" + date;
+      url += `date=${date}`;
     }
   });
 
-  const fetchPrograms = useCallback(async () => {
+  const fetchAllPrograms = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("tv-event/api?" + url);
+      const response = await fetch(`tv-event/api?${url}`);
 
       if (!response.ok) {
         throw new Error("Something went wrong");
       }
 
-      setProgram(await response.json());
+      setAllProgram(await response.json());
     } catch (error) {
       setError(error.message);
     }
@@ -47,14 +48,15 @@ const AllChannelsList = ({
   }, [url]);
 
   useEffect(() => {
-    fetchPrograms();
-  }, [fetchPrograms]);
+    console.log("fetchAllPrograms");
+    fetchAllPrograms();
+  }, [fetchAllPrograms]);
 
   let content = "";
 
-  if (program !== null) {
-    console.log(program);
-    content = program.channels.map((item) => (
+  if (allProgram !== null) {
+    console.log(allProgram);
+    content = allProgram.channels.map((item) => (
       <AllChannelItem key={item.id} logo={item.logo} programs={item.programs}/>
     ))
   }
@@ -68,9 +70,9 @@ const AllChannelsList = ({
   }
   
   return (
-    <>
+    <div className={classes.channelsWrapper}>
       {content}
-    </>
+    </div>
   );
 };
 

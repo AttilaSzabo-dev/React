@@ -1,0 +1,26 @@
+.programItem {
+  height: 60px;
+  width: max-content;
+  border: 1px solid #e8e8e8;
+  transition: box-shadow 0.25s ease-in-out;
+  -moz-transition: box-shadow 0.25s ease-in-out;
+  -ms-transition: box-shadow 0.25s ease-in-out;
+  -o-transition: box-shadow 0.25s ease-in-out;
+  border-radius: 4px;
+}
+
+.programItem:hover {
+  -webkit-box-shadow: 0 2px 10px 0 rgb(54 54 54 / 30%);
+  -moz-box-shadow: 0 2px 10px 0 rgba(54, 54, 54, 0.3);
+  -o-box-shadow: 0 2px 10px 0 rgba(54, 54, 54, 0.3);
+  box-shadow: 0 2px 10px 0 rgb(54 54 54 / 30%);
+}
+
+.title {
+  display: inline-block;
+  max-width: 100%;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
