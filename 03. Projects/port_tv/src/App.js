@@ -1,16 +1,17 @@
 import { useState, useEffect, useCallback } from "react";
-import { Route, Switch, Link } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import AllChannelsList from "./components/tv-items/AllChannelsList";
+import SingleChannelList from "./components/tv-items/SingleChannelList";
+
 import "./App.css";
 
 function App() {
   const [tvEventInit, setTvEventInit] = useState(null);
-  const [error, setError] = useState(null);
-  //const [tvEventApi, setTvEventApi] = useState(null);
+  const [allChannelUrl, setAllChannelUrl] = useState([]);
+  const [allProgram, setAllProgram] = useState(null);
 
   const fetchTvEventInit = useCallback(async () => {
-    setError(null);
     try {
       const response = await fetch("tv-event/init");
 
@@ -19,51 +20,81 @@ function App() {
       }
 
       setTvEventInit(await response.json());
-    } catch (error) {
-      setError(error.message);
-    }
+    } catch (error) {}
   }, []);
 
+  const fetchAllPrograms = useCallback(async () => {
+    //setIsLoading(true);
+    //setError(null);
+    try {
+      const response = await fetch(`tv-event/api?${allChannelUrl}`);
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      setAllProgram(await response.json());
+    } catch (error) {
+      console.log(error);
+      //setError(error.message);
+    }
+    //setIsLoading(false);
+  }, [allChannelUrl]);
+
   useEffect(() => {
-    console.log("fetchTvEventInit");
     fetchTvEventInit();
   }, [fetchTvEventInit]);
 
+  useEffect(() => {
+    if (tvEventInit !== null) {
+      let url = "";
+      let urlLength = 0;
+
+      tvEventInit.channels.forEach((channel) => {
+        url += `channel_id%5B%5D=${channel.id}&`;
+        ++urlLength;
+        if (urlLength === tvEventInit.channels.length) {
+          url += `date=${tvEventInit.date.split("T")[0]}`;
+          setAllChannelUrl(url)
+        }
+      });
+    }
+  }, [tvEventInit]);
+
+  useEffect(() => {
+    if (allChannelUrl.length > 0) {
+      fetchAllPrograms();
+    }
+  }, [allChannelUrl, fetchAllPrograms]);
+
+  const singleChannelHandler = () => {
+    
+  };
+
   if (tvEventInit !== null) {
-    console.log(tvEventInit);
+    console.log("tvEventInit: ", tvEventInit);
   }
 
-  let content = "";
-
-  if (tvEventInit !== null) {
-    content = (
-      <AllChannelsList
-        ageLimit={tvEventInit.ageLimit}
-        channelGroups={tvEventInit.channelGroups}
-        channels={tvEventInit.channels}
-        date={tvEventInit.date.split('T')[0]}
-        days={tvEventInit.days}
-        daysDate={tvEventInit.daysDate}
-        services={tvEventInit.services}
-        showType={tvEventInit.showType}
-      />
-    );
+  if (allChannelUrl.length > 0) {
+    console.log("allChannelUrl: ", allChannelUrl);
   }
 
-  if (error) {
-    content = <p>{error}</p>;
+  if (allProgram !== null) {
+    console.log("allProgram: ", allProgram);
   }
 
   return (
     <>
       <Switch>
         <Route path={"/tv"} exact>
-          {content}
+          {(tvEventInit !== null && allProgram !== null && allChannelUrl.length > 0) && (
+            <AllChannelsList
+              allProgram={allProgram}
+            />
+          )}
         </Route>
-        <Route path={"/tv/test"}>
-          <Link to="/tv">
-            <p>test</p>
-          </Link>
+        <Route path={"/tv/:channelId"}>
+          <SingleChannelList />
         </Route>
       </Switch>
     </>

@@ -4,11 +4,11 @@ import ProgramItem from "./ProgramItem";
 
 import classes from "./AllChannelItem.module.css";
 
-const AllChannelItem = ({ logo, programs }) => {
+const AllChannelItem = ({ logo, programs, key }) => {
   return (
     <div className={classes.tvItem}>
       <div className={classes.logoWrapper}>
-        <Link to="/tv/test">
+        <Link to={`/tv/${key}`}>
           <img src={logo} alt="logo" />
         </Link>
       </div>

@@ -4,22 +4,15 @@ import AllChannelItem from "./AllChannelItem";
 import classes from "./AllChannelsList.module.css";
 
 const AllChannelsList = ({
-  ageLimit,
-  channelGroups,
-  channels,
-  date,
-  days,
-  daysDate,
-  services,
-  showType,
+  allProgram
 }) => {
 
-  const [allProgram ,setAllProgram] = useState(null);
-  const [individualProgram ,setIndividualProgram] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  //const [allProgram ,setAllProgram] = useState(null);
+  //const [individualProgram ,setIndividualProgram] = useState(null);
+  //const [isLoading, setIsLoading] = useState(false);
+  //const [error, setError] = useState(null);
 
-  let url = "";
+  /* let url = "";
   let urlLength = 0;
 
   channels.forEach(channel => {
@@ -28,9 +21,9 @@ const AllChannelsList = ({
     if (urlLength === channels.length) {
       url += `date=${date}`;
     }
-  });
+  }); */
 
-  const fetchAllPrograms = useCallback(async () => {
+  /* const fetchAllPrograms = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -45,29 +38,29 @@ const AllChannelsList = ({
       setError(error.message);
     }
     setIsLoading(false);
-  }, [url]);
+  }, [url]); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     console.log("fetchAllPrograms");
     fetchAllPrograms();
-  }, [fetchAllPrograms]);
+  }, [fetchAllPrograms]); */
 
   let content = "";
 
   if (allProgram !== null) {
-    console.log(allProgram);
+    //console.log(allProgram);
     content = allProgram.channels.map((item) => (
       <AllChannelItem key={item.id} logo={item.logo} programs={item.programs}/>
     ))
   }
 
-  if (error) {
+  /* if (error) {
     content = <p>{error}</p>;
-  }
+  } */
 
-  if (isLoading) {
+  /* if (isLoading) {
     content = <p>Loading...</p>;
-  }
+  } */
   
   return (
     <div className={classes.channelsWrapper}>
