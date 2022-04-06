@@ -55,7 +55,7 @@ function App() {
         ++urlLength;
         if (urlLength === tvEventInit.channels.length) {
           url += `date=${tvEventInit.date.split("T")[0]}`;
-          setAllChannelUrl(url)
+          setAllChannelUrl(url);
         }
       });
     }
@@ -67,9 +67,7 @@ function App() {
     }
   }, [allChannelUrl, fetchAllPrograms]);
 
-  const singleChannelHandler = () => {
-    
-  };
+  const singleChannelHandler = () => {};
 
   if (tvEventInit !== null) {
     console.log("tvEventInit: ", tvEventInit);
@@ -87,14 +85,16 @@ function App() {
     <>
       <Switch>
         <Route path={"/tv"} exact>
-          {(tvEventInit !== null && allProgram !== null && allChannelUrl.length > 0) && (
-            <AllChannelsList
-              allProgram={allProgram}
-            />
-          )}
+          {tvEventInit !== null &&
+            allProgram !== null &&
+            allChannelUrl.length > 0 && (
+              <AllChannelsList allProgram={allProgram} />
+            )}
         </Route>
-        <Route path={"/tv/:channelId"}>
-          <SingleChannelList />
+        <Route path={"/tv:channelId"}>
+          {tvEventInit !== null && (
+            <SingleChannelList daysDate={tvEventInit.daysDate} />
+          )}
         </Route>
       </Switch>
     </>

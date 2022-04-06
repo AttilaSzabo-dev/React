@@ -1,16 +1,12 @@
-import { Link } from "react-router-dom";
-
 import ProgramItem from "./ProgramItem";
 
-import classes from "./AllChannelItem.module.css";
+import classes from "./SingleChannelItem.module.css";
 
-const AllChannelItem = ({ logo, programs, id }) => {
+const SingleChannelItem = ({formattedDate, today, programs}) => {
   return (
-    <div className={classes.tvItem}>
-      <div className={classes.logoWrapper}>
-        <Link to={`/tv${id}`}>
-          <img src={logo} alt="logo" />
-        </Link>
+    <div className={classes.tvSingleItem}>
+      <div className={classes.headWrapper}>
+          <p>{formattedDate}</p>
       </div>
       <div className={classes.channelProgramWrapper}>
         {programs.map((item) => (
@@ -26,4 +22,4 @@ const AllChannelItem = ({ logo, programs, id }) => {
   );
 };
 
-export default AllChannelItem;
+export default SingleChannelItem;

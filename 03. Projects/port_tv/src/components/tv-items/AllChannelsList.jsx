@@ -50,7 +50,7 @@ const AllChannelsList = ({
   if (allProgram !== null) {
     //console.log(allProgram);
     content = allProgram.channels.map((item) => (
-      <AllChannelItem key={item.id} logo={item.logo} programs={item.programs}/>
+      <AllChannelItem key={item.id} id={item.id} logo={item.logo} programs={item.programs}/>
     ))
   }
 
