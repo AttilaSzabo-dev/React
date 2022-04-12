@@ -19,11 +19,22 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css"
     />
+    <link
+      href="https://unpkg.com/filepond/dist/filepond.css"
+      rel="stylesheet"
+    />
+    <link href="./dist/filepond-plugin-image-preview.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js"></script>
     <script src="js/blog.js"></script>
   </head>
   <body>
+    <script src="https://unpkg.com/filepond-plugin-file-metadata/dist/filepond-plugin-file-metadata.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
+
+    <script src="./dist/filepond-plugin-image-preview.js"></script>
+    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+
     <div class="layout-header">
       <div class="layout-header__inner">
         <div class="layout-header__logo-wrapper">
@@ -42,8 +53,14 @@
     </div>
     <div class="layout-cover">
       <img src="./assets/test1920x1080.jpg" alt="">
-      <div id="add-cover" class="add-cover">
-        <span class="material-icons">photo_camera</span>
+      <div class="upload-wrapper">
+        <div id="add-cover" class="add-cover">
+          <span class="material-icons">photo_camera</span>
+        </div>
+        <div class="upload-text">
+          <span>Tölts fel borítóképet</span>
+          <span>(Optimális méret 1110x300)</span>
+        </div>
       </div>
     </div>
     <div class="layout-page">
@@ -442,6 +459,7 @@
         </div>
       </div>
       <div class="modal-body">
+        <input type="file" name="filepond" multiple />
         <div class="upload-cover">Mentés borítóképként</div>
       </div>
     </div>
@@ -458,5 +476,9 @@
         <div class="credit footer-style">© 2007-2020 Inda Labs Zrt.</div>
       </div>
     </div>
+
+    <script>
+      
+    </script>
   </body>
 </html>

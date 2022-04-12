@@ -3,6 +3,69 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("add-cover").addEventListener("click", showCoverUpload);
   document.getElementById("backdrop").addEventListener("click", hideCoverUpload);
   document.getElementById("close").addEventListener("click", hideCoverUpload);
+
+  // Register the plugin with FilePond
+  FilePond.registerPlugin(
+    FilePondPluginFileMetadata,
+    FilePondPluginImageCrop,
+    FilePondPluginImagePreview
+  );
+
+  // Get a reference to the file input element
+  const inputElement = document.querySelector('input[type="file"]');
+
+  // Create the FilePond instance
+  const pond = FilePond.create(inputElement, {
+    credits: false,
+    labelIdle: "Húzza ide a képet vagy <span class='filepond--label-action'> válassza </span> ki a fájlt",
+    allowMultiple: false,
+    allowReplace: true,
+    maxFiles: 1,
+    checkValidity: true,
+    imageCropAspectRatio: "16:9",
+    server: {
+      //url: ....,
+      //method: "POST",
+      process: './process',
+      fetch: null,
+      revert: null,
+    },
+    fileMetadataObject: {
+      markup: [
+        [
+          "rect",
+          {
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: "60px",
+            backgroundColor: "rgba(0,0,0,.5)",
+          },
+        ],
+      ],
+    },
+  });
+
+  //pond.addFile("./beach.jpeg");
+
+  //const input = document.querySelector('input[type="file"]');
+  //create(input);
+  //const inputElement = document.querySelector('input[type="file"]');
+  /* const pond = FilePond.create(inputElement, {
+    credits: false,
+    labelIdle: "Húzza ide a képet vagy <span class='filepond--label-action'> válassza </span> ki a fájlt",
+    allowMultiple: false,
+    allowReplace: true,
+    maxFiles: 1,
+    checkValidity: true,
+    server: {
+      //url: ....,
+      //method: "POST",
+      process: './process',
+      fetch: null,
+      revert: null,
+    }
+  }); */
   
   var slider = tns({
     container: ".inda-slider",
