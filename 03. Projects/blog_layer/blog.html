@@ -20,6 +20,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css"
     />
     <link
+      href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css"
+      rel="stylesheet"
+    />
+    <link
       href="https://unpkg.com/filepond/dist/filepond.css"
       rel="stylesheet"
     />
@@ -31,6 +35,10 @@
   <body>
     <script src="https://unpkg.com/filepond-plugin-file-metadata/dist/filepond-plugin-file-metadata.js"></script>
     <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-validate-size/dist/filepond-plugin-image-validate-size.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.js"></script>
 
     <script src="./dist/filepond-plugin-image-preview.js"></script>
     <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
@@ -75,12 +83,16 @@
       <div class="layout-article-header">
         <div class="article-header-top-data">
           <span class="credentials">mozgókép</span>
-          <span class="grey-data name">Siktár Vivi</span>
+          <span class="grey-data name">
+            <!-- Siktár Vivi -->
+            <a href="http://blog.hu/user/1586902">John Janiczky</a>
+          </span>
           <span class="grey-data">2022. február 10.</span>
         </div>
         <div class="article-header-title">
           <h1>
-            Rossz pénz nem vész el: Zack Snyder – Az Igazság Ligája – kritika
+            <!-- Rossz pénz nem vész el: Zack Snyder – Az Igazság Ligája – kritika -->
+            <a href="https://andrewflyfishing.bloghudev5.inx/2022/03/28/legyezes_az_oszi_hernad">Legyezés az őszi Hernádon</a>
           </h1>
         </div>
         <div class="article-header-follow">
@@ -88,9 +100,10 @@
             <img src="./assets/follow_pic.png" alt="Follower Pic" />
           </div>
           <div class="follow-data-wrapper">
-            <span class="follow-data-title"
-              >Bakancsban, két keréken és még négyen</span
-            >
+            <span class="follow-data-title">
+              <!-- Bakancsban, két keréken és még négyen -->
+              <a href="https://andrewflyfishing.bloghudev5.inx">andrew_flyfishing</a>
+            </span>
             <button class="follow-data-button">+ követés</button>
           </div>
         </div>
@@ -265,9 +278,51 @@
                 </div>
               </div>
             </div>
+            <div class="best-post-item">
+              <div class="best-post-pic-wrapper">
+                <img src="https://dummyimage.com/48x48/000/fff" alt="" />
+              </div>
+              <div class="best-post-content-wrapper">
+                <div class="best-post-content-title">
+                  <span
+                    >A szállodává alakított Párisi Udvarban ebédeltem. Na,
+                    milyen volt?</span
+                  >
+                </div>
+                <div class="best-post-content-time">
+                  <span class="title">Városban •</span>
+                  <span class="time">54 perce</span>
+                </div>
+              </div>
+            </div>
+            <div class="best-post-item">
+              <div class="best-post-pic-wrapper">
+                <img src="https://dummyimage.com/48x48/000/fff" alt="" />
+              </div>
+              <div class="best-post-content-wrapper">
+                <div class="best-post-content-title">
+                  <span
+                    >A szállodává alakított Párisi Udvarban ebédeltem. Na,
+                    milyen volt?</span
+                  >
+                </div>
+                <div class="best-post-content-time">
+                  <span class="title">Városban •</span>
+                  <span class="time">54 perce</span>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="show-more-button-wrapper">
             <a id="show-more" class="show-more">Mutasd mind</a>
+          </div>
+          <div class="side-container-ad">
+            <div class="body-background">
+              <img src="https://dummyimage.com/300x250/000/fff" alt="" />
+            </div>
+            <div class="footer-background">
+              <span>hirdetés</span>
+            </div>
           </div>
           <div class="follow-facebook-wrapper">
             <div class="follow-facebook-title">Kövesd a blogot Facebookon</div>

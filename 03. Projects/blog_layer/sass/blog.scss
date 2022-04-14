@@ -202,16 +202,28 @@ body {
           border-right: 2px solid #3232327c;
           padding-right: 6px;
         }
+
+        a {
+          font-family: "Roboto Condensed", sans-serif;
+          font-size: 14px;
+          font-stretch: condensed;
+          color: #000;
+          text-decoration: none;
+        }
       }
     }
 
     .article-header-title {
       h1 {
-        font-family: "Open Sans", sans-serif;
-        font-size: 36px;
-        font-weight: bold;
-        line-height: 1.39;
-        margin: 12px 0;
+        a {
+          font-family: "Open Sans", sans-serif;
+          font-size: 36px;
+          color: #000;
+          text-decoration: none;
+          font-weight: bold;
+          line-height: 1.39;
+          margin: 12px 0;
+        }
       }
     }
 
@@ -239,12 +251,15 @@ body {
         justify-content: space-between;
 
         .follow-data-title {
-          font-family: "Open Sans", sans-serif;
-          font-size: 16px;
-          font-weight: bold;
-          line-height: 1.5;
-          color: var(--orange);
-          text-transform: uppercase;
+          a {
+            font-family: "Open Sans", sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            line-height: 1.5;
+            color: var(--orange);
+            text-transform: uppercase;
+          }
         }
         .follow-data-button {
           width: 68px;
@@ -281,6 +296,16 @@ body {
         letter-spacing: normal;
         color: var(--dark-grey);
         line-height: 24px;
+
+        span {
+          display: inline-block;
+          margin: 1rem 0;
+
+          img {
+            display: block;
+            margin: 1rem auto;
+          }
+        }
       }
 
       img {
@@ -717,8 +742,6 @@ body {
         }
       }
       .follow-facebook-wrapper {
-        display: flex;
-        flex-direction: column;
         margin-top: auto;
 
         .follow-facebook-title {

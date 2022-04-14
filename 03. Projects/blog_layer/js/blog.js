@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("show-more").addEventListener("click", showMorePosts);
-  document.getElementById("add-cover").addEventListener("click", showCoverUpload);
+  if (document.getElementById("add-cover") !== null) {
+    document.getElementById("add-cover").addEventListener("click", showCoverUpload);
+  }
   document.getElementById("backdrop").addEventListener("click", hideCoverUpload);
   document.getElementById("close").addEventListener("click", hideCoverUpload);
 
@@ -8,7 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
   FilePond.registerPlugin(
     FilePondPluginFileMetadata,
     FilePondPluginImageCrop,
-    FilePondPluginImagePreview
+    FilePondPluginImagePreview,
+    FilePondPluginImageResize,
+    FilePondPluginImageValidateSize,
+    FilePondPluginFileValidateType,
+    FilePondPluginImageEdit
   );
 
   // Get a reference to the file input element
@@ -18,11 +24,34 @@ document.addEventListener("DOMContentLoaded", function () {
   const pond = FilePond.create(inputElement, {
     credits: false,
     labelIdle: "Húzza ide a képet vagy <span class='filepond--label-action'> válassza </span> ki a fájlt",
+    labelFileProcessing: "Feltöltés",
+    labelFileProcessingError: "Feltöltési hiba",
+    labelTapToRetry: "Újrapróbál",
+    labelTapToCancel: "Mégse",
     allowMultiple: false,
     allowReplace: true,
     maxFiles: 1,
-    checkValidity: true,
-    imageCropAspectRatio: "16:9",
+    //checkValidity: true,
+    allowImageResize: true,
+    imageResizeTargetWidth: 1110,
+    imageResizeTargetHeight: 300,
+    imageResizeUpscale: false,
+    /* allowImageValidateSize: true,
+    imageValidateSizeMinWidth: 1110,
+    imageValidateSizeMaxWidth: 1110,
+    imageValidateSizeMinHeight: 300,
+    imageValidateSizeMaxHeight: 300,
+    imageValidateSizeLabelImageSizeTooBig: "A kép túl nagy",
+    imageValidateSizeLabelImageSizeTooSmall: "A kép túl kicsi",
+    imageValidateSizeLabelExpectedMaxSize: "A legnagyobb méret {maxWidth} × {maxHeight}", */
+    /* allowFileTypeValidation: true,
+    acceptedFileTypes: ["image/jpeg", "image/jpg"], */
+    //imageResizeUpscale: false, //nem tudom kell-e??
+    /* allowImageCrop: true,
+    imageCropAspectRatio: "16:10", //nem tudom kell-e?? */
+    /* allowImageEdit: true,
+    imageEditInstantEdit: true,
+    imageEditAllowEdit: true, */
     server: {
       //url: ....,
       //method: "POST",
@@ -30,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
       fetch: null,
       revert: null,
     },
-    fileMetadataObject: {
+    /* fileMetadataObject: {
       markup: [
         [
           "rect",
@@ -43,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         ],
       ],
-    },
+    }, */
   });
 
   //pond.addFile("./beach.jpeg");
