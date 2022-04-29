@@ -120,6 +120,19 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover; }
+  .layout-cover .blog-name {
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 0); }
+    .layout-cover .blog-name span {
+      font-family: "Roboto Condensed", sans-serif;
+      font-size: 70px;
+      font-weight: bold;
+      line-height: 0.29;
+      letter-spacing: 1.75px;
+      color: var(--orange); }
   .layout-cover .upload-wrapper {
     display: flex;
     flex-direction: row; }
@@ -908,7 +921,31 @@ body {
       .modal .modal-header .close span {
         color: var(--orange); }
   .modal .modal-body {
-    padding: 20px 70px 25px; }
+    padding: 20px 70px 25px;
+    /* .filepond--root {
+            margin-bottom: 0 !important;
+        }
+
+        .filepond--panel-root {
+            border-radius: .5em .5em 0 0 !important;
+        } */ }
+    .modal .modal-body .pic-info {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      height: 40px;
+      width: 100%;
+      background-color: #e6e6e6;
+      margin-bottom: 3rem; }
+      .modal .modal-body .pic-info :first-child {
+        margin-right: 1rem; }
+      .modal .modal-body .pic-info span {
+        display: inline-block;
+        font-family: "Open Sans", sans-serif;
+        font-size: 12px;
+        line-height: 1.83;
+        color: #a1a1a1; }
     .modal .modal-body .upload-cover {
       display: flex;
       align-items: center;

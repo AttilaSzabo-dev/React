@@ -51,6 +51,37 @@
     .modal-body {
         padding: 20px 70px 25px;
 
+        /* .filepond--root {
+            margin-bottom: 0 !important;
+        }
+
+        .filepond--panel-root {
+            border-radius: .5em .5em 0 0 !important;
+        } */
+
+        .pic-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+            width: 100%;
+            background-color: #e6e6e6;
+            margin-bottom: 3rem;
+
+            :first-child {
+                margin-right: 1rem;
+            }
+
+            span {
+                display: inline-block;
+                font-family: "Open Sans", sans-serif;
+                font-size: 12px;
+                line-height: 1.83;
+                color: #a1a1a1;
+            }
+        }
+
         .upload-cover {
             display: flex;
             align-items: center;
