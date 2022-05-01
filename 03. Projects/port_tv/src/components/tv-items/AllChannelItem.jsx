@@ -4,16 +4,16 @@ import ProgramItem from "./ProgramItem";
 
 import classes from "./AllChannelItem.module.css";
 
-const AllChannelItem = ({ logo, programs, id }) => {
-  return (
+const AllChannelItem = ( props ) => {
+  return props.programs.channels.map((channel) => (
     <div className={classes.tvItem}>
       <div className={classes.logoWrapper}>
-        <Link to={`/tv${id}`}>
-          <img src={logo} alt="logo" />
+        <Link to={`/tv${channel.id}`}>
+          <img src={channel.logo} alt="logo" />
         </Link>
       </div>
       <div className={classes.channelProgramWrapper}>
-        {programs.map((item) => (
+        {channel.programs.map((item) => (
           <ProgramItem
             startTime={item.start_time}
             endTime={item.end_time}
@@ -23,7 +23,7 @@ const AllChannelItem = ({ logo, programs, id }) => {
         ))}
       </div>
     </div>
-  );
+  ));
 };
 
 export default AllChannelItem;

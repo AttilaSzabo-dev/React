@@ -1,62 +1,75 @@
 import { useState, useEffect, useCallback } from "react";
+
 import AllChannelItem from "./AllChannelItem";
 
 import classes from "./AllChannelsList.module.css";
 
-const AllChannelsList = ({ allProgram }) => {
+const AllChannelsList = ({ tvEventInit }) => {
   const [programs, setPrograms] = useState([]);
+  const [actualUrlsIndex, setActualUrlsIndex] = useState(0);
 
-  
-  let urlArray = [];
-  let urlLength = 0;
-  let urlTempLength = 0;
+  const pluck = (array, key) => {
+    return array.map((item) => item[key]);
+  };
 
-  let url = "";
-    
-    allProgram.channels.forEach((channel) => {
-      url += `channel_id%5B%5D=${channel.id}&`;
-      ++urlTempLength;
-      ++urlLength;
-      //console.log("urlTempLength: ", urlTempLength);
-      if (urlTempLength === 40 || urlLength === allProgram.channels.length) {
-        //console.log("url generáló ifben");
-        //console.log(url);
-        url += `date=${allProgram.date.split("T")[0]}`;
-        urlArray.push(url);
-        console.log(urlArray);
-        //fetch(`tv-event/api?${url}`)
-        //  .then((res) => {
-        //    return res.json();
-        //  })
-        //  .then((data) => {
-        //    console.log(data);
-            //console.log("length set előtt: ", programs);
-            /* setPrograms((prevPrograms) => {
-              return [...prevPrograms, data];
-              }); */
-      //      setPrograms(data.channels);
-            //console.log("length set után: ", programs);
-      //    });
-        url = "";
-        urlTempLength = 0;
-      }
-    });
+  function* chunk(array, n) {
+    for (let index = 0; index < array.length; index += n) {
+      yield array.slice(index, index + n);
+    }
+  }
+
+  const fetchActualUrl = useCallback(
+    (urls) => {
+      fetch(`${urls[actualUrlsIndex]}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          console.log("apiFetch: ", data);
+          setPrograms((prevPrograms) => {
+            return [
+              ...prevPrograms,
+              {
+                channels: data.channels,
+                date: data.date,
+                date_from: data.date_from,
+                date_to: data.date_to,
+                eveningStartTime: data.eveningStartTime,
+              },
+            ];
+          });
+        });
+    },
+    [actualUrlsIndex]
+  );
+
+  const increseHandler = () => {
+    setActualUrlsIndex(actualUrlsIndex + 1);
+  };
+
+  console.log("tároló state: ", programs);
 
   useEffect(() => {
-    
-  }, []);
+    let date = `date=${tvEventInit.date.split("T")[0]}`;
+    let ids = pluck(tvEventInit.channels, "id");
+    let chunks = [...chunk(ids, 40)];
+    let urls = chunks.map((chunk) => {
+      let channels = chunk.map((id) => `channel_id%5B%5D=${id}`).join("&");
+      return `tv-event/api?${channels}&${date}`;
+    });
+
+    console.log("ids: ", ids);
+    console.log("chunks: ", chunks);
+    console.log("urls: ", urls);
+
+    fetchActualUrl(urls);
+  }, [fetchActualUrl, tvEventInit.date, tvEventInit.channels]);
 
   return (
     <div className={classes.channelsWrapper}>
-      {/* {programs.length > 0 &&
-        (programs.channels || []).map((item) => (
-          <AllChannelItem
-            key={item.id}
-            id={item.id}
-            logo={item.logo}
-            programs={item.programs}
-          />
-        ))} */}
+      {programs.length !== 0 &&
+        programs.map((program) => <AllChannelItem programs={program} />)}
+      <button onClick={increseHandler}>Increse</button>
     </div>
   );
 };
