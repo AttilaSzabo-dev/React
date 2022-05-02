@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useInView } from 'react-intersection-observer';
 
 import AllChannelItem from "./AllChannelItem";
 
@@ -7,6 +8,13 @@ import classes from "./AllChannelsList.module.css";
 const AllChannelsList = ({ tvEventInit }) => {
   const [programs, setPrograms] = useState([]);
   const [actualUrlsIndex, setActualUrlsIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const { ref, inView, entry } = useInView({
+    /* Optional options */
+    threshold: 0,
+  });
 
   const pluck = (array, key) => {
     return array.map((item) => item[key]);
@@ -20,6 +28,7 @@ const AllChannelsList = ({ tvEventInit }) => {
 
   const fetchActualUrl = useCallback(
     (urls) => {
+      setIsLoading(true);
       fetch(`${urls[actualUrlsIndex]}`)
         .then((res) => {
           return res.json();
@@ -38,6 +47,9 @@ const AllChannelsList = ({ tvEventInit }) => {
               },
             ];
           });
+          setIsLoading(false);
+        }).catch((error) => {
+          setError(error.message);
         });
     },
     [actualUrlsIndex]
@@ -46,6 +58,20 @@ const AllChannelsList = ({ tvEventInit }) => {
   const increseHandler = () => {
     setActualUrlsIndex(actualUrlsIndex + 1);
   };
+
+  /* let content = <p></p>;
+
+  if (false) {
+    content = <AllChannelsList allProgram={tvEventInit} />;
+  }
+
+  if (error) {
+    content = <p>{error}</p>;
+  }
+
+  if (isLoading) {
+    content = <p>Loading...</p>;
+  } */
 
   console.log("tároló state: ", programs);
 
@@ -69,7 +95,7 @@ const AllChannelsList = ({ tvEventInit }) => {
     <div className={classes.channelsWrapper}>
       {programs.length !== 0 &&
         programs.map((program) => <AllChannelItem programs={program} />)}
-      <button onClick={increseHandler}>Increse</button>
+      {(programs.length !== 0 && isLoading === false) && <button ref={ref} onClick={increseHandler}>Increse {inView}</button>}
     </div>
   );
 };
