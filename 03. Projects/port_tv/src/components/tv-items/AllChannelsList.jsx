@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useInView } from 'react-intersection-observer';
 
 import AllChannelItem from "./AllChannelItem";
+import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
 
@@ -11,9 +12,11 @@ const AllChannelsList = ({ tvEventInit }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { ref, inView, entry } = useInView({
+  const { ref, inView } = useInView({
     /* Optional options */
     threshold: 0,
+    trackVisibility: true,
+    delay: 100
   });
 
   const pluck = (array, key) => {
@@ -56,8 +59,14 @@ const AllChannelsList = ({ tvEventInit }) => {
   );
 
   const increseHandler = () => {
+    if (programs.length === actualUrlsIndex) return false;
+
     setActualUrlsIndex(actualUrlsIndex + 1);
   };
+
+  if (inView) {
+    increseHandler();
+  }
 
   /* let content = <p></p>;
 
@@ -74,7 +83,8 @@ const AllChannelsList = ({ tvEventInit }) => {
   } */
 
   console.log("tároló state: ", programs);
-
+  console.log(inView);
+  
   useEffect(() => {
     let date = `date=${tvEventInit.date.split("T")[0]}`;
     let ids = pluck(tvEventInit.channels, "id");
@@ -93,9 +103,10 @@ const AllChannelsList = ({ tvEventInit }) => {
 
   return (
     <div className={classes.channelsWrapper}>
+      {isLoading && <Spinner/>}
       {programs.length !== 0 &&
         programs.map((program) => <AllChannelItem programs={program} />)}
-      {(programs.length !== 0 && isLoading === false) && <button ref={ref} onClick={increseHandler}>Increse {inView}</button>}
+      {(programs.length !== 0 && isLoading === false) && <button ref={ref} onClick={increseHandler}>Increse</button>}
     </div>
   );
 };
