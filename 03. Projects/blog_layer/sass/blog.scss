@@ -10,6 +10,7 @@
   --termeszet: #0b540b;
   --rozsdagyar: #ff9900;
   --otthonesstilus: #ecc2fe;
+  --video: #d0021b;
 }
 
 *,
@@ -66,6 +67,9 @@ body {
 }
 .otthonesstilus {
   background-color: var(--otthonesstilus);
+}
+.video {
+  background-color: var(--video);
 }
 
 // header

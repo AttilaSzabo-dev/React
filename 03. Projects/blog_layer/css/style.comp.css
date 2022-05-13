@@ -6,7 +6,8 @@
   --dark-grey: #323232;
   --termeszet: #0b540b;
   --rozsdagyar: #ff9900;
-  --otthonesstilus: #ecc2fe; }
+  --otthonesstilus: #ecc2fe;
+  --video: #d0021b; }
 
 *,
 *::after,
@@ -51,6 +52,9 @@ body {
 
 .otthonesstilus {
   background-color: var(--otthonesstilus); }
+
+.video {
+  background-color: var(--video); }
 
 .layout-header {
   height: 42px;
@@ -808,6 +812,12 @@ body {
             border-radius: 2px;
             padding: 3px 4px 1px;
             text-transform: uppercase; }
+            .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post .pic-wrapper .color-label.color-label-video {
+              display: flex;
+              align-items: center;
+              padding: 0px 5px 0px 0px; }
+              .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post .pic-wrapper .color-label.color-label-video span {
+                font-size: 20px; }
         .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post .header-wrapper {
           margin-bottom: 5px; }
           .carousel-footer .carousel-section .footer-carousel .inda-slider .slider-post .header-wrapper span {
@@ -907,7 +917,7 @@ body {
     width: 100%;
     height: 57px;
     padding: 0 1rem;
-    border-bottom: 2px solid #e6e6e6; }
+    border-bottom: 2px solid var(--light-grey); }
     .modal .modal-header .modal-header-text {
       font-family: "Open Sans", sans-serif;
       font-size: 16px;
@@ -938,7 +948,7 @@ body {
       align-items: center;
       height: 40px;
       width: 100%;
-      background-color: #e6e6e6;
+      background-color: var(--light-grey);
       margin-bottom: 3rem; }
       .modal .modal-body .pic-info :first-child {
         margin-right: 1rem; }
@@ -956,12 +966,20 @@ body {
       width: 237px;
       height: 50px;
       border-radius: 5px;
+      border: none;
       background-color: var(--orange);
       text-transform: uppercase;
       font-family: "Open Sans", sans-serif;
       font-size: 16px;
       font-weight: 600;
-      color: #fff; }
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.4s; }
+      .modal .modal-body .upload-cover:active {
+        transform: translateY(3px); }
+      .modal .modal-body .upload-cover:disabled {
+        background-color: var(--light-grey);
+        cursor: not-allowed; }
 
 .hide {
   display: none; }
