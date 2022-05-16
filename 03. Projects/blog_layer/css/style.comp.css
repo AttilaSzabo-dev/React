@@ -602,15 +602,15 @@ body {
             .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time {
               display: flex;
               flex-direction: row; }
-              .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time span {
+              .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time a {
                 display: inline-block;
                 font-family: "Open Sans", sans-serif;
                 font-size: 13px;
                 color: #999; }
-                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time span.title {
+                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time a.title {
                   font-style: normal;
                   margin-right: 5px; }
-                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time span.time {
+                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time a.time {
                   font-style: italic; }
       .layout-page .layout-article-wrapper .layout-article-side-container .show-more-button-wrapper {
         display: flex;
