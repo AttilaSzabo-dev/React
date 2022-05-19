@@ -3,6 +3,7 @@ import { useInView } from 'react-intersection-observer';
 
 import AllChannelItem from "./AllChannelItem";
 import Spinner from "../../UI/Spinner";
+import Timeline from "../../UI/Timeline";
 
 import classes from "./AllChannelsList.module.css";
 
@@ -104,6 +105,7 @@ const AllChannelsList = ({ tvEventInit }) => {
   return (
     <div className={classes.channelsWrapper}>
       {isLoading && <Spinner/>}
+      <Timeline />
       {programs.length !== 0 &&
         programs.map((program) => <AllChannelItem programs={program} />)}
       {(programs.length !== 0 && isLoading === false) && <button ref={ref} onClick={increseHandler}>Increse</button>}
