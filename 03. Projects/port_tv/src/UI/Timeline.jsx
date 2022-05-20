@@ -1,19 +1,19 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import classes from "./Timeline.module.css";
 
 const Timeline = () => {
   const container = useRef(null);
-  const [timelinePosition, setTimelinePosition] = useState({
+  /* const [timelinePosition, setTimelinePosition] = useState({
     top: 0,
     left: 0,
     x: 0,
     y: 0,
-  });
+  }); */
 
-  const mouseDownHandler = function (e) {
-    //ele.style.cursor = 'grabbing';
-    //ele.style.userSelect = 'none';
+  /* const mouseDownHandler = function (e) {
+    ele.style.cursor = 'grabbing';
+    ele.style.userSelect = 'none';
     setTimelinePosition({
       left: container.scrollLeft,
       top: container.scrollTop,
@@ -23,19 +23,28 @@ const Timeline = () => {
   };
 
   const mouseMoveHandler = function (e) {
-    // How far the mouse has been moved
     const dx = e.clientX - timelinePosition.x;
     const dy = e.clientY - timelinePosition.y;
 
-    // Scroll the element
     setTimelinePosition({
-        top: timelinePosition.top - dy,
-        left: timelinePosition.left - dx
-
+      top: timelinePosition.top - dy,
+      left: timelinePosition.left - dx,
     });
-    //container.scrollTop = timelinePosition.top - dy;
-    //container.scrollLeft = timelinePosition.left - dx;
-};
+    container.current.scrollTop = timelinePosition.top - dy;
+    container.current.scrollLeft = timelinePosition.left - dx;
+  }; */
+
+  const mouseWheelHandler = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    container.current.scrollLeft += e.deltaY;
+  };
+
+  useEffect(() => {
+    container.current.addEventListener("wheel", mouseWheelHandler, {
+      passive: false,
+    });
+  }, []);
 
   return (
     <div className={classes["timeline-wrapper"]}>
@@ -45,10 +54,7 @@ const Timeline = () => {
       </button>
       <div
         ref={container}
-        onMouseDown={(e) => mouseDownHandler(e)}
-        onMouseMove={(e) => mouseMoveHandler(e)}
         className={classes["section-wrapper"]}
-        style={{ left: timelinePosition.left, right: timelinePosition.right }}
       >
         <div className={classes.sections}>22:00</div>
         <div className={classes.sections}>22:30</div>

@@ -1,4 +1,4 @@
 .channelsWrapper {
-  width: 100vw;
-  overflow-y: hidden;
+  width: 100%;
+  overflow: hidden;
 }

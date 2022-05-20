@@ -1,5 +1,5 @@
 .timeline-wrapper {
-    width: 100vw;
+    width: 100%;
     height: 50px;
     display: flex;
     flex-direction: row;
@@ -21,8 +21,8 @@
 
 .section-wrapper {
     display: flex;
-    width: calc(100% - 253px);
-    overflow-x: scroll;
+    width: calc(100% - 220px);
+    overflow: hidden;
 }
 
 .sections {
