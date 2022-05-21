@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import classes from "./Timeline.module.css";
 
-const Timeline = () => {
+const Timeline = (props) => {
   const container = useRef(null);
   /* const [timelinePosition, setTimelinePosition] = useState({
     top: 0,
@@ -38,6 +38,16 @@ const Timeline = () => {
     e.preventDefault();
     e.stopPropagation();
     container.current.scrollLeft += e.deltaY;
+    props.onChangeDelta(e.deltaY);
+  };
+
+  const goLeft = () => {
+    container.current.scrollLeft -= 100;
+    props.onChangeDelta(-100);
+  };
+  const goRight = () => {
+    container.current.scrollLeft += 100;
+    props.onChangeDelta(100);
   };
 
   useEffect(() => {
@@ -49,13 +59,10 @@ const Timeline = () => {
   return (
     <div className={classes["timeline-wrapper"]}>
       <div className={classes["timeline-filter"]}></div>
-      <button className={`${classes["left-button"]} ${classes.buttons}`}>
+      <button onClick={goLeft} className={`${classes["left-button"]} ${classes.buttons}`}>
         Le
       </button>
-      <div
-        ref={container}
-        className={classes["section-wrapper"]}
-      >
+      <div ref={container} className={classes["section-wrapper"]}>
         <div className={classes.sections}>22:00</div>
         <div className={classes.sections}>22:30</div>
         <div className={classes.sections}>23:00</div>
@@ -73,7 +80,7 @@ const Timeline = () => {
         <div className={classes.sections}>05:00</div>
         <div className={classes.sections}>05:30</div>
       </div>
-      <button className={`${classes["right-button"]} ${classes.buttons}`}>
+      <button onClick={goRight} className={`${classes["right-button"]} ${classes.buttons}`}>
         Ri
       </button>
     </div>

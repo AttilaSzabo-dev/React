@@ -1,23 +1,33 @@
-import { useState, useEffect, useCallback } from "react";
-import { useInView } from 'react-intersection-observer';
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
+import { useInView } from "react-intersection-observer";
 
-import AllChannelItem from "./AllChannelItem";
+import AllChannelLogo from "./AllChannelLogo";
+import AllChannelPrograms from "./AllChannelPrograms";
+/* import AllChannelItem from "./AllChannelItem"; */
 import Spinner from "../../UI/Spinner";
-import Timeline from "../../UI/Timeline";
 
 import classes from "./AllChannelsList.module.css";
 
-const AllChannelsList = ({ tvEventInit }) => {
+const AllChannelsList = forwardRef(({ tvEventInit }, refer) => {
   const [programs, setPrograms] = useState([]);
   const [actualUrlsIndex, setActualUrlsIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const container = useRef(null);
+
   const { ref, inView } = useInView({
     /* Optional options */
     threshold: 0,
     trackVisibility: true,
-    delay: 100
+    delay: 100,
   });
 
   const pluck = (array, key) => {
@@ -52,7 +62,8 @@ const AllChannelsList = ({ tvEventInit }) => {
             ];
           });
           setIsLoading(false);
-        }).catch((error) => {
+        })
+        .catch((error) => {
           setError(error.message);
         });
     },
@@ -85,7 +96,18 @@ const AllChannelsList = ({ tvEventInit }) => {
 
   console.log("tároló state: ", programs);
   console.log(inView);
-  
+
+  const scrollPrograms = (value) => {
+    console.log("testValue: ", value);
+    container.current.scrollLeft += value;
+  };
+
+  useImperativeHandle(refer, () => {
+    return {
+      scrollPrograms: scrollPrograms,
+    };
+  });
+
   useEffect(() => {
     let date = `date=${tvEventInit.date.split("T")[0]}`;
     let ids = pluck(tvEventInit.channels, "id");
@@ -103,14 +125,27 @@ const AllChannelsList = ({ tvEventInit }) => {
   }, [fetchActualUrl, tvEventInit.date, tvEventInit.channels]);
 
   return (
-    <div className={classes.channelsWrapper}>
-      {isLoading && <Spinner/>}
-      <Timeline />
-      {programs.length !== 0 &&
-        programs.map((program) => <AllChannelItem programs={program} />)}
-      {(programs.length !== 0 && isLoading === false) && <button ref={ref} onClick={increseHandler}>Increse</button>}
-    </div>
+    <>
+      <div className={classes.channelsWrapper}>
+        {isLoading && <Spinner />}
+        <div className={classes.logoContainer}>
+          {programs.length !== 0 &&
+            programs.map((program) => <AllChannelLogo programs={program} />)}
+        </div>
+        <div ref={container} className={classes.programsContainer}>
+          {programs.length !== 0 &&
+            programs.map((program) => (
+              <AllChannelPrograms programs={program} />
+            ))}
+        </div>
+      </div>
+      {programs.length !== 0 && isLoading === false && (
+        <button ref={ref} onClick={increseHandler}>
+          Increse
+        </button>
+      )}
+    </>
   );
-};
+});
 
 export default AllChannelsList;

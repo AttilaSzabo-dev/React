@@ -1,4 +1,16 @@
 .channelsWrapper {
   width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.logoContainer {
+  min-width: 184px;
+  max-width: 184px;
+}
+
+.programsContainer {
+  width: 100%;
   overflow: hidden;
+  scroll-behavior: smooth;
 }

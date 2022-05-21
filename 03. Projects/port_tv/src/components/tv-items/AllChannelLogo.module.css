@@ -1,9 +1,5 @@
-.tvItem {
-  display: flex;
-  flex-direction: row;
-}
-
 .logoWrapper {
+  width: 100%;
   background-color: #fff;
   display: flex;
   justify-content: center;
@@ -24,12 +20,4 @@
   max-height: 38px;
   vertical-align: middle;
   margin: 8px auto;
-}
-
-.channelProgramWrapper {
-  width: 100%;
-  overflow: scroll;
-  display: flex;
-  flex-direction: row;
-  transform: translatex(184px);
 }

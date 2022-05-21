@@ -23,6 +23,7 @@
     display: flex;
     width: calc(100% - 220px);
     overflow: hidden;
+    scroll-behavior: smooth;
 }
 
 .sections {
