@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import TimelineSection from "./TimelineSection";
 
@@ -6,7 +6,7 @@ import classes from "./Timeline.module.css";
 
 const Timeline = (props) => {
   const container = useRef(null);
-  let timelineArray = [];
+  const [timeline, setTimeline] = useState([]);
 
   console.log("timelineProps: ", props.firstLast);
 
@@ -36,24 +36,32 @@ const Timeline = (props) => {
   // 30perc = 1800000 milisecond - generate new Date
   // 1800000 milisecond = 150px
 
-  do {
-    var incrementValue = props.firstLast.startTimestamp;
-    const miliseconds = incrementValue * 1000;
-    const endDateObject = new Date(miliseconds);
-    const endDateFormatHour = endDateObject.toLocaleString("hu-HU", {
-      hour: "numeric",
-    });
-    const endDateFormatMinute = endDateObject.toLocaleString("hu-HU", {
-      minute: "numeric",
-    });
+  useEffect(() => {
+    let incrementValue = props.firstLast.startTimestamp;
 
-    timelineArray.push({hour: endDateFormatHour, minute: endDateFormatMinute});
-    incrementValue += 1800;
-    
-    console.log("timelineArray: ", timelineArray);
-    console.log("incrementValue: ", incrementValue);
-    console.log("props.firstLast.endTimestamp: ", props.firstLast.endTimestamp);
-  } while (incrementValue === props.firstLast.endTimestamp);
+    do {
+        const endDateObject = new Date(incrementValue);
+        const endDateFormatHour = endDateObject.toLocaleString("hu-HU", {
+          hour: "2-digit",
+        });
+        const endDateFormatMinute = endDateObject.toLocaleString("hu-HU", {
+          minute: "2-digit",
+          hour12: false
+        });
+        
+        if (endDateFormatHour !== "Invalid Date" || !isNaN(endDateFormatHour)) {
+            setTimeline((prevTimeline) => {
+                return [...prevTimeline, { hour: endDateFormatHour, minute: endDateFormatMinute }];
+            });
+        }
+        
+        incrementValue += 1800000;
+
+      } while (incrementValue <= props.firstLast.endTimestamp);
+
+  }, [props.firstLast]);
+
+  console.log("timeline: ", timeline);
 
   return (
     <div className={classes["timeline-wrapper"]}>
@@ -62,23 +70,7 @@ const Timeline = (props) => {
         Le
       </button>
       <div ref={container} className={classes["section-wrapper"]}>
-        <TimelineSection />
-        <div className={classes.sections}>22:00</div>
-        <div className={classes.sections}>22:30</div>
-        <div className={classes.sections}>23:00</div>
-        <div className={classes.sections}>23:30</div>
-        <div className={classes.sections}>00:00</div>
-        <div className={classes.sections}>00:30</div>
-        <div className={classes.sections}>01:00</div>
-        <div className={classes.sections}>01:30</div>
-        <div className={classes.sections}>02:00</div>
-        <div className={classes.sections}>02:30</div>
-        <div className={classes.sections}>03:00</div>
-        <div className={classes.sections}>03:30</div>
-        <div className={classes.sections}>04:00</div>
-        <div className={classes.sections}>04:30</div>
-        <div className={classes.sections}>05:00</div>
-        <div className={classes.sections}>05:30</div>
+          {timeline.length !== 0 && timeline.map((item) => <TimelineSection time={item}/>)}
       </div>
       <button onClick={goRight} className={`${classes["right-button"]} ${classes.buttons}`}>
         Ri
