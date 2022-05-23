@@ -1,38 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+
+import TimelineSection from "./TimelineSection";
 
 import classes from "./Timeline.module.css";
 
 const Timeline = (props) => {
   const container = useRef(null);
-  /* const [timelinePosition, setTimelinePosition] = useState({
-    top: 0,
-    left: 0,
-    x: 0,
-    y: 0,
-  }); */
+  let timelineArray = [];
 
-  /* const mouseDownHandler = function (e) {
-    ele.style.cursor = 'grabbing';
-    ele.style.userSelect = 'none';
-    setTimelinePosition({
-      left: container.scrollLeft,
-      top: container.scrollTop,
-      x: e.clientX,
-      y: e.clientY,
-    });
-  };
-
-  const mouseMoveHandler = function (e) {
-    const dx = e.clientX - timelinePosition.x;
-    const dy = e.clientY - timelinePosition.y;
-
-    setTimelinePosition({
-      top: timelinePosition.top - dy,
-      left: timelinePosition.left - dx,
-    });
-    container.current.scrollTop = timelinePosition.top - dy;
-    container.current.scrollLeft = timelinePosition.left - dx;
-  }; */
+  console.log("timelineProps: ", props.firstLast);
 
   const mouseWheelHandler = (e) => {
     e.preventDefault();
@@ -56,6 +32,29 @@ const Timeline = (props) => {
     });
   }, []);
 
+  // 30perc = 1800 second - unix
+  // 30perc = 1800000 milisecond - generate new Date
+  // 1800000 milisecond = 150px
+
+  do {
+    var incrementValue = props.firstLast.startTimestamp;
+    const miliseconds = incrementValue * 1000;
+    const endDateObject = new Date(miliseconds);
+    const endDateFormatHour = endDateObject.toLocaleString("hu-HU", {
+      hour: "numeric",
+    });
+    const endDateFormatMinute = endDateObject.toLocaleString("hu-HU", {
+      minute: "numeric",
+    });
+
+    timelineArray.push({hour: endDateFormatHour, minute: endDateFormatMinute});
+    incrementValue += 1800;
+    
+    console.log("timelineArray: ", timelineArray);
+    console.log("incrementValue: ", incrementValue);
+    console.log("props.firstLast.endTimestamp: ", props.firstLast.endTimestamp);
+  } while (incrementValue === props.firstLast.endTimestamp);
+
   return (
     <div className={classes["timeline-wrapper"]}>
       <div className={classes["timeline-filter"]}></div>
@@ -63,6 +62,7 @@ const Timeline = (props) => {
         Le
       </button>
       <div ref={container} className={classes["section-wrapper"]}>
+        <TimelineSection />
         <div className={classes.sections}>22:00</div>
         <div className={classes.sections}>22:30</div>
         <div className={classes.sections}>23:00</div>

@@ -1,27 +1,28 @@
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-} from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
 import AllChannelLogo from "./AllChannelLogo";
 import AllChannelPrograms from "./AllChannelPrograms";
-/* import AllChannelItem from "./AllChannelItem"; */
 import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
+import Timeline from "../../UI/Timeline";
 
-const AllChannelsList = forwardRef(({ tvEventInit }, refer) => {
+const AllChannelsList = ({ tvEventInit }) => {
   const [programs, setPrograms] = useState([]);
+  const [timelineTimes, setTimelineTimes] = useState({
+    startTimestamp: 0,
+    endTimestamp: 0,
+    startMinute: 0,
+    startHour: 0,
+    endMinute: 0,
+    endHour: 0,
+  });
   const [actualUrlsIndex, setActualUrlsIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const container = useRef(null);
+  const programsContainer = useRef(null);
 
   const { ref, inView } = useInView({
     /* Optional options */
@@ -99,14 +100,76 @@ const AllChannelsList = forwardRef(({ tvEventInit }, refer) => {
 
   const scrollPrograms = (value) => {
     console.log("testValue: ", value);
-    container.current.scrollLeft += value;
+    programsContainer.current.scrollLeft += value;
   };
 
-  useImperativeHandle(refer, () => {
-    return {
-      scrollPrograms: scrollPrograms,
-    };
-  });
+  // 30perc = 1800 second
+  // 30perc = 1800000 milisecond
+  // 1800000 milisecond = 150px
+
+  useEffect(() => {
+    let startTime = [];
+    let endTime = [];
+    programs.forEach((item) => {
+      item.channels.forEach((channel) => {
+        startTime.push(channel.programs[0].start_ts);
+        endTime.push(
+          Math.floor(
+            new Date(
+              channel.programs[programs.length - 1].end_datetime
+            ).getTime() / 1000
+          )
+        );
+      });
+    });
+
+    const minStart = Math.min(...startTime);
+    const minStartMiliseconds = minStart * 1000;
+    const startDateObject = new Date(minStartMiliseconds);
+    console.log("startDateObject: ", startDateObject);
+    const startDateFormatHour = startDateObject.toLocaleString("hu-HU", {
+      hour: "numeric",
+    });
+    const startDateFormatMinute = startDateObject.toLocaleString("hu-HU", {
+      minute: "numeric",
+    });
+
+    const startDateFormatMinuteModulo = startDateFormatMinute % 30;
+    const startDateFormatMinuteFinal = startDateFormatMinute - startDateFormatMinuteModulo;
+    
+    const newStartDate = startDateObject.setMinutes(startDateFormatMinuteFinal);
+
+    console.log("startDateObject: ", startDateObject);
+    console.log("newDate: ", newStartDate);
+
+    // ------------------------------------------------------------------------
+
+    const maxEnd = Math.max(...endTime);
+    const maxEndMiliseconds = maxEnd * 1000;
+    const endDateObject = new Date(maxEndMiliseconds);
+    const endDateFormatHour = endDateObject.toLocaleString("hu-HU", {
+      hour: "numeric",
+    });
+    const endDateFormatMinute = endDateObject.toLocaleString("hu-HU", {
+      minute: "numeric",
+    });
+
+    const endDateFormatMinuteModulo = endDateFormatMinute % 30;
+    const endDateFormatMinuteFinal = endDateFormatMinute + endDateFormatMinuteModulo;
+
+    const newEndDate = endDateObject.setMinutes(endDateFormatMinuteFinal);
+
+    setTimelineTimes({
+      startTimestamp: newStartDate,
+      endTimestamp: newEndDate,
+      startMinute: startDateFormatMinuteFinal,
+      startHour: +startDateFormatHour,
+      endMinute: endDateFormatMinuteFinal,
+      endHour: +endDateFormatHour,
+    });
+    //console.log("endTime: ", endTime);
+    //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
+  }, [programs]);
 
   useEffect(() => {
     let date = `date=${tvEventInit.date.split("T")[0]}`;
@@ -126,13 +189,16 @@ const AllChannelsList = forwardRef(({ tvEventInit }, refer) => {
 
   return (
     <>
+      {programs.length !== 0 && (
+        <Timeline onChangeDelta={scrollPrograms} firstLast={timelineTimes} />
+      )}
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
         <div className={classes.logoContainer}>
           {programs.length !== 0 &&
             programs.map((program) => <AllChannelLogo programs={program} />)}
         </div>
-        <div ref={container} className={classes.programsContainer}>
+        <div ref={programsContainer} className={classes.programsContainer}>
           {programs.length !== 0 &&
             programs.map((program) => (
               <AllChannelPrograms programs={program} />
@@ -146,6 +212,6 @@ const AllChannelsList = forwardRef(({ tvEventInit }, refer) => {
       )}
     </>
   );
-});
+};
 
 export default AllChannelsList;
