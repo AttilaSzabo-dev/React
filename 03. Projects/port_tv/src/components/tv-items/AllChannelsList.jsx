@@ -17,6 +17,7 @@ const AllChannelsList = ({ tvEventInit }) => {
     startHour: 0,
     endMinute: 0,
     endHour: 0,
+    firstProgramsStartTime: []
   });
   const [actualUrlsIndex, setActualUrlsIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -96,10 +97,10 @@ const AllChannelsList = ({ tvEventInit }) => {
   } */
 
   console.log("tároló state: ", programs);
-  console.log(inView);
+  //console.log(inView);
 
   const scrollPrograms = (value) => {
-    console.log("testValue: ", value);
+    //console.log("testValue: ", value);
     programsContainer.current.scrollLeft += value;
   };
 
@@ -108,6 +109,7 @@ const AllChannelsList = ({ tvEventInit }) => {
   // 1800000 milisecond = 150px
 
   useEffect(() => {
+    //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
     let startTime = [];
     let endTime = [];
     programs.forEach((item) => {
@@ -116,17 +118,19 @@ const AllChannelsList = ({ tvEventInit }) => {
         endTime.push(
           Math.floor(
             new Date(
-              channel.programs[programs.length - 1].end_datetime
+              channel.programs[channel.programs.length - 1].end_datetime
             ).getTime() / 1000
           )
         );
       });
     });
 
+    console.log("endTime: ", endTime);
+
     const minStart = Math.min(...startTime);
     const minStartMiliseconds = minStart * 1000;
     const startDateObject = new Date(minStartMiliseconds);
-    console.log("startDateObject: ", startDateObject);
+    //console.log("startDateObject: ", startDateObject);
     const startDateFormatHour = startDateObject.toLocaleString("hu-HU", {
       hour: "numeric",
     });
@@ -135,12 +139,13 @@ const AllChannelsList = ({ tvEventInit }) => {
     });
 
     const startDateFormatMinuteModulo = startDateFormatMinute % 30;
-    const startDateFormatMinuteFinal = startDateFormatMinute - startDateFormatMinuteModulo;
-    
+    const startDateFormatMinuteFinal =
+      startDateFormatMinute - startDateFormatMinuteModulo;
+
     const newStartDate = startDateObject.setMinutes(startDateFormatMinuteFinal);
 
-    console.log("startDateObject: ", startDateObject);
-    console.log("newDate: ", newStartDate);
+    //console.log("startDateObject: ", startDateObject);
+    //console.log("newDate: ", newStartDate);
 
     // ------------------------------------------------------------------------
 
@@ -155,7 +160,8 @@ const AllChannelsList = ({ tvEventInit }) => {
     });
 
     const endDateFormatMinuteModulo = endDateFormatMinute % 30;
-    const endDateFormatMinuteFinal = endDateFormatMinute + endDateFormatMinuteModulo;
+    const endDateFormatMinuteFinal =
+      endDateFormatMinute + endDateFormatMinuteModulo;
 
     const newEndDate = endDateObject.setMinutes(endDateFormatMinuteFinal);
 
@@ -166,6 +172,7 @@ const AllChannelsList = ({ tvEventInit }) => {
       startHour: +startDateFormatHour,
       endMinute: endDateFormatMinuteFinal,
       endHour: +endDateFormatHour,
+      firstProgramsStartTime: startTime
     });
     //console.log("endTime: ", endTime);
     //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
@@ -180,9 +187,9 @@ const AllChannelsList = ({ tvEventInit }) => {
       return `tv-event/api?${channels}&${date}`;
     });
 
-    console.log("ids: ", ids);
-    console.log("chunks: ", chunks);
-    console.log("urls: ", urls);
+    //console.log("ids: ", ids);
+    //console.log("chunks: ", chunks);
+    //console.log("urls: ", urls);
 
     fetchActualUrl(urls);
   }, [fetchActualUrl, tvEventInit.date, tvEventInit.channels]);
@@ -201,7 +208,7 @@ const AllChannelsList = ({ tvEventInit }) => {
         <div ref={programsContainer} className={classes.programsContainer}>
           {programs.length !== 0 &&
             programs.map((program) => (
-              <AllChannelPrograms programs={program} />
+              <AllChannelPrograms programs={program} timelineTimes={timelineTimes} />
             ))}
         </div>
       </div>

@@ -1,6 +1,5 @@
 .programItem {
   height: 60px;
-  width: max-content;
   border: 1px solid #e8e8e8;
   transition: box-shadow 0.25s ease-in-out;
   -moz-transition: box-shadow 0.25s ease-in-out;
