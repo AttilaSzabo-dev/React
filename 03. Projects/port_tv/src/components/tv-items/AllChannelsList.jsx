@@ -7,6 +7,7 @@ import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
 import Timeline from "../../UI/Timeline";
+import Marker from "./Marker";
 
 const AllChannelsList = ({ tvEventInit }) => {
   const [programs, setPrograms] = useState([]);
@@ -197,7 +198,7 @@ const AllChannelsList = ({ tvEventInit }) => {
   return (
     <>
       {programs.length !== 0 && (
-        <Timeline onChangeDelta={scrollPrograms} firstLast={timelineTimes} />
+        <Timeline onChangeDelta={scrollPrograms} time={tvEventInit} firstLast={timelineTimes} />
       )}
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
@@ -206,6 +207,7 @@ const AllChannelsList = ({ tvEventInit }) => {
             programs.map((program) => <AllChannelLogo programs={program} />)}
         </div>
         <div ref={programsContainer} className={classes.programsContainer}>
+          <Marker time={tvEventInit} timelineTimes={timelineTimes} />
           {programs.length !== 0 &&
             programs.map((program) => (
               <AllChannelPrograms programs={program} timelineTimes={timelineTimes} />

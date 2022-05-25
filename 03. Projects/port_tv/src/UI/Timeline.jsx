@@ -6,7 +6,6 @@ import classes from "./Timeline.module.css";
 
 const Timeline = (props) => {
   const container = useRef(null);
-  const scrollContainer = useRef(null);
   const [timeline, setTimeline] = useState([]);
 
   console.log("timelineProps: ", props.firstLast);
@@ -15,27 +14,33 @@ const Timeline = (props) => {
   const mouseWheelHandler = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!(container.current.scrollLeft + scrollContainer.current.offsetWidth) <= scrollContainer.current.scrollWidth || !(container.current.scrollLeft + scrollContainer.current.offsetWidth) >= scrollContainer.current.scrollWidth){
-      container.current.scrollLeft += e.deltaY;
-      props.onChangeDelta(e.deltaY);
-      console.log("scroll vége");
-    }
+    container.current.scrollLeft += e.deltaY;
+    props.onChangeDelta(e.deltaY);
   };
 
   const goLeft = () => {
-    if (!(container.current.scrollLeft + scrollContainer.current.offsetWidth) <= scrollContainer.current.scrollWidth){
-      container.current.scrollLeft -= 100;
-      props.onChangeDelta(-100);
-      console.log("scroll vége");
-    }
+    container.current.scrollLeft -= 150;
+    props.onChangeDelta(-150);
   };
   const goRight = () => {
-    if ((container.current.scrollLeft + scrollContainer.current.offsetWidth) <= scrollContainer.current.scrollWidth){
-      container.current.scrollLeft += 100;
-      props.onChangeDelta(100);
-      console.log("scroll vége");
+    if (container.current.scrollWidth - container.current.scrollLeft === container.current.offsetWidth) {
+      return false;
+    } else {
+      container.current.scrollLeft += 150;
+      props.onChangeDelta(150);
     }
   };
+  useEffect(()=> {
+    const newPos = (Math.floor(new Date(props.time.date).getTime()) - props.firstLast.startTimestamp) / 12000;
+    //container.current.scrollLeft += newPos;
+    console.log("newPos: ", newPos);
+    container.current.scrollTo({
+      top: 0,
+      left: newPos - 150,
+      behavior: 'smooth'
+    });
+    props.onChangeDelta(newPos - 150);
+  });
 
   useEffect(() => {
     container.current.addEventListener("wheel", mouseWheelHandler, {
@@ -71,13 +76,13 @@ const Timeline = (props) => {
       }
 
       incrementValue += 1800000;
-    } while (incrementValue <= props.firstLast.endTimestamp);
+    } while (incrementValue <= (props.firstLast.endTimestamp - 1800000));
   }, [props.firstLast]);
 
   console.log("timeline: ", timeline);
 
   return (
-    <div ref={scrollContainer} className={classes["timeline-wrapper"]}>
+    <div className={classes["timeline-wrapper"]}>
       <div className={classes["timeline-filter"]}></div>
       <button
         onClick={goLeft}
