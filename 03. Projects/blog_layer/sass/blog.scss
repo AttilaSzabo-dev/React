@@ -680,10 +680,9 @@ body {
           margin-bottom: 20px;
 
           .best-post-pic-wrapper {
-            width: 65px;
+            min-width: 65px;
             height: 65px;
             border-radius: 50%;
-            margin-right: 15px;
 
             img {
               width: 48px;
@@ -714,7 +713,8 @@ body {
               display: flex;
               flex-direction: row;
 
-              a {
+              a, 
+              span {
                 display: inline-block;
                 font-family: "Open Sans", sans-serif;
                 font-size: 13px;
@@ -723,6 +723,7 @@ body {
                 &.title {
                   font-style: normal;
                   margin-right: 5px;
+                  text-decoration: none;
                 }
                 &.time {
                   font-style: italic;
