@@ -577,10 +577,9 @@ body {
           flex-direction: row;
           margin-bottom: 20px; }
           .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-pic-wrapper {
-            width: 65px;
+            min-width: 65px;
             height: 65px;
-            border-radius: 50%;
-            margin-right: 15px; }
+            border-radius: 50%; }
             .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-pic-wrapper img {
               width: 48px;
               height: 48px;
@@ -602,15 +601,19 @@ body {
             .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time {
               display: flex;
               flex-direction: row; }
-              .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time a {
+              .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time a,
+              .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time span {
                 display: inline-block;
                 font-family: "Open Sans", sans-serif;
                 font-size: 13px;
                 color: #999; }
-                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time a.title {
+                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time a.title,
+                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time span.title {
                   font-style: normal;
-                  margin-right: 5px; }
-                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time a.time {
+                  margin-right: 5px;
+                  text-decoration: none; }
+                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time a.time,
+                .layout-page .layout-article-wrapper .layout-article-side-container .best-post-wrapper .best-post-item .best-post-content-wrapper .best-post-content-time span.time {
                   font-style: italic; }
       .layout-page .layout-article-wrapper .layout-article-side-container .show-more-button-wrapper {
         display: flex;
