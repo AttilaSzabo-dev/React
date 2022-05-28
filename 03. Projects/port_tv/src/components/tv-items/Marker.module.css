@@ -1,7 +1,18 @@
 .marker {
-    position: absolute;
-    height: 100%;
-    background-color: rgba(11,144,217,0.2);
-    border-right: 2px solid #ef3b39;
-    opacity: .5;
+  position: absolute;
+  height: 100%;
+  width: 2px;
+  background-color: #ef3b39;
+}
+
+.marker::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 10px solid #ef3b39;
 }

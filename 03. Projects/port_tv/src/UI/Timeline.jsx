@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 import TimelineSection from "./TimelineSection";
 
@@ -10,7 +12,6 @@ const Timeline = (props) => {
 
   console.log("timelineProps: ", props.firstLast);
 
-  // TODO: oda mozgatjuk a markert ami az aktuális idő scrollTo(x-coord, y-coord) https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTo
   const mouseWheelHandler = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -36,10 +37,10 @@ const Timeline = (props) => {
     console.log("newPos: ", newPos);
     container.current.scrollTo({
       top: 0,
-      left: newPos - 150,
+      left: newPos - 300,
       behavior: 'smooth'
     });
-    props.onChangeDelta(newPos - 150);
+    props.onChangeDelta(newPos - 300);
   });
 
   useEffect(() => {
@@ -88,7 +89,7 @@ const Timeline = (props) => {
         onClick={goLeft}
         className={`${classes["left-button"]} ${classes.buttons}`}
       >
-        Le
+        <MdKeyboardArrowLeft className={classes.arrows} />
       </button>
       <div ref={container} className={classes["section-wrapper"]}>
         {timeline.length !== 0 &&
@@ -98,7 +99,7 @@ const Timeline = (props) => {
         onClick={goRight}
         className={`${classes["right-button"]} ${classes.buttons}`}
       >
-        Ri
+        <MdKeyboardArrowRight className={classes.arrows} />
       </button>
     </div>
   );

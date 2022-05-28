@@ -1,29 +1,39 @@
 .timeline-wrapper {
-    position: sticky;
-    top: 48px;
-    width: 100%;
-    height: 50px;
-    display: flex;
-    flex-direction: row;
+  position: sticky;
+  top: 48px;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #e8e8e8;
+  background-color: #fff;
+  z-index: 15;
 }
 
 .timeline-filter {
-    width: 150px;
-    height: 50px;
-    border: 1px solid red;
+  width: 150px;
+  height: 50px;
+  border: 1px solid red;
 }
 
 .buttons {
-    width: 35px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 35px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border: 0;
+}
+
+.arrows {
+  transform: scale(1.4);
+  fill: #414141;
 }
 
 .section-wrapper {
-    display: flex;
-    width: calc(100% - 220px);
-    overflow: hidden;
-    scroll-behavior: smooth;
+  display: flex;
+  width: calc(100% - 220px);
+  overflow: hidden;
+  scroll-behavior: smooth;
 }
