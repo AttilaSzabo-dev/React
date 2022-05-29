@@ -210,7 +210,7 @@ const AllChannelsList = ({ tvEventInit }) => {
           <Marker time={tvEventInit} timelineTimes={timelineTimes} />
           {programs.length !== 0 &&
             programs.map((program) => (
-              <AllChannelPrograms programs={program} timelineTimes={timelineTimes} />
+              <AllChannelPrograms programs={program} time={tvEventInit} timelineTimes={timelineTimes} />
             ))}
         </div>
       </div>

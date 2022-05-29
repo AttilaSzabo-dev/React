@@ -8,6 +8,7 @@ const AllChannelPrograms = (props) => {
     <ProgramsWrapper timelineTimes={props.timelineTimes} index={index}>
       {channel.programs.map((item) => (
         <ProgramItem
+          actualTime={props.time}
           startTime={item.start_time}
           endTime={item.end_time}
           title={item.title}
