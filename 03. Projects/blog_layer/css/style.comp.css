@@ -1,3 +1,4 @@
+@charset "UTF-8";
 :root {
   --orange: #f79627;
   --darker-orange: #f7962788;
@@ -114,6 +115,300 @@ body {
           height: auto;
           object-fit: contain;
           aspect-ratio: 1 / 1; }
+
+/* --- Politikai hirdetes --- */
+.blh-billboard-ad.politikai > div:before {
+  position: relative;
+  content: "politikai hirdet\00E9s\25BE";
+  font-family: verdana, arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 4px;
+  line-height: 13px; }
+
+/* galériak */
+/************************************************************************/
+.post ul.blh-gallery,
+.post ul.blh-mosaic,
+.entry ul.blh-gallery,
+.entry ul.blh-mosaic {
+  margin-left: 0;
+  margin-right: 0;
+  list-style-type: none;
+  width: 100%;
+  position: relative;
+  padding: 0;
+  clear: both; }
+
+.post ul.blh-gallery li,
+.entry ul.blh-gallery li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background: none; }
+
+.post ul.blh-mosaic li,
+.entry ul.blh-mosaic li {
+  list-style-type: none;
+  padding: 0;
+  background: none; }
+
+.blh-gallery a,
+.blh-mosaic a {
+  position: relative;
+  display: block;
+  z-index: 1; }
+
+.blh-gallery a:after {
+  display: block;
+  content: "";
+  width: 0;
+  height: 15px;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background: url(../img/gallery_indicator.png) no-repeat 5px 50% rgba(0, 0, 0, 0.6);
+  border-radius: 1.5px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+  padding: 8px 0 7px 30px;
+  content: "Kattints ide a gal\00E9ria megnyit\00E1s\00E1hoz!";
+  font: 600 13px/15px "Source Sans Pro", sans-serif;
+  color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 2;
+  /*-webkit-transform: scale(0.6, 0.6);*/
+  -webkit-transition: all 300ms ease;
+  transition: all 300ms ease; }
+
+.blh-gallery a:hover:after {
+  padding-left: 33px;
+  width: 215px;
+  font-size: 13px;
+  padding-right: 2px; }
+
+.blh-mosaic a:before {
+  background: black;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0 0 55px black;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  content: "";
+  display: block;
+  opacity: 0;
+  -webkit-transition: all 300ms ease;
+  transition: all 300ms ease; }
+
+.blh-mosaic a:after {
+  position: absolute;
+  content: "";
+  top: 50%;
+  left: 0;
+  opacity: 0;
+  z-index: 3;
+  margin: -1.5em 0;
+  width: 100%;
+  height: 2em;
+  color: #fff;
+  text-align: center;
+  font: 400 17px/24px "Source Sans Pro", sans-serif;
+  content: "Kattints ide a gal\00E9ria megnyit\00E1s\00E1hoz!";
+  -webkit-transition: all 300ms ease;
+  transition: all 300ms ease; }
+
+.blh-mosaic a:hover:before,
+.blh-mosaic a:hover:after {
+  opacity: 1; }
+
+.blh-gallery img {
+  border: 0;
+  z-index: 1;
+  position: relative;
+  max-width: 100%;
+  max-height: 480px; }
+
+ul.blh-gallery li + li {
+  display: none; }
+
+.glr_wide .glr_share {
+  bottom: 0; }
+
+.glr_image_index {
+  display: none; }
+
+/* Kattints ide ... div */
+.blh-gallery a::after {
+  height: 30px !important; }
+
+/*  */
+/************************************************************************/
+.blh-mosaic:after {
+  clear: both;
+  width: 0;
+  height: 0;
+  content: "";
+  display: block; }
+
+ul.blh-mosaic li {
+  float: left;
+  margin: 2% 0 0 2%;
+  padding: 0;
+  width: 32%;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle; }
+
+.blh-mosaic a,
+div.post .blh-mosaic img {
+  float: none;
+  display: block;
+  position: relative;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0;
+  border: 0; }
+
+.blh-mosaic a {
+  max-height: 100%;
+  overflow: hidden; }
+
+.blh-mosaic.count-3 li,
+.blh-mosaic.count-5 li,
+.blh-mosaic.count-6 .image-2,
+.blh-mosaic.count-6 .image-3,
+.blh-mosaic.count-8 .image-2,
+.blh-mosaic.count-8 .image-3,
+.blh-mosaic.count-8 .image-4,
+.blh-mosaic.count-8 .image-5,
+.blh-mosaic.count-9 .image-2,
+.blh-mosaic.count-9 .image-3 {
+  width: 49%; }
+
+.blh-mosaic .image-1,
+.blh-mosaic.count-2 .image-2 {
+  margin: 0;
+  width: 100% !important; }
+
+.blh-mosaic .image-2,
+.blh-mosaic.count-5 .image-4,
+.blh-mosaic.count-6 .image-4,
+.blh-mosaic.count-7 .image-5,
+.blh-mosaic.count-8 .image-4,
+.blh-mosaic.count-8 .image-6,
+.blh-mosaic.count-9 .image-4,
+.blh-mosaic.count-9 .image-7,
+.blh-mosaic.count-10 .image-5,
+.blh-mosaic.count-10 .image-8 {
+  margin-left: 0 !important; }
+
+/* kovetes gomb promo a cikkek vegen */
+.follow-promo-block {
+  background: rgba(0, 0, 0, 0.9);
+  position: fixed;
+  height: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  max-height: 56px;
+  font: 600 15px/17px "Source Sans Pro", sans-serif;
+  z-index: 1000;
+  overflow: hidden;
+  transition: all 0.2s ease-in 0s;
+  -webkit-transition: all 0.2s ease-in 0s; }
+
+.follow-promo-block.open {
+  height: 56px; }
+
+.follow-promo-block p {
+  margin: 15px 0; }
+
+.follow-promo-block p span {
+  display: inline-block;
+  vertical-align: middle; }
+
+.follow-promo-block .btn-pass.bloghu._iph_follow,
+.follow-promo-block .btn-pass.bloghu._iph_unfollow,
+.follow-promo-block .btn-pass.bloghu._iph_loading {
+  float: none;
+  margin: 0 0 0 10px; }
+
+.follow-promo-block a {
+  background: url(https://m.cdn.blog.hu/assets/frontend/img/frontpage/bloghu_logo.png) no-repeat 0 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 56px;
+  height: 56px;
+  font: 0px/0px "monospace"; }
+
+/* Indapass header css */
+.fixed-header-container {
+  width: 110px !important; }
+
+#passportHeader ._iph_fixed-header .icon-harang {
+  position: relative;
+  left: 0;
+  height: 36px !important;
+  width: 36px !important; }
+
+#passportHeader ._iph_fixed-header .badge {
+  position: relative;
+  background: #f47629;
+  border: 0 none;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  left: 36px;
+  top: 6px;
+  font-size: 12px;
+  line-height: 24px;
+  overflow: hidden;
+  /*  margin: 2px 0 0; */ }
+
+#passportHeader._iph_mini {
+  width: 110px !important; }
+
+#passportHeader ._iph_fixed-header {
+  width: 110px !important;
+  position: relative;
+  background: none transparent; }
+
+#passportHeader ._iph_fixed-header .icon {
+  position: relative;
+  color: #fff;
+  padding: 1px 3px;
+  right: -37px;
+  background-position: center center;
+  background-size: 26px;
+  background-origin: content-box; }
+
+#passportHeader._iph_mini-right .fixed-header-dropdown {
+  right: 266px !important; }
+
+/* media query hack mobil nézet szeteses ellen */
+@media only screen and (max-width: 700px) {
+  #passportHeader ._iph_fixed-header .icon {
+    position: relative;
+    padding: 1px 3px !important;
+    right: -37px !important; }
+  /*
+    #passportHeader._iph_mini-right .fixed-header-dropdown {
+        position: relative !important;
+        right: 266px !important;
+        width: 376px !important;
+        max-width: 376px !important;
+    }
+    */
+  #passportHeader ._iph_fixed-header .badge {
+    display: none; }
+  #passportHeader ._iph_fixed-header .icon-harang {
+    display: none; } }
 
 .layout-cover {
   position: relative;
@@ -311,7 +606,8 @@ body {
         max-width: 100%; }
       .layout-page .layout-article-wrapper .layout-article-main-article ul,
       .layout-page .layout-article-wrapper .layout-article-main-article ol {
-        padding-left: 20px; }
+        padding-left: 20px;
+        list-style: auto !important; }
         .layout-page .layout-article-wrapper .layout-article-main-article ul li,
         .layout-page .layout-article-wrapper .layout-article-main-article ol li {
           font-family: "Open Sans", sans-serif;
@@ -369,7 +665,7 @@ body {
             width: 8px;
             background-color: var(--orange); }
       .layout-page .layout-article-wrapper .layout-article-main-article .frame {
-        padding-left: 12px;
+        padding: 12px;
         background-color: #f6f6f6;
         border-left: 8px solid var(--orange);
         margin: 20px 0; }
@@ -379,6 +675,13 @@ body {
           font-weight: bold;
           line-height: 1.56;
           color: var(--dark-grey); }
+          .layout-page .layout-article-wrapper .layout-article-main-article .frame p span a {
+            font-family: "Open Sans", sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.56;
+            color: var(--dark-grey);
+            text-decoration: none; }
       .layout-page .layout-article-wrapper .layout-article-main-article .main-container-ad {
         display: flex;
         flex-direction: column;
