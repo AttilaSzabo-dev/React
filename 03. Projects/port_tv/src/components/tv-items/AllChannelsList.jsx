@@ -6,7 +6,7 @@ import AllChannelPrograms from "./AllChannelPrograms";
 import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
-import Timeline from "../../UI/Timeline";
+import Timeline from "../timeline-items/Timeline";
 import Marker from "./Marker";
 
 const AllChannelsList = ({ tvEventInit }) => {
@@ -103,6 +103,18 @@ const AllChannelsList = ({ tvEventInit }) => {
   const scrollPrograms = (value) => {
     //console.log("testValue: ", value);
     programsContainer.current.scrollLeft += value;
+    console.log("programs scrollWidth: ", programsContainer.current.scrollWidth);
+    console.log("programs scrollLeft: ", programsContainer.current.scrollLeft);
+    console.log("programs scrollWidth - scrollLeft: ", programsContainer.current.scrollWidth - programsContainer.current.scrollLeft);
+    console.log("programs offsetWidth: ", programsContainer.current.offsetWidth);
+  };
+
+  const scrollProgramsOnFetch = value => {
+    programsContainer.current.scrollTo({
+      top: 0,
+      left: value,
+      behavior: "smooth",
+    });
   };
 
   // 30perc = 1800 second
@@ -198,7 +210,7 @@ const AllChannelsList = ({ tvEventInit }) => {
   return (
     <>
       {programs.length !== 0 && (
-        <Timeline onChangeDelta={scrollPrograms} time={tvEventInit} firstLast={timelineTimes} />
+        <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} time={tvEventInit} timelineTimes={timelineTimes} />
       )}
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}

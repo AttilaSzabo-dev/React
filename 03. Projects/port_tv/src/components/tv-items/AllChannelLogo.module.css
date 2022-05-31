@@ -21,3 +21,13 @@
   vertical-align: middle;
   margin: 8px auto;
 }
+
+.spacerDivTop {
+  width: 100%;
+  height: 300px;
+}
+
+.spacerDivBottom {
+  width: 100%;
+  height: 400px;
+}

@@ -3,6 +3,7 @@
   height: 100%;
   width: 2px;
   background-color: #ef3b39;
+  z-index: 80;
 }
 
 .marker::before {
