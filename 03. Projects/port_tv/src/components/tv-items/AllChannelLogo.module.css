@@ -15,7 +15,11 @@
   box-shadow: 2px 0 0 0 rgb(160 160 160 / 70%);
 }
 
-.logoWrapper img {
+.imgWrapper {
+  margin: 0 auto;
+}
+
+.imgWrapper img {
   width: auto;
   max-width: 80px;
   max-height: 38px;
@@ -25,10 +29,12 @@
 
 .likeButton {
   cursor: pointer;
-  margin-right: .5rem;
 }
 
-.buttonColor {
+.buttonInactive {
+  fill: #d9d9d9;
+}
+.buttonActive {
   fill: #d63632;
 }
 
