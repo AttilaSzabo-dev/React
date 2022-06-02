@@ -8,8 +8,8 @@ import AdItemBottom from "../ad-items/AdItemBottom";
 const AllChannelPrograms = (props) => {
   return props.programs.channels.map((channel, index) => (
     <>
-      {index === 3 ? <AdItemTop /> : ""}
-      {index === 17 ? <AdItemBottom /> : ""}
+      {props.index === 0 && index === 3 ? <AdItemTop /> : ""}
+      {props.index === 0 && index === 17 ? <AdItemBottom /> : ""}
       <ProgramsWrapper timelineTimes={props.timelineTimes} index={index}>
         {channel.programs.map((item) => (
           <ProgramItem

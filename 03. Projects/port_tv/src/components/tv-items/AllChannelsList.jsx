@@ -3,13 +3,13 @@ import { useInView } from "react-intersection-observer";
 
 import AllChannelLogo from "./AllChannelLogo";
 import AllChannelPrograms from "./AllChannelPrograms";
+import Timeline from "../timeline-items/Timeline";
+import Marker from "./Marker";
 import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
-import Timeline from "../timeline-items/Timeline";
-import Marker from "./Marker";
 
-const AllChannelsList = ({ tvEventInit }) => {
+const AllChannelsList = ({ tvEventInit, tvData }) => {
   const [programs, setPrograms] = useState([]);
   const [timelineTimes, setTimelineTimes] = useState({
     startTimestamp: 0,
@@ -221,8 +221,8 @@ const AllChannelsList = ({ tvEventInit }) => {
         <div ref={programsContainer} className={classes.programsContainer}>
           <Marker time={tvEventInit} timelineTimes={timelineTimes} />
           {programs.length !== 0 &&
-            programs.map((program) => (
-              <AllChannelPrograms programs={program} time={tvEventInit} timelineTimes={timelineTimes} />
+            programs.map((program, index) => (
+              <AllChannelPrograms programs={program} time={tvEventInit} timelineTimes={timelineTimes} index={index} />
             ))}
         </div>
       </div>

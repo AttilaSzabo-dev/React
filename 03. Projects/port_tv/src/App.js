@@ -8,7 +8,8 @@ import "./App.css";
 
 function App() {
   const [tvEventInit, setTvEventInit] = useState(null);
-
+  const [tvData, setTvData] = useState(null);
+  
   useEffect(() => {
     fetch("tv-event/init")
       .then((res) => {
@@ -22,8 +23,24 @@ function App() {
       });
   }, []);
 
+  useEffect(() => {
+    fetch("dashboard/get-tv-data")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setTvData(data);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, []);
+
   if (tvEventInit !== null) {
     console.log("tvEventInit: ", tvEventInit);
+  }
+  if (tvData !== null) {
+    console.log("tvData: ", tvData);
   }
 
   return (
@@ -31,7 +48,7 @@ function App() {
       <Switch>
         <Route path={"/tv"} exact>
           {tvEventInit !== null && (
-            <AllChannelsList tvEventInit={tvEventInit} />
+            <AllChannelsList tvEventInit={tvEventInit} tvData={tvData} />
           )}
         </Route>
         <Route path={"/tv:channelId"}>
