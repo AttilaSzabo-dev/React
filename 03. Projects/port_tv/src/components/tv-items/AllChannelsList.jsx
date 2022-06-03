@@ -9,7 +9,7 @@ import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
 
-const AllChannelsList = ({ tvEventInit, tvData }) => {
+const AllChannelsList = ({ tvEventInit, tvData, csrf }) => {
   const [programs, setPrograms] = useState([]);
   const [timelineTimes, setTimelineTimes] = useState({
     startTimestamp: 0,
@@ -216,7 +216,7 @@ const AllChannelsList = ({ tvEventInit, tvData }) => {
         {isLoading && <Spinner />}
         <div className={classes.logoContainer}>
           {programs.length !== 0 &&
-            programs.map((program, parentIndex) => program.channels.map((channel, index) => (<AllChannelLogo channel={channel} parentIndex={parentIndex} index={index} key={channel.id} id={channel.id} favorite={tvData.favorite} />)))}
+            programs.map((program, parentIndex) => program.channels.map((channel, index) => (<AllChannelLogo channel={channel} parentIndex={parentIndex} index={index} key={channel.id} id={channel.id} favorite={tvData.favorite} csrf={csrf} />)))}
         </div>
         <div ref={programsContainer} className={classes.programsContainer}>
           <Marker time={tvEventInit} timelineTimes={timelineTimes} />

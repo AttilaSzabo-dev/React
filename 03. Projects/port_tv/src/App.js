@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
+import {Helmet} from "react-helmet";
 
 import AllChannelsList from "./components/tv-items/AllChannelsList";
 import SingleChannelList from "./components/tv-items/SingleChannelList";
@@ -31,6 +32,10 @@ function App() {
       .then((data) => {
         setTvData(data);
       })
+      .then(() => {
+        /* const csrf = document.querySelector('meta[name="csrf-token"]').content;
+        console.log(csrf); */
+      })
       .catch((error) => {
         console.log(error.message);
       });
@@ -43,12 +48,15 @@ function App() {
     console.log("tvData: ", tvData);
   }
 
+  const csrf = document.querySelector('meta[name="csrf-token"]').content;
+  console.log(csrf);
+
   return (
     <>
       <Switch>
         <Route path={"/tv"} exact>
           {tvEventInit !== null && (
-            <AllChannelsList tvEventInit={tvEventInit} tvData={tvData} />
+            <AllChannelsList tvEventInit={tvEventInit} tvData={tvData} csrf={csrf} />
           )}
         </Route>
         <Route path={"/tv:channelId"}>

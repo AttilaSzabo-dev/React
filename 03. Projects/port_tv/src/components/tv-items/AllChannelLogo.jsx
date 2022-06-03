@@ -6,7 +6,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 
 import classes from "./AllChannelLogo.module.css";
 
-const AllChannelLogo = ({ channel, parentIndex, index, id, favorite }) => {
+const AllChannelLogo = ({ channel, parentIndex, index, id, favorite, csrf }) => {
   const [addToFavorites, setAddToFavorites] = useState(false);
 
   // TODO kideríteni hogy honnan jön a X-CSRF-Token
@@ -21,10 +21,11 @@ const AllChannelLogo = ({ channel, parentIndex, index, id, favorite }) => {
 
       fetch("/felhasznalo/portam/set-user-favorite-tv-channels", {
         method: 'POST',
-        credentials: 'same-origin',
+        //credentials: 'same-origin',
         headers: {
-          //'Content-Type': 'application/json'
+          //'Content-Type': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          "X-CSRF-Token": csrf
         },
         body: newFavorite
       })
