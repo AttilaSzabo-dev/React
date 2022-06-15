@@ -9,40 +9,28 @@ import classes from "./AllChannelLogo.module.css";
 const AllChannelLogo = ({ channel, parentIndex, index, id, favorite, csrf }) => {
   const [addToFavorites, setAddToFavorites] = useState(false);
 
-  // TODO kideríteni hogy honnan jön a X-CSRF-Token
+  // TODO több kijelölése esetén tudni kell hogy valami lett-e már kiszedve
   const onAddFavoritesHandler = () => {
     if (!addToFavorites) {
-      favorite.push(id);
       let newFavorite = "i_channels=";
       favorite.map((favId) => newFavorite += favId + ("%2C"));
       newFavorite += id;
-      //let form_data = new FormData();
-      //form_data.append( "i_channels", newFavorite );
-
-      fetch("/felhasznalo/portam/set-user-favorite-tv-channels", {
-        method: 'POST',
-        //credentials: 'same-origin',
-        headers: {
-          //'Content-Type': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          "X-CSRF-Token": csrf
-        },
-        body: newFavorite
-      })
-      .then(data => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.log("hozzáad post error: ", error.message);
-      });
+      
+      const xhttp = new XMLHttpRequest();
+      xhttp.open("POST", "/felhasznalo/portam/set-user-favorite-tv-channels", true);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+      xhttp.setRequestHeader("X-CSRF-Token", csrf);
+      xhttp.send(newFavorite);
     }else {
-      const newFavorite = favorite.filter(removeId => removeId !== id);
-      fetch("felhasznalo/portam/set-user-favorite-tv-channels", {
-        method: 'POST',
-        body: JSON.stringify({i_channels: newFavorite})
-      }).catch((error) => {
-        console.log("elvesz post error: ", error.message);
-      });
+      const filteredFavorite = favorite.filter(removeId => removeId !== id);
+      let newFavorite = "i_channels=";
+      filteredFavorite.map((favId) => newFavorite += favId + ("%2C"));
+
+      const xhttp = new XMLHttpRequest();
+      xhttp.open("POST", "/felhasznalo/portam/set-user-favorite-tv-channels", true);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+      xhttp.setRequestHeader("X-CSRF-Token", csrf);
+      xhttp.send(newFavorite);
     }
     setAddToFavorites(!addToFavorites);
   };
@@ -60,7 +48,7 @@ const AllChannelLogo = ({ channel, parentIndex, index, id, favorite, csrf }) => 
           {addToFavorites && <AiFillHeart className={classes.buttonActive} />}
           {!addToFavorites && (<AiOutlineHeart className={classes.buttonInactive} />)}
         </div>
-        <Link className={classes.imgWrapper} to={`/tv${channel.id}`}>
+        <Link className={classes.imgWrapper} to={`/tv/${channel.id}`}>
           <img src={channel.logo} alt="logo" />
         </Link>
       </div>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
-import {Helmet} from "react-helmet";
 
 import AllChannelsList from "./components/tv-items/AllChannelsList";
 import SingleChannelList from "./components/tv-items/SingleChannelList";
@@ -59,7 +58,7 @@ function App() {
             <AllChannelsList tvEventInit={tvEventInit} tvData={tvData} csrf={csrf} />
           )}
         </Route>
-        <Route path={"/tv:channelId"}>
+        <Route path={"/tv/:channelId"}>
           {tvEventInit !== null && (
             <SingleChannelList daysDate={tvEventInit.daysDate} />
           )}
