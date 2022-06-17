@@ -48,7 +48,7 @@ function App() {
   }
 
   const csrf = document.querySelector('meta[name="csrf-token"]').content;
-  console.log(csrf);
+  //console.log(csrf);
 
   return (
     <>

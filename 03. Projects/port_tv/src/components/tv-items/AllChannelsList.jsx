@@ -4,7 +4,7 @@ import { useInView } from "react-intersection-observer";
 import AllChannelLogo from "./AllChannelLogo";
 import AllChannelPrograms from "./AllChannelPrograms";
 import Timeline from "../timeline-items/Timeline";
-import Marker from "./Marker";
+import Marker from "../timeline-items/Marker";
 import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
@@ -51,7 +51,7 @@ const AllChannelsList = ({ tvEventInit, tvData, csrf }) => {
           return res.json();
         })
         .then((data) => {
-          console.log("apiFetch: ", data);
+          //console.log("apiFetch: ", data);
           setPrograms((prevPrograms) => {
             return [
               ...prevPrograms,
@@ -97,16 +97,16 @@ const AllChannelsList = ({ tvEventInit, tvData, csrf }) => {
     content = <p>Loading...</p>;
   } */
 
-  console.log("tároló state: ", programs);
+  //console.log("tároló state: ", programs);
   //console.log(inView);
 
   const scrollPrograms = (value) => {
     //console.log("testValue: ", value);
     programsContainer.current.scrollLeft += value;
-    console.log("programs scrollWidth: ", programsContainer.current.scrollWidth);
-    console.log("programs scrollLeft: ", programsContainer.current.scrollLeft);
-    console.log("programs scrollWidth - scrollLeft: ", programsContainer.current.scrollWidth - programsContainer.current.scrollLeft);
-    console.log("programs offsetWidth: ", programsContainer.current.offsetWidth);
+    //console.log("programs scrollWidth: ", programsContainer.current.scrollWidth);
+    //console.log("programs scrollLeft: ", programsContainer.current.scrollLeft);
+    //console.log("programs scrollWidth - scrollLeft: ", programsContainer.current.scrollWidth - programsContainer.current.scrollLeft);
+    //console.log("programs offsetWidth: ", programsContainer.current.offsetWidth);
   };
 
   const scrollProgramsOnFetch = value => {
@@ -138,7 +138,7 @@ const AllChannelsList = ({ tvEventInit, tvData, csrf }) => {
       });
     });
 
-    console.log("endTime: ", endTime);
+    //console.log("endTime: ", endTime);
 
     const minStart = Math.min(...startTime);
     const minStartMiliseconds = minStart * 1000;

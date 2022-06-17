@@ -36,13 +36,15 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch,  time, timelineTimes }) => 
       console.log("scrollLeft: ", container.current.scrollLeft);
       console.log("scrollWidth - scrollLeft: ", container.current.scrollWidth - container.current.scrollLeft);
       console.log("offsetWidth: ", container.current.offsetWidth);
+      //TODO lehetséges megoldás:
+      //onChangeDelta(container.current.scrollLeft);
       onChangeDelta(150);
     }
   };
   useEffect(() => {
     const newPos = (Math.floor(new Date(time.date).getTime()) - timelineTimes.startTimestamp) / 12000;
     //container.current.scrollLeft += newPos;
-    console.log("newPos: ", newPos);
+    //console.log("newPos: ", newPos);
     container.current.scrollTo({
       top: 0,
       left: newPos - 300,
@@ -88,7 +90,7 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch,  time, timelineTimes }) => 
     } while (incrementValue <= timelineTimes.endTimestamp - 1800000);
   }, [timelineTimes]);
 
-  console.log("timeline: ", timeline);
+  //console.log("timeline: ", timeline);
 
   return (
     <div className={classes["timeline-wrapper"]}>

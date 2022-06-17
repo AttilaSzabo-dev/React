@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import SingleChannelItem from "./SingleChannelItem";
@@ -6,60 +6,55 @@ import SingleChannelItem from "./SingleChannelItem";
 import classes from "./SingleChannelList.module.css";
 
 const SingleChannelList = ({ daysDate }) => {
-  const [singleProgram, setSingleProgram] = useState(null);
   const [singleProgramArray, setSingleProgramArray] = useState(null);
+  //const [isLoading, setIsLoading] = useState(false);
+  //const [error, setError] = useState(null);
   const params = useParams();
-
-  const fetchSinglePrograms = useCallback(async () => {
-    //setIsLoading(true);
-    //setError(null);
-    try {
-      const response = await fetch(
-        `tvapi?channel_id=${params.channelId}&i_datetime_from=${
-          daysDate[0].split("T")[0]
-        }&i_datetime_to=${daysDate[14].split("T")[0]}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      setSingleProgram(await response.json());
-    } catch (error) {
-      console.log(error);
-      //setError(error.message);
-    }
-    //setIsLoading(false);
-  }, [params.channelId, daysDate]);
+  
 
   useEffect(() => {
-    fetchSinglePrograms();
-  }, [fetchSinglePrograms]);
+    fetch(`https://port.hu/tvapi?channel_id=${params.channelId}&i_datetime_from=${daysDate[0].split("T")[0]}&i_datetime_to=${daysDate[14].split("T")[0]}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        let singleProgramVariable = data;
+        let tempArray = [];
+        Object.keys(singleProgramVariable).map((key) => 
+          //console.log(key);
+          //console.log(singleProgram[key]);
+          
+          tempArray.push({[key]: singleProgramVariable[key]})
+        );
+        setSingleProgramArray(tempArray);
+        //setSingleProgram(data);
+        //singleProgramVariable = data;
+        //setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error.message);
+        //setError(error.message);
+      });
+  }, [daysDate, params.channelId]);
 
-  if (singleProgram !== null) {
-    console.log(singleProgram);
-    setSingleProgramArray(Object.keys(singleProgram).map((key) => {
-      console.log(key);
-      console.log(singleProgram[key]);
-
-      return { [key]: singleProgram[key] };
-    }));
-  }
+  console.log("singleProgramArray: ", singleProgramArray[0]);
 
   return (
-    <div>
-      {/* {singleProgramArray !== null &&
-        singleProgramArray.map((program, i) => {
+    <>
+    <div className={classes.singleChannelLogo}>
+      {/* <img src={singleProgramArray[0].channels.logo} alt="Logo" /> */}
+    </div>
+    {/* {singleProgramArray !== null &&
+        singleProgramArray.map((day) => {
           return (
             <SingleChannelItem
-              key={i}
-              formattedDate={program.formattedDate.split("T")[0]}
-              today={program.date.split("T")[0]}
-              programs={program.channels[0].programs}
+              day={day}
+              programs={day.channels[0].programs}
             />
           );
         })} */}
-    </div>
+    </>
+    
   );
 };
 
