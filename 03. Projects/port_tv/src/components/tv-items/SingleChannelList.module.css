@@ -1,0 +1,11 @@
+.singleChannelLogo {
+    width: 100%;
+    height: 80px;
+}
+
+.singleChannelWrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    overflow: scroll;
+}

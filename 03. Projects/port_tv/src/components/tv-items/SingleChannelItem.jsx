@@ -1,21 +1,27 @@
+import { useEffect } from "react";
 import ProgramItem from "./ProgramItem";
 
 import classes from "./SingleChannelItem.module.css";
 
-const SingleChannelItem = ({day}) => {
-  console.log("day: ", day);
-  const date = new Date(day);
-  const day_text = date.toLocaleString("hu-HU", {day: "numeric"});
+const SingleChannelItem = ({day, programs}) => {
+  
+  const date = new Date(day * 1000);
+  const day_text = date.toLocaleString("hu-HU", {weekday: "long"});
   const day_num = date.toLocaleString("hu-HU", {day: "numeric"});
-  const month = date.toLocaleString("hu-HU", {month: "numeric"});
+  const month = date.toLocaleString("hu-HU", {month: "long"});
+
+  useEffect(() => {
+    //console.log("date: ", date);
+    console.log("day: ", day);
+    console.log("programs: ", programs);
+  }, [day, programs]);
 
 
   return (
-    <div className={classes.tvSingleItem}>
+    <div className={classes.tvSingleItemWrapper}>
       <div className={classes.headWrapper}>
-          <p>{day_text}</p>
-          <p>{day_num}</p>
-          <p>{month}</p>
+        <span className={classes.day}>{day_text}</span>
+        <span className={classes.month}>{month} {day_num}</span>
       </div>
       {/* <div className={classes.channelProgramWrapper}>
         {programs.map((item) => (
