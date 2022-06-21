@@ -1,7 +1,18 @@
 .tvSingleItemWrapper {
-  width: 150px;
-  min-width: 150px;
+  width: 300px;
+  min-width: 300px;
 }
+
+.headWrapper {
+  /* border-top: 1px solid #d8d8d8;
+  border-left: 1px solid #d8d8d8;
+  border-bottom: 1px solid #d8d8d8; */
+  border: 1px solid #d8d8d8;
+}
+
+/* .headWrapper:last-of-type {
+  border-right: 1px solid #d8d8d8;
+} */
 
 .headWrapper span {
   display: block;
@@ -18,4 +29,8 @@
 
 .month {
     font-size: 14px;
+}
+
+.channelProgramWrapper {
+  width: 100%;
 }

@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-
 import SingleChannelItem from "./SingleChannelItem";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 import classes from "./SingleChannelList.module.css";
 
 const SingleChannelList = ({ daysDate }) => {
   const [singleProgramArray, setSingleProgramArray] = useState(null);
+  const container = useRef(null);
   //const [isLoading, setIsLoading] = useState(false);
   //const [error, setError] = useState(null);
   const params = useParams();
@@ -40,14 +42,46 @@ const SingleChannelList = ({ daysDate }) => {
       });
   }, [daysDate, params.channelId]);
 
+  const goLeft = () => {
+    container.current.scrollLeft -= 300;
+  };
+
+  const goRight = () => {
+    container.current.scrollLeft += 300;
+  };
+
   console.log("singleProgramArray: ", singleProgramArray);
+  if (singleProgramArray !== null) {
+    /* console.log("Logo: ", singleProgramArray[0][Object.keys(singleProgramArray)[0]]); */
+    console.log(
+      "Logo: ",
+      Object.values(singleProgramArray[0])[0].channels[0].logo
+    );
+  }
 
   return (
     <>
-      <div className={classes.singleChannelLogo}>
-        {/* <img src={singleProgramArray[Object.keys(singleProgramArray)[0]].channels.logo} alt="Logo" /> */}
+      <div className={classes.singleChannelLogoWrapper}>
+        {singleProgramArray !== null && (
+          <img
+            src={Object.values(singleProgramArray[0])[0].channels[0].logo}
+            alt="Logo"
+          />
+        )}
+        <button
+          onClick={goLeft}
+          className={`${classes.leftButton} ${classes.buttons}`}
+        >
+          <MdKeyboardArrowLeft className={classes.arrows} />
+        </button>
+        <button
+          onClick={goRight}
+          className={`${classes.rightButton} ${classes.buttons}`}
+        >
+          <MdKeyboardArrowRight className={classes.arrows} />
+        </button>
       </div>
-      <div className={classes.singleChannelWrapper}>
+      <div ref={container} className={classes.singleChannelWrapper}>
         {singleProgramArray !== null &&
           singleProgramArray.map((day) => {
             return (

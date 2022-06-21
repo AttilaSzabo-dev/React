@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import ProgramItem from "./ProgramItem";
+import SingeChannelProgramItem from "./SingeChannelProgramItem";
 
 import classes from "./SingleChannelItem.module.css";
 
@@ -13,7 +13,7 @@ const SingleChannelItem = ({day, programs}) => {
   useEffect(() => {
     //console.log("date: ", date);
     console.log("day: ", day);
-    console.log("programs: ", programs);
+    console.log("programs: ", programs.channels[0].programs);
   }, [day, programs]);
 
 
@@ -23,16 +23,16 @@ const SingleChannelItem = ({day, programs}) => {
         <span className={classes.day}>{day_text}</span>
         <span className={classes.month}>{month} {day_num}</span>
       </div>
-      {/* <div className={classes.channelProgramWrapper}>
-        {programs.map((item) => (
-          <ProgramItem
+      <div className={classes.channelProgramWrapper}>
+        {programs.channels[0].programs.map((item) => (
+          <SingeChannelProgramItem
             startTime={item.start_time}
-            endTime={item.end_time}
             title={item.title}
             filmUrl={item.film_url}
+            description={item.short_description}
           />
         ))}
-      </div> */}
+      </div>
     </div>
   );
 };
