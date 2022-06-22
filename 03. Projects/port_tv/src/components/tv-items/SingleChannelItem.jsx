@@ -26,7 +26,11 @@ const SingleChannelItem = ({day, programs}) => {
       <div className={classes.channelProgramWrapper}>
         {programs.channels[0].programs.map((item) => (
           <SingeChannelProgramItem
+            key={item.id}
+            notificId={item.id}
+            reminderId={item.film_id}
             startTime={item.start_time}
+            startTs={item.start_ts}
             title={item.title}
             filmUrl={item.film_url}
             description={item.short_description}

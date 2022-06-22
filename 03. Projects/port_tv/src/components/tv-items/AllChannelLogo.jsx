@@ -48,7 +48,7 @@ const AllChannelLogo = ({ channel, parentIndex, index, id, favorite, csrf }) => 
           {addToFavorites && <AiFillHeart className={classes.buttonActive} />}
           {!addToFavorites && (<AiOutlineHeart className={classes.buttonInactive} />)}
         </div>
-        <Link className={classes.imgWrapper} to={`/tv/${channel.id}`}>
+        <Link className={classes.imgWrapper} to={`/tv&${channel.id}`}>
           <img src={channel.logo} alt="logo" />
         </Link>
       </div>
