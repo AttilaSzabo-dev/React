@@ -11,6 +11,7 @@ const AllChannelLogo = ({ channel, parentIndex, index, id, favorite, csrf }) => 
 
   // TODO több kijelölése esetén tudni kell hogy valami lett-e már kiszedve
   const onAddFavoritesHandler = () => {
+    
     if (!addToFavorites) {
       let newFavorite = "i_channels=";
       favorite.map((favId) => newFavorite += favId + ("%2C"));

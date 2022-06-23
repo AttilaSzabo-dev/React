@@ -12,8 +12,8 @@ const SingleChannelItem = ({day, programs}) => {
 
   useEffect(() => {
     //console.log("date: ", date);
-    console.log("day: ", day);
-    console.log("programs: ", programs.channels[0].programs);
+    //console.log("day: ", day);
+    //console.log("programs: ", programs.channels[0].programs);
   }, [day, programs]);
 
 
