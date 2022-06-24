@@ -2,26 +2,33 @@ import { useState, useEffect, useContext } from "react";
 
 import TvDataContext from "../../context/TvDataContext";
 
-import { BsEnvelope } from 'react-icons/bs';
-import { BsClock } from 'react-icons/bs';
+import { BsEnvelope } from "react-icons/bs";
+import { BsClock } from "react-icons/bs";
 
 import classes from "./SingeChannelProgramItem.module.css";
 
-const SingeChannelProgramItem = ({notificId, reminderId, startTime, startTs, title, filmUrl, description}) => {
-
-  const { tvData, setTvData } = useContext(TvDataContext);
+const SingeChannelProgramItem = ({
+  notificId,
+  reminderId,
+  startTime,
+  startTs,
+  title,
+  filmUrl,
+  description,
+}) => {
+  const { tvData, setTvData, csrf } = useContext(TvDataContext);
   const [notiStatus, setNotiStatus] = useState(false);
   const [remindStatus, setRemindStatus] = useState(false);
   const [hover, setHover] = useState(false);
 
   const visible = {
     opacity: 1,
-    pointerEvents: "all"
+    pointerEvents: "all",
   };
 
   const notVisible = {
     opacity: 0,
-    pointerEvents: "none"
+    pointerEvents: "none",
   };
 
   const toggleHover = () => {
@@ -29,19 +36,58 @@ const SingeChannelProgramItem = ({notificId, reminderId, startTime, startTs, tit
   };
 
   const setNotiHandler = () => {
-    setTvData((prevData) => ({
-      ...prevData, 
-      notifications: {...prevData.notifications, [notificId]: 1}
-      })
-    );
-  }
+    if (notiStatus) {
+      setTvData((currentData) => {
+        const copy = { ...currentData };
+        delete copy["notifications"][notificId];
+        return copy;
+      });
+    } else {
+      setTvData((prevData) => ({
+        ...prevData,
+        notifications: { ...prevData.notifications, [notificId]: 1 },
+      }));
+    }
+    setNotiStatus(!notiStatus);
+    sendData(true);
+  };
   const setRemindHandler = () => {
-    setTvData((prevData) => ({
-      ...prevData, 
-      reminders: {...prevData.reminders, [reminderId]: 1}
-      })
+    if (remindStatus) {
+      setTvData((currentData) => {
+        const copy = { ...currentData };
+        delete copy["reminders"][reminderId];
+        return copy;
+      });
+    } else {
+      setTvData((prevData) => ({
+        ...prevData,
+        reminders: { ...prevData.reminders, [reminderId]: 1 },
+      }));
+    }
+    setRemindStatus(!remindStatus);
+    sendData(false);
+  };
+
+  const sendData = (select) => {
+    let selector = "";
+    let entity = "entity_id="
+    if (select) {
+      selector = "notification-toggle";
+      entity += notificId;
+    }else {
+      selector = "reminder-toggle";
+      entity += reminderId
+    } 
+    
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/felhasznalo/portam/" + selector + "", true);
+    xhttp.setRequestHeader(
+      "Content-type",
+      "application/x-www-form-urlencoded; charset=UTF-8"
     );
-  }
+    xhttp.setRequestHeader("X-CSRF-Token", csrf);
+    xhttp.send(entity);
+  };
 
   useEffect(() => {
     for (const key in tvData.notifications) {
@@ -58,14 +104,33 @@ const SingeChannelProgramItem = ({notificId, reminderId, startTime, startTs, tit
   }, [tvData.notifications, tvData.reminders, notificId, reminderId]);
 
   return (
-    <div onMouseLeave={toggleHover} onMouseEnter={toggleHover} className={classes.programItem}>
-      <div className={classes.time}>{startTime}
+    <div
+      onMouseLeave={toggleHover}
+      onMouseEnter={toggleHover}
+      className={classes.programItem}
+    >
+      <div className={classes.time}>
+        {startTime}
         <div className={classes.noti}>
-          <BsEnvelope onClick={setRemindHandler} className={`${classes.envelope} ${remindStatus ? classes.active : ""}`} style={hover ? visible : notVisible} title="Kérek értesítőt" />
-          <BsClock onClick={setNotiHandler} className={`${classes.clock} ${notiStatus ? classes.active : ""}`} style={hover ? visible : notVisible} title="Emlékeztető beállítása" />
+          <BsEnvelope
+            onClick={setNotiHandler}
+            className={`${classes.envelope} ${
+              notiStatus ? classes.active : ""
+            }`}
+            style={hover ? visible : notVisible}
+            title="Kérek értesítőt"
+          />
+          <BsClock
+            onClick={setRemindHandler}
+            className={`${classes.clock} ${remindStatus ? classes.active : ""}`}
+            style={hover ? visible : notVisible}
+            title="Emlékeztető beállítása"
+          />
         </div>
       </div>
-      <a href={filmUrl} className={classes.title}>{title}</a>
+      <a href={filmUrl} className={classes.title}>
+        {title}
+      </a>
       <div className={classes.description}>{description}</div>
     </div>
   );

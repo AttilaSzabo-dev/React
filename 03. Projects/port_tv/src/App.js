@@ -12,10 +12,9 @@ function App() {
   const [tvEventInit, setTvEventInit] = useState(null);
   const [tvData, setTvData] = useState(null);
 
-  const value = {tvData, setTvData};
-
   const csrf = document.querySelector('meta[name="csrf-token"]').content;
-  
+  const value = { tvData, setTvData, csrf };
+
   useEffect(() => {
     fetch("tv-event/init")
       .then((res) => {
@@ -51,20 +50,20 @@ function App() {
 
   return (
     <>
-      <Switch>
-        <Route path={"/tv"} exact>
-          {tvEventInit !== null && (
-            <AllChannelsList tvEventInit={tvEventInit} tvData={tvData} csrf={csrf} />
-          )}
-        </Route>
-        <Route path={"/tv&:channelId"}>
-          {tvEventInit !== null && (
-            <TvDataContext.Provider value={value}>
+      <TvDataContext.Provider value={value}>
+        <Switch>
+          <Route path={"/tv"} exact>
+            {tvEventInit !== null && (
+              <AllChannelsList tvEventInit={tvEventInit} />
+            )}
+          </Route>
+          <Route path={"/tv&:channelId"}>
+            {tvEventInit !== null && (
               <SingleChannelList daysDate={tvEventInit.daysDate} />
-            </TvDataContext.Provider>
-          )}
-        </Route>
-      </Switch>
+            )}
+          </Route>
+        </Switch>
+      </TvDataContext.Provider>
     </>
   );
 }

@@ -8,7 +8,8 @@ import React from "react";
 
 const TvDataContext = React.createContext({
     tvData: {},
-    setTvData: () => {}
+    setTvData: () => {},
+    csrf: ""
 });
 
 export default TvDataContext;
