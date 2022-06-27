@@ -18,6 +18,9 @@
 }
 
 .time {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 14px;
   color: #a1a1a1;
@@ -44,4 +47,36 @@
 
 .title:hover {
   color: #d63632;
+}
+
+.noti {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 36px;
+  margin-left: 8px;
+}
+
+.envelope {
+  transform: scale(1.2);
+  cursor: pointer;
+  fill: #414141;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.clock {
+  transform: scale(1.1);
+  cursor: pointer;
+  fill: #414141;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.active {
+  fill: #d63632 !important;
+  pointer-events: all !important;
+  opacity: 1 !important;
 }

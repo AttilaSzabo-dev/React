@@ -13,6 +13,9 @@ const AllChannelPrograms = (props) => {
       <ProgramsWrapper timelineTimes={props.timelineTimes} index={index}>
         {channel.programs.map((item) => (
           <ProgramItem
+            key={item.id}
+            notificId={item.id}
+            reminderId={item.film_id}
             actualTime={props.time}
             startTime={item.start_time}
             endTime={item.end_time}
