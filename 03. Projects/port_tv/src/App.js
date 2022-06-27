@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import TvDataContext from "./context/TvDataContext";
 
+import FilterList from "./components/filter-items/FilterList";
 import AllChannelsList from "./components/tv-items/AllChannelsList";
 import SingleChannelList from "./components/tv-items/SingleChannelList";
 
@@ -51,6 +52,7 @@ function App() {
   return (
     <>
       <TvDataContext.Provider value={value}>
+        <FilterList />
         <Switch>
           <Route path={"/tv"} exact>
             {tvEventInit !== null && (
