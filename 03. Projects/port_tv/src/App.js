@@ -52,7 +52,7 @@ function App() {
   return (
     <>
       <TvDataContext.Provider value={value}>
-        <FilterList />
+        {tvEventInit !== null && tvData !== null && <FilterList tvEventInit={tvEventInit} />}
         <Switch>
           <Route path={"/tv"} exact>
             {tvEventInit !== null && (

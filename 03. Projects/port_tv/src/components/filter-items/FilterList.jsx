@@ -2,10 +2,10 @@ import Modal from "../../UI/Modal";
 
 import classes from "./FilterList.module.css";
 
-const FilterList = (props) => {
+const FilterList = ({ tvEventInit }) => {
   return (
     <>
-      <Modal />
+      <Modal tvEventInit={tvEventInit} />
       <div className={classes.filterWrapper}></div>
     </>
   );

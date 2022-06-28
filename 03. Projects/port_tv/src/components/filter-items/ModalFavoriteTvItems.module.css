@@ -1,0 +1,45 @@
+.modalFavoriteTvItemWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #d9d9d9;
+  padding: 10px 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.drag {
+  fill: #414141;
+  margin-right: 10px;
+}
+
+.like {
+  cursor: pointer;
+  fill: #d63632;
+  margin-right: 10px;
+}
+
+.tvItemName {
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 14px;
+  color: #414141;
+  margin-left: 10px;
+}
+
+.arrows {
+  fill: #414141;
+  transform: scale(1.5);
+}
+
+.arrows:first-of-type {
+    margin-right: 10px;
+}
+
+.disable {
+  fill: #d9d9d9;
+}
