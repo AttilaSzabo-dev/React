@@ -22,3 +22,7 @@
   color: #414141;
   margin-left: 10px;
 }
+
+.hide {
+  display: none;
+}

@@ -11,6 +11,7 @@ import ModalTvItems from "../components/filter-items/ModalTvItems";
 import ModalFavoriteTvItems from "../components/filter-items/ModalFavoriteTvItems";
 
 import classes from "./Modal.module.css";
+import { useEffect } from "react";
 
 const Modal = ({ tvEventInit }) => {
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
@@ -24,9 +25,51 @@ const Modal = ({ tvEventInit }) => {
     // Add dropped item
     updatedList.splice(droppedItem.destination.index, 0, reorderedItem);
     // Update State
-    setTvData(prevData => ({...prevData, favorite: updatedList}))
-    //setTvData(tvData["favorite"] = updatedList);
+    setTvData((prevData) => ({ ...prevData, favorite: updatedList }));
+    //sendData(true);
   };
+
+  const onManualMove = (index, bool) => {
+    let orig = tvData.favorite;
+    if (bool) {
+      [orig[index], orig[index - 1]] = [orig[index - 1], orig[index]];
+    } else [orig[index], orig[index + 1]] = [orig[index + 1], orig[index]];
+    setTvData((prevData) => ({ ...prevData, favorite: orig }));
+    //sendData(true);
+  };
+
+  const sendData = (bool, item) => {
+    let newFavorite = "i_channels=";
+    if (bool) {
+      tvData["favorite"].map((favId) => (newFavorite += favId + "%2C"));
+    } else {
+      const filteredFavorite = tvData["favorite"].filter(
+        (removeId) => removeId !== item
+      );
+      let toSet = [];
+      filteredFavorite.map((favId) => (newFavorite += favId + "%2C"));
+      filteredFavorite.map((favId) => (toSet.push(favId)));
+      setTvData((prevData) => ({ ...prevData, favorite: toSet }));
+    }
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.open(
+      "POST",
+      "/felhasznalo/portam/set-user-favorite-tv-channels",
+      true
+    );
+    xhttp.setRequestHeader(
+      "Content-type",
+      "application/x-www-form-urlencoded; charset=UTF-8"
+    );
+    xhttp.setRequestHeader("X-CSRF-Token", csrf);
+    xhttp.send(newFavorite);
+  };
+
+  // ez azért hogy akkor küldjük el, ha a tvData beállt
+  useEffect(() => {
+    sendData(true);
+  }, [tvData]);
 
   console.log("modal tveventinit", tvEventInit);
   console.log("modal tvData", tvData);
@@ -72,15 +115,32 @@ const Modal = ({ tvEventInit }) => {
                           >
                             <div className={classes.wrapper}>
                               <MdDragIndicator className={classes.drag} />
-                              <AiFillHeart className={classes.like} />
-                              <span className={classes.tvItemName}>{item}</span>
+                              <AiFillHeart
+                                onClick={() => sendData(false, item)}
+                                className={classes.like}
+                              />
+                              <span className={classes.tvItemName}>
+                                {
+                                  tvEventInit.channels.find(
+                                    (x) => x.id === item
+                                  ).name
+                                }
+                              </span>
                             </div>
                             <div className={classes.wrapper}>
                               <MdKeyboardArrowUp
-                                className={`${classes.up} ${classes.arrows}`}
+                                onClick={() => onManualMove(index, true)}
+                                className={`${classes.up} ${classes.arrows} ${
+                                  index === 0 ? classes.disabled : ""
+                                }`}
                               />
                               <MdKeyboardArrowDown
-                                className={`${classes.down} ${classes.arrows}`}
+                                onClick={() => onManualMove(index, false)}
+                                className={`${classes.down} ${classes.arrows} ${
+                                  index === tvData.favorite.length - 1
+                                    ? classes.disabled
+                                    : ""
+                                }`}
                               />
                             </div>
                           </div>
