@@ -13,7 +13,8 @@ import ModalFavoriteTvItems from "../components/filter-items/ModalFavoriteTvItem
 import classes from "./Modal.module.css";
 import { useEffect } from "react";
 
-const Modal = ({ tvEventInit }) => {
+const Modal = ({ tvEventInit, show, onConfirm }) => {
+    console.log("show: ", show);
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
 
   const handleDrop = (droppedItem) => {
@@ -75,11 +76,11 @@ const Modal = ({ tvEventInit }) => {
   console.log("modal tvData", tvData);
   return (
     <>
-      <div className={classes.backdrop}></div>
-      <div className={classes.modal}>
+      <div className={`${classes.backdrop} ${show ? classes.show : ""}`} onClick={onConfirm}></div>
+      <div className={`${classes.modal} ${show ? classes.show : ""}`}>
         <header className={classes.header}>
           <h2>Kedvencek szerkeztése</h2>
-          {/* <button onClick={onConfirm}>X</button> */}
+          <button className={classes.modalConfirm} onClick={onConfirm}>X</button>
         </header>
         <div className={classes.content}>
           <div className={classes.contentSections}>

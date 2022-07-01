@@ -6,11 +6,19 @@
   height: 100vh;
   z-index: 200;
   background: rgba(0, 0, 0, 0.75);
+  transform: translateY(100%);
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+.backdrop.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .modal {
   position: fixed;
-  top: 20vh;
+  top: -100%;
   left: 10%;
   width: 80%;
   height: 100%;
@@ -20,6 +28,24 @@
   padding: 15px;
   border-radius: 5px;
   background-color: #fff;
+
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.modal.show {
+  top: 20vh;
+  opacity: 1;
+}
+
+.modalConfirm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  width: 35px;
+  background-color: #fff;
+  border: 0;
 }
 
 .header {

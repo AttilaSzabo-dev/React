@@ -9,6 +9,7 @@ import classes from "./Timeline.module.css";
 const Timeline = ({ onChangeDelta, onChangeApiFetch,  time, timelineTimes }) => {
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   //console.log("timelineProps: ", props.timelineTimes);
 
@@ -41,6 +42,12 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch,  time, timelineTimes }) => 
       onChangeDelta(150);
     }
   };
+
+  const onSelectChange = (e) => {
+    const event = e.target.value
+    console.log("item: ", event);
+  };
+
   useEffect(() => {
     const newPos = (Math.floor(new Date(time.date).getTime()) - timelineTimes.startTimestamp) / 12000;
     //container.current.scrollLeft += newPos;
@@ -51,7 +58,16 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch,  time, timelineTimes }) => 
       behavior: "smooth",
     });
     onChangeApiFetch(newPos - 300);
-  }, [time, timelineTimes, onChangeApiFetch]);
+
+    if (categories.length < 9) {
+      
+      for (const key in time.channelGroups) {
+        setCategories((prev) => (
+          [...prev, time.channelGroups[key].name])
+        )
+      }
+    }
+  }, [time, timelineTimes, onChangeApiFetch, categories.length]);
 
   useEffect(() => {
     container.current.addEventListener("wheel", mouseWheelHandler, {
@@ -94,7 +110,13 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch,  time, timelineTimes }) => 
 
   return (
     <div className={classes["timeline-wrapper"]}>
-      <div className={classes["timeline-filter"]}></div>
+      <div className={classes["timeline-filter"]}>
+      <select className={classes.select} name="selectList" id="selectList" onChange={(e) => onSelectChange(e)}>
+        {categories.map((item)=> (
+          <option value={item}>{item}</option>
+        ))}
+      </select>
+      </div>
       <button
         onClick={goLeft}
         className={`${classes["left-button"]} ${classes.buttons}`}
