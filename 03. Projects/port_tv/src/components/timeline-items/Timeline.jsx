@@ -6,7 +6,7 @@ import TimelineSection from "./TimelineSection";
 
 import classes from "./Timeline.module.css";
 
-const Timeline = ({ onChangeDelta, onChangeApiFetch,  time, timelineTimes }) => {
+const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFilterToAll,  time, timelineTimes }) => {
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -44,8 +44,20 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch,  time, timelineTimes }) => 
   };
 
   const onSelectChange = (e) => {
-    const event = e.target.value
-    console.log("item: ", event);
+    const event = e.target.value;
+    if (event === "all") {
+      onChangeFilterToAll(false);
+    }else {
+      let url = "tv-event/api?";
+      time.channels.forEach(function(item) {
+        if (item.groupName === event) {
+          url += `channel_id%5B%5D=${item.id}&`;
+        }
+      });
+      url += `date=${time.date.split("T")[0]}`;
+      onChangeFilter(url);
+      console.log("url: ", url);
+    }
   };
 
   useEffect(() => {
@@ -112,6 +124,7 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch,  time, timelineTimes }) => 
     <div className={classes["timeline-wrapper"]}>
       <div className={classes["timeline-filter"]}>
       <select className={classes.select} name="selectList" id="selectList" onChange={(e) => onSelectChange(e)}>
+        <option value="all">Minden csatorna</option>
         {categories.map((item)=> (
           <option value={item}>{item}</option>
         ))}
