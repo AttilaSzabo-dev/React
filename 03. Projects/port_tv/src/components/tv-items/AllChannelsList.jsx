@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { useInView } from "react-intersection-observer";
+
+import TvInitContext from "../../context/TvInitContext";
 
 import AllChannelLogo from "./AllChannelLogo";
 import AllChannelPrograms from "./AllChannelPrograms";
@@ -10,6 +12,10 @@ import Spinner from "../../UI/Spinner";
 import classes from "./AllChannelsList.module.css";
 
 const AllChannelsList = ({ tvEventInit }) => {
+  const tvInitCtx = useContext(TvInitContext);
+  const [basicUrls, setBasicUrls] = useState([]);
+  const [actualUrlsIndex, setActualUrlsIndex] = useState(0);
+
   const [programs, setPrograms] = useState([]);
   const [timelineTimes, setTimelineTimes] = useState({
     startTimestamp: 0,
@@ -20,7 +26,6 @@ const AllChannelsList = ({ tvEventInit }) => {
     endHour: 0,
     firstProgramsStartTime: []
   });
-  const [actualUrlsIndex, setActualUrlsIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -33,14 +38,8 @@ const AllChannelsList = ({ tvEventInit }) => {
     delay: 100,
   });
 
-  const pluck = (array, key) => {
-    return array.map((item) => item[key]);
-  };
-
-  function* chunk(array, n) {
-    for (let index = 0; index < array.length; index += n) {
-      yield array.slice(index, index + n);
-    }
+  if (tvInitCtx.basicUrl.length !== 0) {
+    console.log("tvInitCtx.basicUrl: ", tvInitCtx.basicUrl);
   }
 
   const fetchFilteredUrl = (url) => {
@@ -214,37 +213,40 @@ const AllChannelsList = ({ tvEventInit }) => {
     //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
   }, [programs]);
 
-  const allChannels = (bool) => {
-    console.log("bool:", bool);
-    let date = `date=${tvEventInit.date.split("T")[0]}`;
-    let ids = pluck(tvEventInit.channels, "id");
-    let chunks = [...chunk(ids, 40)];
-    let urls = chunks.map((chunk) => {
-      let channels = chunk.map((id) => `channel_id%5B%5D=${id}`).join("&");
-      return `tv-event/api?${channels}&${date}`;
-    });
-    if (bool) {
-  
-      //console.log("ids: ", ids);
-      //console.log("chunks: ", chunks);
-      //console.log("urls: ", urls);
-  
-      fetchActualUrl(urls);
-    } else {
-      setPrograms([]);
-      fetchActualUrl(urls);
-    } 
-      
-  };
-
   useEffect(() => {
-    allChannels(true);
-  }, []);
+    setBasicUrls((prevData) => [...prevData, tvInitCtx.basicUrl]);
+
+    if (basicUrls.length !== 0) {
+      fetch(`${basicUrls[actualUrlsIndex]}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          //console.log("apiFetch: ", data);
+          setPrograms((prevPrograms) => {
+            return [
+              ...prevPrograms,
+              {
+                channels: data.channels,
+                date: data.date,
+                date_from: data.date_from,
+                date_to: data.date_to,
+                eveningStartTime: data.eveningStartTime,
+              },
+            ];
+          });
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setError(error.message);
+        });
+    }
+  }, [tvInitCtx.basicUrl, actualUrlsIndex]);
 
   return (
     <>
       {
-        <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} onChangeFilter={(data)=>{fetchFilteredUrl(data)}} onChangeFilterToAll={(data)=>{allChannels(data)}} time={tvEventInit} timelineTimes={timelineTimes} />
+        <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} onChangeFilter={(data)=>{fetchFilteredUrl(data)}} /* onChangeFilterToAll={(data)=>{allChannels(data)}} */ time={tvEventInit} timelineTimes={timelineTimes} />
       }
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}

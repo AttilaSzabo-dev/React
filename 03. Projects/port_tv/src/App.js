@@ -45,7 +45,7 @@ function App() {
       })
       .then((data) => {
         setTvData(data);
-        initCtx.addFavorites(data.favorite);
+        //initCtx.addFavorites(data.favorite);
       })
       .catch((error) => {
         console.log(error.message);

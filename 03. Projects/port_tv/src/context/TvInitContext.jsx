@@ -9,6 +9,7 @@ const TvInitContext = React.createContext({
   daysDate: [],
   showType: [],
   likedChannels: [],
+  basicUrl: [],
   testHandler: ()=>{},
   addFavorites: ()=>{}
 });
