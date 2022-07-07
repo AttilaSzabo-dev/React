@@ -7,11 +7,13 @@ const defFetchContextState = {
   channelGroups: {},
   channels: [],
   date: "",
+  filterDate: "",
   days: [],
   daysDate: [],
   showType: [],
   likedChannels: [],
   basicUrl: [],
+  basicChannelFilterUrl: {},
 };
 
 const pluck = (array, key) => {
@@ -31,15 +33,17 @@ const tvInitContextReducer = (state, action) => {
       channelGroups: action.data.channelGroups,
       channels: action.data.channels,
       date: action.data.date,
+      filterDate: state.filterDate,
       days: action.data.days,
       daysDate: action.data.daysDate,
       showType: action.data.showType,
       likedChannels: state.likedChannels,
       basicUrl: state.basicUrl,
+      basicChannelFilterUrl: state.basicChannelFilterUrl,
     };
   }
 
-  if (action.type === "ADD_FAVORITES") {
+  /* if (action.type === "ADD_FAVORITES") {
     return {
       ageLimit: state.ageLimit,
       channelGroups: state.channelGroups,
@@ -50,7 +54,7 @@ const tvInitContextReducer = (state, action) => {
       showType: state.showType,
       likedChannels: action.fav,
     };
-  }
+  } */
 
   if (action.type === "ADD_BASIC_URL") {
     let date = `date=${state.date.split("T")[0]}`;
@@ -61,16 +65,30 @@ const tvInitContextReducer = (state, action) => {
       return `tv-event/api?${channels}&${date}`;
     });
 
+    let filterUrl = {};
+    for (const key in state.channelGroups) {
+      let filteredUrls = state.channels
+        .filter((item) => item.groupId === state.channelGroups[key].id)
+        .map((x) => {
+          let channels = `channel_id%5B%5D=${x.id}&`;
+          return `tv-event/api?${channels}${date}`;
+        })
+        .toString();
+      filterUrl[key] = filteredUrls;
+    }
+
     return {
       ageLimit: state.ageLimit,
       channelGroups: state.channelGroups,
       channels: state.channels,
       date: state.date,
+      filterDate: state.filterDate,
       days: state.days,
       daysDate: state.daysDate,
       showType: state.showType,
       likedChannels: state.likedChannels,
       basicUrl: urls,
+      basicChannelFilterUrl: filterUrl,
     };
   }
 
@@ -83,14 +101,10 @@ const TvInitContextProvider = (props) => {
     defFetchContextState
   );
 
-  /* const handler = () => {
-    dispatchListAction({ type: "INIT", channels: 1 });
-  } */
-
-  const addFavoritesHandler = (favChannels) => {
+  /* const addFavoritesHandler = (favChannels) => {
     console.log("favChannels: ", favChannels);
     dispatchListAction({ type: "ADD_FAVORITES", fav: favChannels });
-  };
+  }; */
 
   useEffect(() => {
     fetch("tv-event/init")
@@ -111,11 +125,13 @@ const TvInitContextProvider = (props) => {
     channelGroups: initState.channelGroups,
     channels: initState.channels,
     date: initState.date,
+    filterDate: initState.filterDate,
     days: initState.days,
     daysDate: initState.daysDate,
     showType: initState.showType,
     likedChannels: initState.likedChannels,
     basicUrl: initState.basicUrl,
+    basicChannelFilterUrl: initState.basicChannelFilterUrl,
     //testHandler: handler
     //addFavorites: addFavoritesHandler
   };

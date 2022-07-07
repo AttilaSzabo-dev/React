@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
 import TimelineSection from "./TimelineSection";
 
 import classes from "./Timeline.module.css";
+import TvInitContext from "../../context/TvInitContext";
 
 const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFilterToAll,  time, timelineTimes }) => {
+  const tvInitCtx = useContext(TvInitContext);
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -49,19 +51,19 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFil
       onChangeFilterToAll(false);
     }else {
       let url = "tv-event/api?";
-      time.channels.forEach(function(item) {
+      tvInitCtx.channels.forEach(function(item) {
         if (item.groupName === event) {
           url += `channel_id%5B%5D=${item.id}&`;
         }
       });
-      url += `date=${time.date.split("T")[0]}`;
+      url += `date=${tvInitCtx.date.split("T")[0]}`;
       onChangeFilter(url);
       console.log("url: ", url);
     }
   };
 
   useEffect(() => {
-    const newPos = (Math.floor(new Date(time.date).getTime()) - timelineTimes.startTimestamp) / 12000;
+    const newPos = (Math.floor(new Date(tvInitCtx.date).getTime()) - timelineTimes.startTimestamp) / 12000;
     //container.current.scrollLeft += newPos;
     //console.log("newPos: ", newPos);
     container.current.scrollTo({
@@ -71,15 +73,8 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFil
     });
     onChangeApiFetch(newPos - 300);
 
-    if (categories.length < 9) {
-      
-      for (const key in time.channelGroups) {
-        setCategories((prev) => (
-          [...prev, time.channelGroups[key].name])
-        )
-      }
-    }
-  }, [time, timelineTimes, onChangeApiFetch, categories.length]);
+    
+  }, [tvInitCtx, timelineTimes, onChangeApiFetch]);
 
   useEffect(() => {
     container.current.addEventListener("wheel", mouseWheelHandler, {

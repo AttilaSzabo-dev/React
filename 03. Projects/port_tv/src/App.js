@@ -7,24 +7,17 @@ import FilterList from "./components/filter-items/FilterList";
 import AllChannelsList from "./components/tv-items/AllChannelsList";
 import SingleChannelList from "./components/tv-items/SingleChannelList";
 
-
 import "./App.css";
 import TvInitContextProvider from "./context/TvInitContextProvider";
 import Test from "./UI/Test.jsx";
-import { useContext } from "react";
-import TvInitContext from "./context/TvInitContext";
 
 function App() {
-
-  const initCtx = useContext(TvInitContextProvider);
-  
   //const [tvEventInit, setTvEventInit] = useState(null);
   const [tvData, setTvData] = useState(null);
-  
 
   const csrf = document.querySelector('meta[name="csrf-token"]').content;
   const value = { tvData, setTvData, csrf };
-  
+
   /* useEffect(() => {
     fetch("tv-event/init")
       .then((res) => {
@@ -62,24 +55,26 @@ function App() {
   return (
     <>
       <TvInitContextProvider>
-        <Test/>
+        <Test />
       </TvInitContextProvider>
-      
-      {/* <TvDataContext.Provider value={value}>
-        {tvEventInit !== null && tvData !== null && <FilterList tvEventInit={tvEventInit} />}
+
+      <TvDataContext.Provider value={value}>
+        {/* {tvEventInit !== null && tvData !== null && (
+          <FilterList tvEventInit={tvEventInit} />
+        )} */}
         <Switch>
           <Route path={"/tv"} exact>
-            {tvEventInit !== null && (
-              <AllChannelsList tvEventInit={tvEventInit} />
-            )}
+            <TvInitContextProvider>
+              <AllChannelsList />
+            </TvInitContextProvider>
           </Route>
-          <Route path={"/tv&:channelId"}>
+          {/* <Route path={"/tv&:channelId"}>
             {tvEventInit !== null && (
               <SingleChannelList daysDate={tvEventInit.daysDate} />
             )}
-          </Route>
+          </Route> */}
         </Switch>
-      </TvDataContext.Provider> */}
+      </TvDataContext.Provider>
     </>
   );
 }

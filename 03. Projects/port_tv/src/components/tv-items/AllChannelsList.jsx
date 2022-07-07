@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useInView } from "react-intersection-observer";
 
 import TvInitContext from "../../context/TvInitContext";
@@ -13,7 +13,9 @@ import classes from "./AllChannelsList.module.css";
 
 const AllChannelsList = ({ tvEventInit }) => {
   const tvInitCtx = useContext(TvInitContext);
-  const [basicUrls, setBasicUrls] = useState([]);
+
+  const [filteredUrls, setFilteredUrls] = useState();
+  const [filteredOrNot, setFilteredOrNot] = useState(false);
   const [actualUrlsIndex, setActualUrlsIndex] = useState(0);
 
   const [programs, setPrograms] = useState([]);
@@ -26,6 +28,7 @@ const AllChannelsList = ({ tvEventInit }) => {
     endHour: 0,
     firstProgramsStartTime: []
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -38,88 +41,14 @@ const AllChannelsList = ({ tvEventInit }) => {
     delay: 100,
   });
 
-  if (tvInitCtx.basicUrl.length !== 0) {
-    console.log("tvInitCtx.basicUrl: ", tvInitCtx.basicUrl);
-  }
-
-  const fetchFilteredUrl = (url) => {
-    setIsLoading(true);
-    fetch(`${url}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        //console.log("apiFetch: ", data);
-        setPrograms([{
-            channels: data.channels,
-            date: data.date,
-            date_from: data.date_from,
-            date_to: data.date_to,
-            eveningStartTime: data.eveningStartTime
-            }]
-        );
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
-  };
-
-  const fetchActualUrl = useCallback(
-    (urls) => {
-      setIsLoading(true);
-      fetch(`${urls[actualUrlsIndex]}`)
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          //console.log("apiFetch: ", data);
-          setPrograms((prevPrograms) => {
-            return [
-              ...prevPrograms,
-              {
-                channels: data.channels,
-                date: data.date,
-                date_from: data.date_from,
-                date_to: data.date_to,
-                eveningStartTime: data.eveningStartTime,
-              },
-            ];
-          });
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-        });
-    },
-    [actualUrlsIndex]
-  );
-
   const increseHandler = () => {
-    if (programs.length === actualUrlsIndex) return false;
-
+    if (tvInitCtx.basicUrl.length === actualUrlsIndex) return;
     setActualUrlsIndex(actualUrlsIndex + 1);
   };
 
   if (inView) {
     increseHandler();
   }
-
-  /* let content = <p></p>;
-
-  if (false) {
-    content = <AllChannelsList allProgram={tvEventInit} />;
-  }
-
-  if (error) {
-    content = <p>{error}</p>;
-  }
-
-  if (isLoading) {
-    content = <p>Loading...</p>;
-  } */
-
-  //console.log("tároló state: ", programs);
   console.log(inView);
 
   const scrollPrograms = (value) => {
@@ -143,7 +72,8 @@ const AllChannelsList = ({ tvEventInit }) => {
   // 30perc = 1800000 milisecond
   // 1800000 milisecond = 150px
 
-  useEffect(() => {
+  /* useEffect(() => {
+    console.log("time useeffect");
     //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
     let startTime = [];
     let endTime = [];
@@ -211,43 +141,38 @@ const AllChannelsList = ({ tvEventInit }) => {
     });
     //console.log("endTime: ", endTime);
     //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
-  }, [programs]);
+  }, [programs]); */
 
   useEffect(() => {
-    setBasicUrls((prevData) => [...prevData, tvInitCtx.basicUrl]);
+    console.log("tvinit useeffect");
+    if (tvInitCtx.basicUrl.length !== 0) {
 
-    if (basicUrls.length !== 0) {
-      fetch(`${basicUrls[actualUrlsIndex]}`)
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          //console.log("apiFetch: ", data);
-          setPrograms((prevPrograms) => {
-            return [
-              ...prevPrograms,
-              {
-                channels: data.channels,
-                date: data.date,
-                date_from: data.date_from,
-                date_to: data.date_to,
-                eveningStartTime: data.eveningStartTime,
-              },
-            ];
+      console.log("tvInitCtx: ", tvInitCtx);
+
+        setIsLoading(true);
+        fetch(`${tvInitCtx.basicUrl[actualUrlsIndex]}`)
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            console.log("apiFetch: ", data);
+            setPrograms((prevState)=> [...prevState, data])
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            setError(error.message);
           });
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-        });
+          
     }
-  }, [tvInitCtx.basicUrl, actualUrlsIndex]);
-
+  }, [actualUrlsIndex]);
+      
+  if (programs.length !== 0) {
+    console.log("programs: ", programs);
+  }
+  
   return (
     <>
-      {
-        <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} onChangeFilter={(data)=>{fetchFilteredUrl(data)}} /* onChangeFilterToAll={(data)=>{allChannels(data)}} */ time={tvEventInit} timelineTimes={timelineTimes} />
-      }
+      <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} time={tvEventInit} timelineTimes={timelineTimes} />
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
         <div className={classes.logoContainer}>

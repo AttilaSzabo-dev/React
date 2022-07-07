@@ -17,7 +17,7 @@ const Test = () => {
   }, [ctx.basicUrl]);
 
   console.log("test: ", test);
-  console.log("ctx.basicUrl: ", ctx.basicUrl);
+  console.log("ctx: ", ctx);
   /* if (test.length !== 0) {
     console.log("test.basicUrl: ", test);
   } */

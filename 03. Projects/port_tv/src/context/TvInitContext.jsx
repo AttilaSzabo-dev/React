@@ -5,11 +5,13 @@ const TvInitContext = React.createContext({
   channelGroups: {},
   channels: [],
   date: "",
+  filterDate: "",
   days: [],
   daysDate: [],
   showType: [],
   likedChannels: [],
   basicUrl: [],
+  basicChannelFilterUrl: {},
   testHandler: ()=>{},
   addFavorites: ()=>{}
 });
