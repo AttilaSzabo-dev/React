@@ -7,14 +7,15 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { AiFillHeart } from "react-icons/ai";
 
 import TvDataContext from "../context/TvDataContext";
+import TvInitContext from "../context/TvInitContext";
 import ModalTvItems from "../components/filter-items/ModalTvItems";
 import ModalFavoriteTvItems from "../components/filter-items/ModalFavoriteTvItems";
 
 import classes from "./Modal.module.css";
 import { useEffect } from "react";
 
-const Modal = ({ tvEventInit, show, onConfirm }) => {
-    console.log("show: ", show);
+const Modal = ({ show, onConfirm }) => {
+  const tvInitCtx = useContext(TvInitContext);
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
 
   const handleDrop = (droppedItem) => {
@@ -72,8 +73,6 @@ const Modal = ({ tvEventInit, show, onConfirm }) => {
     sendData(true);
   }, [tvData]);
 
-  console.log("modal tveventinit", tvEventInit);
-  console.log("modal tvData", tvData);
   return (
     <>
       <div className={`${classes.backdrop} ${show ? classes.show : ""}`} onClick={onConfirm}></div>
@@ -86,7 +85,7 @@ const Modal = ({ tvEventInit, show, onConfirm }) => {
           <div className={classes.contentSections}>
             <h3>TV csatornák</h3>
             <div className={classes.channelLists}>
-              {tvEventInit.channels.map((channel) => (
+              {tvInitCtx.channels.map((channel) => (
                 <ModalTvItems
                   key={channel.id}
                   id={channel.id}
@@ -122,7 +121,7 @@ const Modal = ({ tvEventInit, show, onConfirm }) => {
                               />
                               <span className={classes.tvItemName}>
                                 {
-                                  tvEventInit.channels.find(
+                                  tvInitCtx.channels.find(
                                     (x) => x.id === item
                                   ).name
                                 }

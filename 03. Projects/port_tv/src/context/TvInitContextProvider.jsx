@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useContext } from "react";
+import { useEffect, useReducer } from "react";
 
 import TvInitContext from "./TvInitContext";
 
@@ -67,28 +67,16 @@ const tvInitContextReducer = (state, action) => {
 
     let filterUrl = {};
     for (const key in state.channelGroups) {
-      let filteredUrls = state.channels
+      let filteredUrls = "tv-event/api?" + state.channels
         .filter((item) => item.groupId === state.channelGroups[key].id)
-        .map((x) => {
-          let channels = `channel_id%5B%5D=${x.id}&`;
-          return `tv-event/api?${channels}${date}`;
-        })
+        .map((x) => `channel_id%5B%5D=${x.id}`).join("&") + "&" + date 
         .toString();
       filterUrl[key] = filteredUrls;
     }
 
     return {
-      ageLimit: state.ageLimit,
-      channelGroups: state.channelGroups,
-      channels: state.channels,
-      date: state.date,
-      filterDate: state.filterDate,
-      days: state.days,
-      daysDate: state.daysDate,
-      showType: state.showType,
-      likedChannels: state.likedChannels,
-      basicUrl: urls,
-      basicChannelFilterUrl: filterUrl,
+      ...state, basicUrl: urls,
+      basicChannelFilterUrl: filterUrl
     };
   }
 

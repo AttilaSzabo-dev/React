@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import TvDataContext from "../../context/TvDataContext";
+import TvInitContext from "../../context/TvInitContext";
 
 import { BsEnvelope } from "react-icons/bs";
 import { BsClock } from "react-icons/bs";
@@ -10,7 +11,6 @@ import classes from "./ProgramItem.module.css";
 const ProgramItem = ({
   notificId,
   reminderId,
-  actualTime,
   startTime,
   endTime,
   title,
@@ -18,13 +18,14 @@ const ProgramItem = ({
   start_ts,
   end_datetime,
 }) => {
+  const tvInitCtx = useContext(TvInitContext);
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
   const [notiStatus, setNotiStatus] = useState(false);
   const [remindStatus, setRemindStatus] = useState(false);
   const [hover, setHover] = useState(false);
   //console.log("actualTime: ", actualTime);
   const background =
-    start_ts > Math.floor(new Date(actualTime.date).getTime() / 1000)
+    start_ts > Math.floor(new Date(tvInitCtx.date).getTime() / 1000)
       ? "#fff"
       : "#f3f3f3";
   const widthCalc =

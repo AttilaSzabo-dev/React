@@ -7,7 +7,7 @@ import TimelineSection from "./TimelineSection";
 import classes from "./Timeline.module.css";
 import TvInitContext from "../../context/TvInitContext";
 
-const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFilterToAll,  time, timelineTimes }) => {
+const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFilterToAll, timelineTimes }) => {
   const tvInitCtx = useContext(TvInitContext);
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);

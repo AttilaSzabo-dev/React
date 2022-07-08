@@ -3,9 +3,11 @@ import Modal from "../../UI/Modal";
 import { RiHeartAddFill } from "react-icons/ri";
 
 import classes from "./FilterList.module.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import TvDataContext from "../../context/TvDataContext";
 
-const FilterList = ({ tvEventInit }) => {
+const FilterList = () => {
+  const { tvData, setTvData, csrf } = useContext(TvDataContext);
   const [modal, setModal] = useState(false);
 
   const onModalOpen = () => {
@@ -14,7 +16,7 @@ const FilterList = ({ tvEventInit }) => {
 
   return (
     <>
-      <Modal tvEventInit={tvEventInit} show={modal} onConfirm={onModalOpen} />
+      <Modal show={modal} onConfirm={onModalOpen} />
       <div className={classes.filterWrapper}>
         <div className={classes.filterContainers}>
           <button className={classes.modalButton} onClick={onModalOpen}>

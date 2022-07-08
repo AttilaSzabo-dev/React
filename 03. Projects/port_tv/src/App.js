@@ -38,7 +38,6 @@ function App() {
       })
       .then((data) => {
         setTvData(data);
-        //initCtx.addFavorites(data.favorite);
       })
       .catch((error) => {
         console.log(error.message);
@@ -54,26 +53,26 @@ function App() {
 
   return (
     <>
-      <TvInitContextProvider>
+      {/* <TvInitContextProvider>
         <Test />
-      </TvInitContextProvider>
+      </TvInitContextProvider> */}
 
       <TvDataContext.Provider value={value}>
-        {/* {tvEventInit !== null && tvData !== null && (
-          <FilterList tvEventInit={tvEventInit} />
-        )} */}
-        <Switch>
-          <Route path={"/tv"} exact>
-            <TvInitContextProvider>
-              <AllChannelsList />
-            </TvInitContextProvider>
-          </Route>
-          {/* <Route path={"/tv&:channelId"}>
-            {tvEventInit !== null && (
-              <SingleChannelList daysDate={tvEventInit.daysDate} />
-            )}
-          </Route> */}
-        </Switch>
+        <TvInitContextProvider>
+          {tvData !== null &&
+            <FilterList/>
+          }
+          <Switch>
+            <Route path={"/tv"} exact>
+                <AllChannelsList />
+            </Route>
+            {/* <Route path={"/tv&:channelId"}>
+              {tvEventInit !== null && (
+                <SingleChannelList daysDate={tvEventInit.daysDate} />
+                )}
+              </Route> */}
+          </Switch>
+        </TvInitContextProvider>
       </TvDataContext.Provider>
     </>
   );

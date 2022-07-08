@@ -11,7 +11,7 @@ import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
 
-const AllChannelsList = ({ tvEventInit }) => {
+const AllChannelsList = () => {
   const tvInitCtx = useContext(TvInitContext);
 
   const [filteredUrls, setFilteredUrls] = useState();
@@ -49,7 +49,7 @@ const AllChannelsList = ({ tvEventInit }) => {
   if (inView) {
     increseHandler();
   }
-  console.log(inView);
+  //console.log(inView);
 
   const scrollPrograms = (value) => {
     //console.log("testValue: ", value);
@@ -72,8 +72,7 @@ const AllChannelsList = ({ tvEventInit }) => {
   // 30perc = 1800000 milisecond
   // 1800000 milisecond = 150px
 
-  /* useEffect(() => {
-    console.log("time useeffect");
+  useEffect(() => {
     //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
     let startTime = [];
     let endTime = [];
@@ -89,8 +88,6 @@ const AllChannelsList = ({ tvEventInit }) => {
         );
       });
     });
-
-    //console.log("endTime: ", endTime);
 
     const minStart = Math.min(...startTime);
     const minStartMiliseconds = minStart * 1000;
@@ -141,14 +138,11 @@ const AllChannelsList = ({ tvEventInit }) => {
     });
     //console.log("endTime: ", endTime);
     //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
-  }, [programs]); */
+  }, [programs]);
 
   useEffect(() => {
-    console.log("tvinit useeffect");
+    console.log(tvInitCtx);
     if (tvInitCtx.basicUrl.length !== 0) {
-
-      console.log("tvInitCtx: ", tvInitCtx);
-
         setIsLoading(true);
         fetch(`${tvInitCtx.basicUrl[actualUrlsIndex]}`)
           .then((res) => {
@@ -162,9 +156,8 @@ const AllChannelsList = ({ tvEventInit }) => {
           .catch((error) => {
             setError(error.message);
           });
-          
     }
-  }, [actualUrlsIndex]);
+  }, [actualUrlsIndex, tvInitCtx.basicUrl]);
       
   if (programs.length !== 0) {
     console.log("programs: ", programs);
@@ -172,7 +165,7 @@ const AllChannelsList = ({ tvEventInit }) => {
   
   return (
     <>
-      <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} time={tvEventInit} timelineTimes={timelineTimes} />
+      <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} timelineTimes={timelineTimes} />
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
         <div className={classes.logoContainer}>
@@ -180,10 +173,10 @@ const AllChannelsList = ({ tvEventInit }) => {
             programs.map((program, parentIndex) => program.channels.map((channel, index) => (<AllChannelLogo channel={channel} parentIndex={parentIndex} index={index} key={channel.id} id={channel.id} />)))}
         </div>
         <div ref={programsContainer} className={classes.programsContainer}>
-          <Marker time={tvEventInit} timelineTimes={timelineTimes} />
+          <Marker timelineTimes={timelineTimes} />
           {programs.length !== 0 &&
             programs.map((program, index) => (
-              <AllChannelPrograms programs={program} time={tvEventInit} timelineTimes={timelineTimes} index={index} />
+              <AllChannelPrograms programs={program} timelineTimes={timelineTimes} index={index} />
             ))}
         </div>
       </div>
