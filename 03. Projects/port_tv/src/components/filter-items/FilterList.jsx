@@ -1,25 +1,24 @@
+import { useContext } from "react";
 import Modal from "../../UI/Modal";
 
 import { RiHeartAddFill } from "react-icons/ri";
 
+import TvContext from "../../context/TvContext";
+
 import classes from "./FilterList.module.css";
-import { useContext, useState } from "react";
-import TvDataContext from "../../context/TvDataContext";
+import EditFavoriteChannels from "./EditFavoriteChannels";
 
 const FilterList = () => {
-  const { tvData, setTvData, csrf } = useContext(TvDataContext);
-  const [modal, setModal] = useState(false);
-
-  const onModalOpen = () => {
-    setModal(!modal);
-  };
+  const tvCtx = useContext(TvContext);
 
   return (
     <>
-      <Modal show={modal} onConfirm={onModalOpen} />
+      <Modal>
+        <EditFavoriteChannels/>
+      </Modal>
       <div className={classes.filterWrapper}>
         <div className={classes.filterContainers}>
-          <button className={classes.modalButton} onClick={onModalOpen}>
+          <button className={classes.modalButton} onClick={tvCtx.setModal}>
             <RiHeartAddFill />
           </button>
         </div>

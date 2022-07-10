@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import TvInitContext from "../../context/TvInitContext";
+import TvInitContext from "../../context/TvContext";
 
 import classes from "./Marker.module.css";
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { useInView } from "react-intersection-observer";
+//import { useInView } from "react-intersection-observer";
 
-import TvInitContext from "../../context/TvInitContext";
+import TvContext from "../../context/TvContext";
 
 import AllChannelLogo from "./AllChannelLogo";
 import AllChannelPrograms from "./AllChannelPrograms";
@@ -12,13 +12,7 @@ import Spinner from "../../UI/Spinner";
 import classes from "./AllChannelsList.module.css";
 
 const AllChannelsList = () => {
-  const tvInitCtx = useContext(TvInitContext);
-
-  const [filteredUrls, setFilteredUrls] = useState();
-  const [filteredOrNot, setFilteredOrNot] = useState(false);
-  const [actualUrlsIndex, setActualUrlsIndex] = useState(0);
-
-  const [programs, setPrograms] = useState([]);
+  const tvCtx = useContext(TvContext);
   const [timelineTimes, setTimelineTimes] = useState({
     startTimestamp: 0,
     endTimestamp: 0,
@@ -34,21 +28,21 @@ const AllChannelsList = () => {
 
   const programsContainer = useRef(null);
 
-  const { ref, inView } = useInView({
-    /* Optional options */
+  /* const { ref, inView } = useInView({
+    
     threshold: 0,
     trackVisibility: true,
     delay: 100,
-  });
+  }); */
 
-  const increseHandler = () => {
+  /* const increseHandler = () => {
     if (tvInitCtx.basicUrl.length === actualUrlsIndex) return;
     setActualUrlsIndex(actualUrlsIndex + 1);
-  };
+  }; */
 
-  if (inView) {
+  /* if (inView) {
     increseHandler();
-  }
+  } */
   //console.log(inView);
 
   const scrollPrograms = (value) => {
@@ -76,7 +70,7 @@ const AllChannelsList = () => {
     //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
     let startTime = [];
     let endTime = [];
-    programs.forEach((item) => {
+    tvCtx.programs.forEach((item) => {
       item.channels.forEach((channel) => {
         startTime.push(channel.programs[0].start_ts);
         endTime.push(
@@ -138,53 +132,32 @@ const AllChannelsList = () => {
     });
     //console.log("endTime: ", endTime);
     //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
-  }, [programs]);
+  }, [tvCtx.programs]);
 
-  useEffect(() => {
-    console.log(tvInitCtx);
-    if (tvInitCtx.basicUrl.length !== 0) {
-        setIsLoading(true);
-        fetch(`${tvInitCtx.basicUrl[actualUrlsIndex]}`)
-          .then((res) => {
-            return res.json();
-          })
-          .then((data) => {
-            console.log("apiFetch: ", data);
-            setPrograms((prevState)=> [...prevState, data])
-            setIsLoading(false);
-          })
-          .catch((error) => {
-            setError(error.message);
-          });
-    }
-  }, [actualUrlsIndex, tvInitCtx.basicUrl]);
-      
-  if (programs.length !== 0) {
-    console.log("programs: ", programs);
-  }
+  //console.log(tvCtx.programs.length);
   
   return (
     <>
       <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} timelineTimes={timelineTimes} />
       <div className={classes.channelsWrapper}>
-        {isLoading && <Spinner />}
+        {/* isLoading && <Spinner /> */}
         <div className={classes.logoContainer}>
-          {programs.length !== 0 &&
-            programs.map((program, parentIndex) => program.channels.map((channel, index) => (<AllChannelLogo channel={channel} parentIndex={parentIndex} index={index} key={channel.id} id={channel.id} />)))}
+          {
+            tvCtx.programs.map((program, parentIndex) => program.channels.map((channel, index) => (<AllChannelLogo channel={channel} parentIndex={parentIndex} index={index} key={channel.id} id={channel.id} />)))}
         </div>
         <div ref={programsContainer} className={classes.programsContainer}>
           <Marker timelineTimes={timelineTimes} />
-          {programs.length !== 0 &&
-            programs.map((program, index) => (
+          {
+            tvCtx.programs.map((program, index) => (
               <AllChannelPrograms programs={program} timelineTimes={timelineTimes} index={index} />
             ))}
         </div>
       </div>
-      {programs.length !== 0 && isLoading === false && (
+      {/* {tvCtx.programs.length !== 0 && isLoading === false && (
         <button ref={ref} onClick={increseHandler}>
           Increse
         </button>
-      )}
+      )} */}
     </>
   );
 };

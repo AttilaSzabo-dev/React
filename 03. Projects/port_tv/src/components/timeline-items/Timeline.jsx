@@ -5,7 +5,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import TimelineSection from "./TimelineSection";
 
 import classes from "./Timeline.module.css";
-import TvInitContext from "../../context/TvInitContext";
+import TvInitContext from "../../context/TvContext";
 
 const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFilterToAll, timelineTimes }) => {
   const tvInitCtx = useContext(TvInitContext);
