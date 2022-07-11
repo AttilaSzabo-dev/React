@@ -93,23 +93,27 @@ const tvContextReducer = (state, action) => {
   }
 
   if (action.type === "CREATE_FIRST_PROGRAMS") {
-    const programArray = [...state.programs];
+    
+    /* console.log("prData init: ", prData);
     fetch(`${state.basicUrl[state.urlIndex]}`)
       .then((res) => {
         return res.json();
       })
       .then((programData) => {
-        programArray.push(programData)
+        console.log("programData: ", programData);
+        console.log("prData before: ", prData);
+        prData = programData;
+        console.log("prData after: ", prData);
       })
       .catch((error) => {
-        //setError(error.message);
+        setError(error.message);
       });
+      console.log("prData set: ", prData); */
 
-
-    return {
+    /* return {
       ...state,
-      programs: programArray
-    };
+      programs: [...state.programs, prData]
+    }; */
   }
 
   if (action.type === "CREATE_MORE_PROGRAMS") {
@@ -129,6 +133,13 @@ const tvContextReducer = (state, action) => {
     return {
       ...state,
       programs: programArray
+    };
+  }
+
+  if (action.type === "SET_PROGRAMS") {
+    return {
+      ...state,
+      programs: [...state.programs, action.value],
     };
   }
 
@@ -167,6 +178,13 @@ const tvContextReducer = (state, action) => {
     };
   }
 
+  if (action.type === "SET_URL_INDEX") {
+    return {
+      ...state,
+      urlIndex: state.urlIndex + 1,
+    };
+  }
+
   return state;
 };
 
@@ -186,7 +204,7 @@ const TvControllerProvider = (props) => {
           })
           .then((tvData) => {
             dispatch({ type: "CREATE_BASIC_URLS", tvData: tvData });
-            dispatch({ type: "CREATE_FIRST_PROGRAMS" });
+            //dispatch({ type: "CREATE_FIRST_PROGRAMS" });
 
             //dispatch({ type: "SET_IS_LOADING" });
           })
@@ -203,6 +221,10 @@ const TvControllerProvider = (props) => {
     dispatch({ type: "SET_MODAL" });
   };
 
+  const setLoadingHandler = () => {
+    dispatch({ type: "SET_IS_LOADING" });
+  };
+
   const favoritesHandler = (value) => {
     dispatch({ type: "SET_FAVORITES", value: value });
   };
@@ -217,6 +239,10 @@ const TvControllerProvider = (props) => {
 
   const programHandler = (value) => {
     dispatch({ type: "SET_PROGRAMS", value: value });
+  };
+
+  const urlIndexHandler = (value) => {
+    dispatch({ type: "SET_URL_INDEX", value: value });
   };
 
   const tvInitContext = {
@@ -238,10 +264,12 @@ const TvControllerProvider = (props) => {
     tvData: initState.tvData,
     switches: initState.switches,
     setModal: modalHandler,
+    setLoading: setLoadingHandler,
     setFavorites: favoritesHandler,
     setReminders: remindersHandler,
     setNotifications: notificationsHandler,
-    setPrograms: programHandler
+    setPrograms: programHandler,
+    setUrlIndex: urlIndexHandler
   };
 
   return (

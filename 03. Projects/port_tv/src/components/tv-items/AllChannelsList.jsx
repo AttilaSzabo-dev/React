@@ -132,32 +132,48 @@ const AllChannelsList = () => {
     });
     //console.log("endTime: ", endTime);
     //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
-  }, [tvCtx.programs]);
+  }, [tvCtx]);
 
+  useEffect(() => {
+    tvCtx.setLoading();
+    fetch(`${tvCtx.basicUrl[tvCtx.urlIndex]}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        tvCtx.setPrograms(data);
+        tvCtx.setLoading();
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }, [tvCtx.urlIndex]);
+
+  console.log("basicUrls channel: ", tvCtx.basicUrl.length);
   //console.log(tvCtx.programs.length);
   
   return (
     <>
-      <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} timelineTimes={timelineTimes} />
+      {tvCtx.programs.length > 0 && <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} timelineTimes={timelineTimes} />}
       <div className={classes.channelsWrapper}>
-        {/* isLoading && <Spinner /> */}
+        { tvCtx.switches.loading && <Spinner /> }
         <div className={classes.logoContainer}>
-          {
+          {tvCtx.programs.length > 0 &&
             tvCtx.programs.map((program, parentIndex) => program.channels.map((channel, index) => (<AllChannelLogo channel={channel} parentIndex={parentIndex} index={index} key={channel.id} id={channel.id} />)))}
         </div>
         <div ref={programsContainer} className={classes.programsContainer}>
           <Marker timelineTimes={timelineTimes} />
-          {
+          {tvCtx.programs.length > 0 &&
             tvCtx.programs.map((program, index) => (
               <AllChannelPrograms programs={program} timelineTimes={timelineTimes} index={index} />
             ))}
         </div>
       </div>
-      {/* {tvCtx.programs.length !== 0 && isLoading === false && (
-        <button ref={ref} onClick={increseHandler}>
+      {tvCtx.programs.length > 0 && (
+        <button onClick={tvCtx.setUrlIndex}>
           Increse
         </button>
-      )} */}
+      )}
     </>
   );
 };

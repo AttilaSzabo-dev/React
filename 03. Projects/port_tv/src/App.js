@@ -15,6 +15,7 @@ function App() {
   useEffect(() => {
     console.log("test-ctx: ", tvCtx);
     //console.log("programs: ", tvCtx.programs.length);
+    console.log("basicUrls: ", tvCtx.basicUrl.length);
   }, [tvCtx]);
 
   return (
@@ -25,9 +26,7 @@ function App() {
       {tvCtx.tvData.favorite !== undefined && <FilterList />}
       <Switch>
         <Route path={"/tv"} exact>
-          <AllChannelsList />
-          
-          
+          {tvCtx.basicUrl.length > 0 && <AllChannelsList />}
         </Route>
         <Route path={"/tv&:channelId"}>
           {/* <SingleChannelList daysDate={tvEventInit.daysDate} /> */}

@@ -23,7 +23,8 @@ const TvContext = React.createContext({
   setFavorites: ()=>{},
   setReminders: ()=>{},
   setNotifications: ()=>{},
-  setPrograms: ()=>{}
+  setPrograms: ()=>{},
+  setUrlIndex: ()=>{},
 });
 
 export default TvContext;
