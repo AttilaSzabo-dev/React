@@ -3,16 +3,16 @@ import { useState, useEffect, useRef, useContext } from "react";
 
 import TvContext from "../../context/TvContext";
 
+import FilterList from "../filter-items/FilterList";
+import Timeline from "../timeline-items/Timeline";
 import AllChannelLogo from "./AllChannelLogo";
 import AllChannelPrograms from "./AllChannelPrograms";
-import Timeline from "../timeline-items/Timeline";
 import Marker from "../timeline-items/Marker";
 import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
 
-const AllChannelsList = () => {
-  const tvCtx = useContext(TvContext);
+const AllChannelsList = ({initData, url, channelFilterUrl}) => {
   const [timelineTimes, setTimelineTimes] = useState({
     startTimestamp: 0,
     endTimestamp: 0,
@@ -22,11 +22,17 @@ const AllChannelsList = () => {
     endHour: 0,
     firstProgramsStartTime: []
   });
-
+  console.log("AllChannelList render");
+  const [programs, setPrograms] = useState([]);
+  const [basicUrlIndex, setBasicUrlIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const programsContainer = useRef(null);
+
+  const urlIndexHandler = () => {
+    setBasicUrlIndex(basicUrlIndex + 1)
+  };
 
   /* const { ref, inView } = useInView({
     
@@ -70,7 +76,8 @@ const AllChannelsList = () => {
     //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
     let startTime = [];
     let endTime = [];
-    tvCtx.programs.forEach((item) => {
+    programs.forEach((item) => {
+      console.log("item: ", item);
       item.channels.forEach((channel) => {
         startTime.push(channel.programs[0].start_ts);
         endTime.push(
@@ -82,6 +89,8 @@ const AllChannelsList = () => {
         );
       });
     });
+
+    //console.log("endTime: ", endTime);
 
     const minStart = Math.min(...startTime);
     const minStartMiliseconds = minStart * 1000;
@@ -132,45 +141,57 @@ const AllChannelsList = () => {
     });
     //console.log("endTime: ", endTime);
     //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
-  }, [tvCtx]);
+    console.log("timelineTimes: ", timelineTimes);
+  }, [programs]);
 
   useEffect(() => {
-    tvCtx.setLoading();
-    fetch(`${tvCtx.basicUrl[tvCtx.urlIndex]}`)
+    setIsLoading(true);
+    fetch(`${url[basicUrlIndex]}`)
       .then((res) => {
         return res.json();
       })
       .then((data) => {
-        tvCtx.setPrograms(data);
-        tvCtx.setLoading();
+        setPrograms((prevPrograms) => {
+          return [
+            ...prevPrograms,
+            {
+              channels: data.channels,
+              date: data.date,
+              date_from: data.date_from,
+              date_to: data.date_to,
+              eveningStartTime: data.eveningStartTime,
+            },
+          ];
+        });
+        setIsLoading(false);
       })
       .catch((error) => {
         setError(error.message);
       });
-  }, [tvCtx.urlIndex]);
+  }, [basicUrlIndex]);
 
-  console.log("basicUrls channel: ", tvCtx.basicUrl.length);
-  //console.log(tvCtx.programs.length);
+  console.log("programs: ", programs);
   
   return (
     <>
-      {tvCtx.programs.length > 0 && <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} timelineTimes={timelineTimes} />}
+      {/* <FilterList /> */}
+      {programs.length > 0 && <Timeline onChangeApiFetch={scrollProgramsOnFetch} onChangeDelta={scrollPrograms} timelineTimes={timelineTimes} />}
       <div className={classes.channelsWrapper}>
-        { tvCtx.switches.loading && <Spinner /> }
+        { isLoading && <Spinner /> }
         <div className={classes.logoContainer}>
-          {tvCtx.programs.length > 0 &&
-            tvCtx.programs.map((program, parentIndex) => program.channels.map((channel, index) => (<AllChannelLogo channel={channel} parentIndex={parentIndex} index={index} key={channel.id} id={channel.id} />)))}
+          {programs.length > 0 &&
+            programs.map((program, parentIndex) => program.channels.map((channel, index) => (<AllChannelLogo channel={channel} parentIndex={parentIndex} index={index} key={channel.id} id={channel.id} />)))}
         </div>
         <div ref={programsContainer} className={classes.programsContainer}>
           <Marker timelineTimes={timelineTimes} />
-          {tvCtx.programs.length > 0 &&
-            tvCtx.programs.map((program, index) => (
-              <AllChannelPrograms programs={program} timelineTimes={timelineTimes} index={index} />
+          {programs.length > 0 &&
+            programs.map((program, index) => (
+              <AllChannelPrograms programs={program} initData={initData} timelineTimes={timelineTimes} />
             ))}
         </div>
       </div>
-      {tvCtx.programs.length > 0 && (
-        <button onClick={tvCtx.setUrlIndex}>
+      {programs.length > 0 && (
+        <button onClick={urlIndexHandler}>
           Increse
         </button>
       )}

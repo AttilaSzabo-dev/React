@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 
-import TvContext from "../../context/TvContext";
+import TvDataContext from "../../context/TvDataContext";
 
 import { BsEnvelope } from "react-icons/bs";
 import { BsClock } from "react-icons/bs";
@@ -10,6 +10,7 @@ import classes from "./ProgramItem.module.css";
 const ProgramItem = ({
   notificId,
   reminderId,
+  actualTime,
   startTime,
   endTime,
   title,
@@ -17,13 +18,13 @@ const ProgramItem = ({
   start_ts,
   end_datetime,
 }) => {
-  const tvCtx = useContext(TvContext);
+  const { tvData, setTvData, csrf } = useContext(TvDataContext);
   const [notiStatus, setNotiStatus] = useState(false);
   const [remindStatus, setRemindStatus] = useState(false);
   const [hover, setHover] = useState(false);
-
+  //console.log("actualTime: ", actualTime);
   const background =
-    start_ts > Math.floor(new Date(tvCtx.date).getTime() / 1000)
+    start_ts > Math.floor(new Date(actualTime.date).getTime() / 1000)
       ? "#fff"
       : "#f3f3f3";
   const widthCalc =
@@ -52,40 +53,32 @@ const ProgramItem = ({
 
   const setNotiHandler = () => {
     if (notiStatus) {
-      const copy = tvCtx.tvData.notifications;
-      delete copy[notificId];
-      tvCtx.setNotifications(copy);
-      /* setTvData((currentData) => {
+      setTvData((currentData) => {
         const copy = { ...currentData };
         delete copy["notifications"][notificId];
         return copy;
-      }); */
+      });
     } else {
-      tvCtx.setNotifications({[notificId]: 1});
-      /* setTvData((prevData) => ({
+      setTvData((prevData) => ({
         ...prevData,
         notifications: { ...prevData.notifications, [notificId]: 1 },
-      })); */
+      }));
     }
     setNotiStatus(!notiStatus);
     sendData(true);
   };
   const setRemindHandler = () => {
     if (remindStatus) {
-      const copy = tvCtx.tvData.reminders;
-      delete copy[reminderId];
-      tvCtx.setReminders(copy);
-      /* setTvData((currentData) => {
+      setTvData((currentData) => {
         const copy = { ...currentData };
         delete copy["reminders"][reminderId];
         return copy;
-      }); */
+      });
     } else {
-      tvCtx.setReminders({[reminderId]: 1});
-      /* setTvData((prevData) => ({
+      setTvData((prevData) => ({
         ...prevData,
         reminders: { ...prevData.reminders, [reminderId]: 1 },
-      })); */
+      }));
     }
     setRemindStatus(!remindStatus);
     sendData(false);
@@ -108,23 +101,19 @@ const ProgramItem = ({
       "Content-type",
       "application/x-www-form-urlencoded; charset=UTF-8"
     );
-    xhttp.setRequestHeader("X-CSRF-Token", tvCtx.csrf);
+    xhttp.setRequestHeader("X-CSRF-Token", csrf);
     xhttp.send(entity);
   };
 
   useEffect(() => {
-    for (const key in tvCtx.tvData.notifications) {
-      if (key === notificId) {
-        setNotiStatus(true);
-      }
+    if (notificId in tvData.notifications) {
+      setNotiStatus(true);
     }
 
-    for (const key in tvCtx.tvData.reminders) {
-      if (key === reminderId) {
-        setRemindStatus(true);
-      }
+    if (notificId in tvData.reminders) {
+      setNotiStatus(true);
     }
-  }, [tvCtx.tvData.notifications, tvCtx.tvData.reminders, notificId, reminderId]);
+  }, [tvData.notifications, tvData.reminders, notificId, reminderId]);
 
   return (
     <div

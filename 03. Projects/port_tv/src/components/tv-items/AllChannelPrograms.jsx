@@ -6,8 +6,6 @@ import AdItemBottom from "../ad-items/AdItemBottom";
 /* import classes from "./AllChannelPrograms.module.css"; */
 
 const AllChannelPrograms = (props) => {
-  
-
   return props.programs.channels.map((channel, index) => (
     <>
       {props.index === 0 && index === 3 ? <AdItemTop /> : ""}
@@ -18,6 +16,7 @@ const AllChannelPrograms = (props) => {
             key={item.id}
             notificId={item.id}
             reminderId={item.film_id}
+            actualTime={props.initData.date}
             startTime={item.start_time}
             endTime={item.end_time}
             title={item.title}

@@ -160,21 +160,23 @@ const tvContextReducer = (state, action) => {
   if (action.type === "SET_FAVORITES") {
     return {
       ...state,
-      tvData: { favorite: action.value },
+      tvData: { ...state.tvData, favorite: action.value },
     };
   }
 
   if (action.type === "SET_REMINDERS") {
+    console.log("action: ", action);
     return {
       ...state,
-      tvData: { reminders: action.value },
+      tvData: { ...state.tvData, reminders: action.value}
     };
   }
 
   if (action.type === "SET_NOTIFICATIONS") {
+    console.log("action: ", action);
     return {
       ...state,
-      tvData: { notifications: action.value },
+      tvData: { ...state.tvData, notifications: action.value}
     };
   }
 
@@ -189,6 +191,7 @@ const tvContextReducer = (state, action) => {
 };
 
 const TvControllerProvider = (props) => {
+  console.log("Provider render");
   const [initState, dispatch] = useReducer(tvContextReducer, defState);
 
   useEffect(() => {

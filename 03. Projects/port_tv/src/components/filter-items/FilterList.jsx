@@ -9,6 +9,7 @@ import classes from "./FilterList.module.css";
 import EditFavoriteChannels from "./EditFavoriteChannels";
 
 const FilterList = () => {
+  console.log("FilterList render");
   const tvCtx = useContext(TvContext);
 
   return (
