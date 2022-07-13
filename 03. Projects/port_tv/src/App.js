@@ -10,7 +10,7 @@ import Test from "./UI/Test.jsx";
 import "./App.css";
 
 function App() {
-  const [tvData, setTvData] = useState(null);
+  const [tvData, setTvData] = useState({});
   const [initData, setInitData] = useState(null);
 
   const csrf = document.querySelector('meta[name="csrf-token"]').content;
@@ -81,14 +81,20 @@ function App() {
         return res.json();
       })
       .then((data) => {
-        setTvData(data);
+        let notificationsArray = Object.keys(data.notifications);
+        let remindersArray = Object.keys(data.reminders);
+        setTvData({
+          favorite: data.favorite,
+          notifications: notificationsArray,
+          reminders: remindersArray
+        });
       })
       .catch((error) => {
         console.log(error.message);
       });
   }, []);
 
-  if (initData !== null && tvData !== null) {
+  if (initData !== null && Object.keys(tvData).length !== 0) {
     createInitUrls();
   }
 
@@ -104,7 +110,7 @@ function App() {
       <TvDataContext.Provider value={value}>
         <Switch>
           <Route path={"/tv"} exact>
-            {initData !== null && tvData !== null && (
+            {initData !== null && Object.keys(tvData).length !== 0 && (
               <AllChannelsList
                 initData={initData}
                 url={url}

@@ -1,4 +1,5 @@
 .backdrop {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -6,19 +7,17 @@
   height: 100vh;
   z-index: 200;
   background: rgba(0, 0, 0, 0.75);
-  transform: translateY(100%);
   opacity: 0;
-  transition: all 0.2s ease-in-out;
 }
 
 .backdrop.show {
-  opacity: 1;
-  transform: translateY(0);
+  animation: in .2s linear forwards;
 }
 
 .modal {
+  display: none;
   position: fixed;
-  top: -100%;
+  top: 20vh !important;
   left: 10%;
   width: 80%;
   height: 100%;
@@ -28,14 +27,27 @@
   padding: 15px;
   border-radius: 5px;
   background-color: #fff;
-
   opacity: 0;
-  transition: all 0.3s ease-in-out;
 }
 
 .modal.show {
-  top: 20vh;
-  opacity: 1;
+  animation: in .2s linear forwards;
+}
+
+@keyframes in {
+  0% {
+    display: block;
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.3;
+  }
+  70% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 /* *********************************** */
 /* .backdrop {
@@ -80,10 +92,9 @@
 }
  */
 
-
 @media (min-width: 768px) {
   .modal {
-    left: calc(50% - 20rem);
+    left: calc(50% - 20rem) !important;
     width: 40rem;
   }
 }

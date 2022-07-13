@@ -1,27 +1,20 @@
 import ReactDOM from "react-dom";
 
 import { useContext } from "react";
-import TvContext from "../context/TvContext";
+import ModalContext from "../context/ModalContext";
 
-import classes from "./Modal.module.css";
+import "./modal.css";
 
 const Modal = (props) => {
-  const tvCtx = useContext(TvContext);
-  const Backdrop = () => {
-    return <div className={`${classes.backdrop} ${tvCtx.switches.modal ? classes.show : ""}`} onClick={tvCtx.setModal} />;
-  };
-
-  const ModalOverlay = (props) => {
-    return <div className={`${classes.modal} ${tvCtx.switches.modal ? classes.show : ""}`}>{props.children}</div>;
-  };
+  const ctx = useContext(ModalContext);
 
   const portalElement = document.getElementById("overlays");
 
   return (
     <>
-      {ReactDOM.createPortal(<Backdrop />, portalElement)}
+      {ReactDOM.createPortal(<div className={`backdrop ${props.toShow}`} onClick={ctx.setModal} />, portalElement)}
       {ReactDOM.createPortal(
-        <ModalOverlay>{props.children}</ModalOverlay>,
+        <div className={`modal ${props.toShow}`}>{props.children}</div>,
         portalElement
       )}
     </>

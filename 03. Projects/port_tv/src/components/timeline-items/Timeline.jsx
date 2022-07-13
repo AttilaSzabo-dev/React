@@ -1,19 +1,16 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
 import TimelineSection from "./TimelineSection";
 
 import classes from "./Timeline.module.css";
-import TvInitContext from "../../context/TvContext";
 
-const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFilterToAll, timelineTimes }) => {
-  const tvInitCtx = useContext(TvInitContext);
+const Timeline = ({ onChangeDelta, onChangeApiFetch, initData, timelineTimes, channelFilterUrl }) => {
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  //console.log("timelineProps: ", props.timelineTimes);
+  const [categories, setCategories] = useState();
+  console.log("timeline render");
 
   const mouseWheelHandler = (e) => {
     e.preventDefault();
@@ -27,17 +24,26 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFil
     onChangeDelta(-150);
   };
   const goRight = () => {
-    if (container.current.scrollWidth - container.current.scrollLeft === container.current.offsetWidth) {
+    if (
+      container.current.scrollWidth - container.current.scrollLeft ===
+      container.current.offsetWidth
+    ) {
       console.log("END scrollWidth: ", container.current.scrollWidth);
       console.log("END scrollLeft: ", container.current.scrollLeft);
-      console.log("END scrollWidth - scrollLeft: ", container.current.scrollWidth - container.current.scrollLeft);
+      console.log(
+        "END scrollWidth - scrollLeft: ",
+        container.current.scrollWidth - container.current.scrollLeft
+      );
       console.log("END offsetWidth: ", container.current.offsetWidth);
       return false;
     } else {
       container.current.scrollLeft += 150;
       console.log("scrollWidth: ", container.current.scrollWidth);
       console.log("scrollLeft: ", container.current.scrollLeft);
-      console.log("scrollWidth - scrollLeft: ", container.current.scrollWidth - container.current.scrollLeft);
+      console.log(
+        "scrollWidth - scrollLeft: ",
+        container.current.scrollWidth - container.current.scrollLeft
+      );
       console.log("offsetWidth: ", container.current.offsetWidth);
       //TODO lehetséges megoldás:
       //onChangeDelta(container.current.scrollLeft);
@@ -47,34 +53,37 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFil
 
   const onSelectChange = (e) => {
     const event = e.target.value;
-    if (event === "all") {
-      onChangeFilterToAll(false);
-    }else {
-      let url = "tv-event/api?";
-      tvInitCtx.channels.forEach(function(item) {
-        if (item.groupName === event) {
-          url += `channel_id%5B%5D=${item.id}&`;
-        }
-      });
-      url += `date=${tvInitCtx.date.split("T")[0]}`;
-      onChangeFilter(url);
-      console.log("url: ", url);
-    }
+    console.log("item: ", event);
   };
-
+  
   useEffect(() => {
-    const newPos = (Math.floor(new Date(tvInitCtx.date).getTime()) - timelineTimes.startTimestamp) / 12000;
-    //container.current.scrollLeft += newPos;
-    //console.log("newPos: ", newPos);
-    container.current.scrollTo({
-      top: 0,
-      left: newPos - 300,
-      behavior: "smooth",
-    });
-    onChangeApiFetch(newPos - 300);
+    if (timelineTimes.startTimestamp > 0) {
+      const newPos =
+        (Math.floor(new Date(initData.date).getTime()) -
+          timelineTimes.startTimestamp) /
+        12000;
+      //container.current.scrollLeft += newPos;
 
-    
-  }, [tvInitCtx, timelineTimes, onChangeApiFetch]);
+      container.current.scrollTo({
+        top: 0,
+        left: newPos - 300,
+        behavior: "smooth",
+      });
+      onChangeApiFetch(newPos - 300);
+
+      let groups = Object.values(initData.channelGroups);
+      groups.map((item) => (
+
+        setCategories((prevData) => ([
+          ...prevData,
+          item,
+        ]))
+      ));
+        console.log("initData: ", initData);
+        console.log("groups: ", groups);
+        console.log("categories: ", categories);
+    }
+  }, [initData, timelineTimes, onChangeApiFetch]);
 
   useEffect(() => {
     container.current.addEventListener("wheel", mouseWheelHandler, {
@@ -118,12 +127,16 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, onChangeFilter, onChangeFil
   return (
     <div className={classes["timeline-wrapper"]}>
       <div className={classes["timeline-filter"]}>
-      <select className={classes.select} name="selectList" id="selectList" onChange={(e) => onSelectChange(e)}>
-        <option value="all">Minden csatorna</option>
-        {categories.map((item)=> (
-          <option value={item}>{item}</option>
-        ))}
-      </select>
+        {/* <select
+          className={classes.select}
+          name="selectList"
+          id="selectList"
+          onChange={(e) => onSelectChange(e)}
+        >
+          {categories.map((item) => (
+            <option value={item}>{item}</option>
+          ))}
+        </select> */}
       </div>
       <button
         onClick={goLeft}

@@ -22,9 +22,8 @@ const ProgramItem = ({
   const [notiStatus, setNotiStatus] = useState(false);
   const [remindStatus, setRemindStatus] = useState(false);
   const [hover, setHover] = useState(false);
-  //console.log("actualTime: ", actualTime);
   const background =
-    start_ts > Math.floor(new Date(actualTime.date).getTime() / 1000)
+    start_ts > Math.floor(new Date(actualTime).getTime() / 1000)
       ? "#fff"
       : "#f3f3f3";
   const widthCalc =
@@ -53,15 +52,17 @@ const ProgramItem = ({
 
   const setNotiHandler = () => {
     if (notiStatus) {
-      setTvData((currentData) => {
-        const copy = { ...currentData };
-        delete copy["notifications"][notificId];
-        return copy;
-      });
+      const filteredFavorite = tvData.notifications.filter(
+        (removeId) => removeId !== notificId
+      );
+      setTvData((prevData) => ({
+        ...prevData,
+        notifications: filteredFavorite,
+      }));
     } else {
       setTvData((prevData) => ({
         ...prevData,
-        notifications: { ...prevData.notifications, [notificId]: 1 },
+        notifications: [...prevData.notifications, notificId],
       }));
     }
     setNotiStatus(!notiStatus);
@@ -69,15 +70,17 @@ const ProgramItem = ({
   };
   const setRemindHandler = () => {
     if (remindStatus) {
-      setTvData((currentData) => {
-        const copy = { ...currentData };
-        delete copy["reminders"][reminderId];
-        return copy;
-      });
+      const filteredFavorite = tvData.reminders.filter(
+        (removeId) => removeId !== reminderId
+      );
+      setTvData((prevData) => ({
+        ...prevData,
+        reminders: filteredFavorite,
+      }));
     } else {
       setTvData((prevData) => ({
         ...prevData,
-        reminders: { ...prevData.reminders, [reminderId]: 1 },
+        reminders: [...prevData.reminders, reminderId],
       }));
     }
     setRemindStatus(!remindStatus);
@@ -106,12 +109,13 @@ const ProgramItem = ({
   };
 
   useEffect(() => {
-    if (notificId in tvData.notifications) {
+
+    if (tvData.notifications.includes(notificId)) {
       setNotiStatus(true);
     }
 
-    if (notificId in tvData.reminders) {
-      setNotiStatus(true);
+    if (tvData.reminders.includes(reminderId)) {
+      setRemindStatus(true);
     }
   }, [tvData.notifications, tvData.reminders, notificId, reminderId]);
 
