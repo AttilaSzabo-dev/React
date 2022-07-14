@@ -6,10 +6,10 @@ import TimelineSection from "./TimelineSection";
 
 import classes from "./Timeline.module.css";
 
-const Timeline = ({ onChangeDelta, onChangeApiFetch, initData, timelineTimes, channelFilterUrl }) => {
+const Timeline = ({ onChangeDelta, onChangeApiFetch, initData, timelineTimes }) => {
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);
-  const [categories, setCategories] = useState();
+  const [categories, setCategories] = useState([]);
   console.log("timeline render");
 
   const mouseWheelHandler = (e) => {
@@ -64,26 +64,22 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, initData, timelineTimes, ch
         12000;
       //container.current.scrollLeft += newPos;
 
-      container.current.scrollTo({
-        top: 0,
-        left: newPos - 300,
-        behavior: "smooth",
-      });
-      onChangeApiFetch(newPos - 300);
+      //TODO: lassab gépeken vagy neten nem jelenik meg a konténer időben ezért nem tud scrollozódni (egyenlőre timeout a megoldás)
+      setTimeout(() => {
+        container.current.scrollTo({
+          top: 0,
+          left: newPos - 300,
+          behavior: "smooth",
+        });
+        onChangeApiFetch(newPos - 300);
+      }, 10);
 
       let groups = Object.values(initData.channelGroups);
-      groups.map((item) => (
-
-        setCategories((prevData) => ([
-          ...prevData,
-          item,
-        ]))
-      ));
-        console.log("initData: ", initData);
-        console.log("groups: ", groups);
-        console.log("categories: ", categories);
+      setCategories(groups);
     }
   }, [initData, timelineTimes, onChangeApiFetch]);
+
+  console.log("categories out: ", categories);
 
   useEffect(() => {
     container.current.addEventListener("wheel", mouseWheelHandler, {
@@ -127,16 +123,16 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, initData, timelineTimes, ch
   return (
     <div className={classes["timeline-wrapper"]}>
       <div className={classes["timeline-filter"]}>
-        {/* <select
+        {<select
           className={classes.select}
           name="selectList"
           id="selectList"
           onChange={(e) => onSelectChange(e)}
         >
-          {categories.map((item) => (
-            <option value={item}>{item}</option>
+          {categories.length > 0 && categories.map((item) => (
+            <option value={item.id}>{item.name}</option>
           ))}
-        </select> */}
+        </select>}
       </div>
       <button
         onClick={goLeft}

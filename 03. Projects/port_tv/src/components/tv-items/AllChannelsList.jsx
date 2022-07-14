@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 //import { useInView } from "react-intersection-observer";
 
-import TvContext from "../../context/TvContext";
 
 import FilterList from "../filter-items/FilterList";
 import Timeline from "../timeline-items/Timeline";
@@ -23,11 +22,15 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     firstProgramsStartTime: [],
   });
   console.log("AllChannelList render");
-  const [channelFilter, setChannelFilter] = useState({
-    state: false,
-
+  const [channelUnfiltered, setChannelUnfiltered] = useState({
+    programs: [],
+    urlIndex: 0
   });
-  const [programs, setPrograms] = useState([]);
+  const [programsToShow, setProgramsToShow] = useState([]);
+  const [channelFiltered, setChannelFiltered] = useState({
+    programs: [],
+    state: false
+  });
   const [basicUrlIndex, setBasicUrlIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -35,8 +38,13 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   const programsContainer = useRef(null);
 
   const urlIndexHandler = () => {
-    setBasicUrlIndex(basicUrlIndex + 1);
+    setChannelUnfiltered((prevData) => ({
+      ...prevData,
+      urlIndex: {...prevData.urlIndex + 1},
+    }));
   };
+
+  console.log("urlIndexHandler: ", channelUnfiltered);
 
   /* const { ref, inView } = useInView({
     
@@ -76,7 +84,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   // 30perc = 1800000 milisecond
   // 1800000 milisecond = 150px
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (programs.length > 0) {
       //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
       let startTime = [];
@@ -147,16 +155,36 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
     }
   }, [programs]);
-
-  useEffect(() => {
-
+ */
+  /* useEffect(() => {
     if (channelFilter.state) {
-      
+      setIsLoading(true);
+      fetch(`${url[basicUrlIndex]}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setPrograms((prevPrograms) => {
+            return [
+              ...prevPrograms,
+              {
+                channels: data.channels,
+                date: data.date,
+                date_from: data.date_from,
+                date_to: data.date_to,
+                eveningStartTime: data.eveningStartTime,
+              },
+            ];
+          });
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setError(error.message);
+        });
     }
+  }, [channelFilter]); */
 
-  }, [channelFilter]);
-
-  useEffect(() => {
+  /* useEffect(() => {
     setIsLoading(true);
     fetch(`${url[basicUrlIndex]}`)
       .then((res) => {
@@ -180,27 +208,26 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       .catch((error) => {
         setError(error.message);
       });
-  }, [basicUrlIndex]);
+  }, [basicUrlIndex]); */
 
-  console.log("programs: ", programs);
+  /* console.log("programs: ", programs); */
 
   return (
     <>
-      {programs.length > 0 && <FilterList initData={initData} />}
-      {programs.length > 0 && (
+      {programsToShow.length > 0 && <FilterList initData={initData} />}
+      {programsToShow.length > 0 && (
         <Timeline
           onChangeApiFetch={scrollProgramsOnFetch}
           onChangeDelta={scrollPrograms}
           initData={initData}
           timelineTimes={timelineTimes}
-          channelFilterUrl={channelFilterUrl}
         />
       )}
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
         <div className={classes.logoContainer}>
-          {programs.length > 0 &&
-            programs.map((program, parentIndex) =>
+          {programsToShow.length > 0 &&
+            programsToShow.map((program, parentIndex) =>
               program.channels.map((channel, index) => (
                 <AllChannelLogo
                   channel={channel}
@@ -214,8 +241,8 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
         </div>
         <div ref={programsContainer} className={classes.programsContainer}>
           <Marker time={initData} timelineTimes={timelineTimes} />
-          {programs.length > 0 &&
-            programs.map((program, index) => (
+          {programsToShow.length > 0 &&
+            programsToShow.map((program, index) => (
               <AllChannelPrograms
                 programs={program}
                 initData={initData}
@@ -225,7 +252,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
             ))}
         </div>
       </div>
-      {programs.length > 0 && (
+      {programsToShow.length > 0 && (
         <button onClick={urlIndexHandler}>Increse</button>
       )}
     </>

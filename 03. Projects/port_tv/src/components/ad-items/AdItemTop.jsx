@@ -27,16 +27,21 @@ const zone = {
   }
 }
 
-//const callback = () => {};
+const callback = () => {};
 /* useEffect(() =y {
   typeof() window.ADOLoader
 }, []); */
-//window.ADOLoader.AdEngine.append(zone, callback)
+if (typeof window.ADOLoader === "undefined") {
+  window.iap_zones = window.iap_zones || [];
+  window.iap_zones.push(zone);
+}else {
+  window.ADOLoader.AdEngine.append(zone, callback)
+}
 
   return (
     <div className={classes.adItem}>
       <div className={classes.adContent}>
-        <div id="adoceanindexhuqplmcsphle"></div>
+        <div className="iap iap--ado empty bg--transparent" id="adoceanindexhuqplmcsphle" data-id="adoceanindexhuqplmcsphle"></div>
       </div>
     </div>
   );

@@ -8,6 +8,8 @@ import SingleChannelList from "./components/tv-items/SingleChannelList";
 
 import Test from "./UI/Test.jsx";
 import "./App.css";
+import AdItemTop from "./components/ad-items/AdItemTop";
+import AdItemBottom from "./components/ad-items/AdItemBottom";
 
 function App() {
   const [tvData, setTvData] = useState({});
@@ -104,10 +106,12 @@ function App() {
   //console.log("channelFilterUrl: ", channelFilterUrl);
   return (
     <>
+    <AdItemTop />
+    <AdItemBottom />
       {/* <TvControllerProvider>
         <Test />
       </TvControllerProvider> */}
-      <TvDataContext.Provider value={value}>
+      {/* <TvDataContext.Provider value={value}>
         <Switch>
           <Route path={"/tv"} exact>
             {initData !== null && Object.keys(tvData).length !== 0 && (
@@ -119,11 +123,11 @@ function App() {
             )}
           </Route>
           <Route path={"/tv&:channelId"}>
-            {/* <SingleChannelList daysDate={tvEventInit.daysDate} /> */}
-            {/* <SingleChannelList /> */}
+            {<SingleChannelList daysDate={tvEventInit.daysDate} />}
+            {<SingleChannelList />}
           </Route>
         </Switch>
-      </TvDataContext.Provider>
+      </TvDataContext.Provider> */}
     </>
   );
 }
