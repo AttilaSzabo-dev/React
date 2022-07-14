@@ -84,7 +84,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   // 30perc = 1800000 milisecond
   // 1800000 milisecond = 150px
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (programs.length > 0) {
       //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
       let startTime = [];
@@ -155,8 +155,8 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
     }
   }, [programs]);
- */
-  /* useEffect(() => {
+
+  useEffect(() => {
     if (channelFilter.state) {
       setIsLoading(true);
       fetch(`${url[basicUrlIndex]}`)
@@ -182,9 +182,9 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           setError(error.message);
         });
     }
-  }, [channelFilter]); */
+  }, [channelFilter]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     setIsLoading(true);
     fetch(`${url[basicUrlIndex]}`)
       .then((res) => {
@@ -208,9 +208,9 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       .catch((error) => {
         setError(error.message);
       });
-  }, [basicUrlIndex]); */
+  }, [basicUrlIndex]);
 
-  /* console.log("programs: ", programs); */
+  console.log("programs: ", programs);
 
   return (
     <>

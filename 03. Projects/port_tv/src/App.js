@@ -64,6 +64,19 @@ function App() {
     channelFilterUrl = filterUrl;
   };
 
+  /* useEffect(() => {
+    fetch("tvapi/proposer")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log("proposer: ", data);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, []); */
+
   useEffect(() => {
     fetch("tv-event/init")
       .then((res) => {
@@ -108,10 +121,10 @@ function App() {
     <>
     <AdItemTop />
     <AdItemBottom />
-      {/* <TvControllerProvider>
+      {/*<TvControllerProvider>
         <Test />
       </TvControllerProvider> */}
-      {/* <TvDataContext.Provider value={value}>
+      <TvDataContext.Provider value={value}>
         <Switch>
           <Route path={"/tv"} exact>
             {initData !== null && Object.keys(tvData).length !== 0 && (
@@ -123,11 +136,11 @@ function App() {
             )}
           </Route>
           <Route path={"/tv&:channelId"}>
-            {<SingleChannelList daysDate={tvEventInit.daysDate} />}
-            {<SingleChannelList />}
+            {/* <SingleChannelList daysDate={tvEventInit.daysDate} />
+            <SingleChannelList /> */}
           </Route>
         </Switch>
-      </TvDataContext.Provider> */}
+      </TvDataContext.Provider>
     </>
   );
 }
