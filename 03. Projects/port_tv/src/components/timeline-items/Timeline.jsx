@@ -6,11 +6,12 @@ import TimelineSection from "./TimelineSection";
 
 import classes from "./Timeline.module.css";
 
-const Timeline = ({ onChangeDelta, onChangeApiFetch, initData, timelineTimes }) => {
+const Timeline = ({ onChangeDelta, onChangeApiFetch, onFilterChannels, initData, timelineTimes }) => {
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);
   const [categories, setCategories] = useState([]);
   console.log("timeline render");
+  console.log("timelineTimes: ", timelineTimes);
 
   const mouseWheelHandler = (e) => {
     e.preventDefault();
@@ -52,8 +53,9 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, initData, timelineTimes }) 
   };
 
   const onSelectChange = (e) => {
-    const event = e.target.value;
-    console.log("item: ", event);
+    //const event = e.target.value;
+    onFilterChannels(e.target.value);
+    console.log("item: ", e.target.value);
   };
   
   useEffect(() => {
@@ -129,6 +131,7 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, initData, timelineTimes }) 
           id="selectList"
           onChange={(e) => onSelectChange(e)}
         >
+          <option value="0">Összes csatorna</option>
           {categories.length > 0 && categories.map((item) => (
             <option value={item.id}>{item.name}</option>
           ))}

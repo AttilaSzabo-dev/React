@@ -113,14 +113,14 @@ function App() {
     createInitUrls();
   }
 
-  //console.log("initData: ", initData);
+  console.log("initData: ", initData);
   //console.log("tvData: ", tvData);
   //console.log("url: ", url);
   //console.log("channelFilterUrl: ", channelFilterUrl);
   return (
     <>
-    <AdItemTop />
-    <AdItemBottom />
+    {/* <AdItemTop />
+    <AdItemBottom /> */}
       {/*<TvControllerProvider>
         <Test />
       </TvControllerProvider> */}
@@ -136,8 +136,7 @@ function App() {
             )}
           </Route>
           <Route path={"/tv&:channelId"}>
-            {/* <SingleChannelList daysDate={tvEventInit.daysDate} />
-            <SingleChannelList /> */}
+            { initData !== null && Object.keys(tvData).length !== 0 && <SingleChannelList initData={initData} />}
           </Route>
         </Switch>
       </TvDataContext.Provider>

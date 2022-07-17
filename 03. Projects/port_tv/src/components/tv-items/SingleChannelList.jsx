@@ -7,19 +7,22 @@ import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
 import classes from "./SingleChannelList.module.css";
+import FilterList from "../filter-items/FilterList";
+import Spinner from "../../UI/Spinner";
 
-const SingleChannelList = ({ daysDate }) => {
+const SingleChannelList = ({ initData }) => {
   const [singleProgramArray, setSingleProgramArray] = useState(null);
   const container = useRef(null);
-  //const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   //const [error, setError] = useState(null);
   const params = useParams();
 
   useEffect(() => {
+    setIsLoading(true);
     fetch(
       `https://port.hu/tvapi?channel_id=${params.channelId}&i_datetime_from=${
-        daysDate[0].split("T")[0]
-      }&i_datetime_to=${daysDate[14].split("T")[0]}`
+        initData.daysDate[0].split("T")[0]
+      }&i_datetime_to=${initData.daysDate[14].split("T")[0]}`
     )
       .then((res) => {
         return res.json();
@@ -34,6 +37,7 @@ const SingleChannelList = ({ daysDate }) => {
           tempArray.push({ [key]: singleProgramVariable[key] })
         );
         setSingleProgramArray(tempArray);
+        setIsLoading(false);
         //setSingleProgram(data);
         //singleProgramVariable = data;
         //setIsLoading(false);
@@ -42,7 +46,7 @@ const SingleChannelList = ({ daysDate }) => {
         console.log(error.message);
         //setError(error.message);
       });
-  }, [daysDate, params.channelId]);
+  }, [initData, params.channelId]);
 
   const goLeft = () => {
     container.current.scrollLeft -= 300;
@@ -63,6 +67,8 @@ const SingleChannelList = ({ daysDate }) => {
 
   return (
     <>
+      {<FilterList initData={initData} />}
+      {isLoading && <Spinner />}
       <div className={classes.singleChannelLogoWrapper}>
         {singleProgramArray !== null && (
           <img

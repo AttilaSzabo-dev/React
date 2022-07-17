@@ -64,7 +64,7 @@ const AllChannelLogo = ({ channel, parentIndex, index, id, favorite }) => {
 
   return (
     <>
-      {parentIndex === 0 && index === 3 ? (
+      {/* {parentIndex === 0 && index === 3 ? (
         <div className={classes.spacerDivTop}></div>
       ) : (
         ""
@@ -73,7 +73,7 @@ const AllChannelLogo = ({ channel, parentIndex, index, id, favorite }) => {
         <div className={classes.spacerDivBottom}></div>
       ) : (
         ""
-      )}
+      )} */}
       <div className={classes.logoWrapper}>
         <div onClick={onAddFavoritesHandler} className={classes.likeButton}>
           {addToFavorites && <AiFillHeart className={classes.buttonActive} />}

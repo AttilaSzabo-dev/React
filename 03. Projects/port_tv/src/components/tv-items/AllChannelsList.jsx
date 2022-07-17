@@ -1,6 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
-//import { useInView } from "react-intersection-observer";
-
+import { useState, useEffect, useRef } from "react";
 
 import FilterList from "../filter-items/FilterList";
 import Timeline from "../timeline-items/Timeline";
@@ -22,46 +20,57 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     firstProgramsStartTime: [],
   });
   console.log("AllChannelList render");
-  const [channelUnfiltered, setChannelUnfiltered] = useState({
-    programs: [],
-    urlIndex: 0
+  const [programsState, setProgramsState] = useState({
+    urlIndex: 0,
+    isFiltered: false,
+    programListUnfiltered: [],
+    programListFiltered: [],
+    listToShow: []
   });
-  const [programsToShow, setProgramsToShow] = useState([]);
-  const [channelFiltered, setChannelFiltered] = useState({
-    programs: [],
-    state: false
-  });
-  const [basicUrlIndex, setBasicUrlIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const programsContainer = useRef(null);
 
   const urlIndexHandler = () => {
-    setChannelUnfiltered((prevData) => ({
+    setProgramsState((prevData) => ({
       ...prevData,
-      urlIndex: {...prevData.urlIndex + 1},
+      urlIndex: prevData.urlIndex + 1,
     }));
   };
 
-  console.log("urlIndexHandler: ", channelUnfiltered);
-
-  /* const { ref, inView } = useInView({
+  const filterChannelsHandler = (value) => {
     
-    threshold: 0,
-    trackVisibility: true,
-    delay: 100,
-  }); */
-
-  /* const increseHandler = () => {
-    if (tvInitCtx.basicUrl.length === actualUrlsIndex) return;
-    setActualUrlsIndex(actualUrlsIndex + 1);
-  }; */
-
-  /* if (inView) {
-    increseHandler();
-  } */
-  //console.log(inView);
+    if (value === "0") {
+      setProgramsState(prev => ({
+        ...prev,
+        listToShow: [...prev.programListUnfiltered]
+      }));
+    } else {
+      setIsLoading(true);
+      fetch(`${channelFilterUrl[value]}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          let objectCreation = {};
+          objectCreation.value = value;
+          objectCreation.data = data;
+          setProgramsState(prev => ({
+            ...prev,
+            programListFiltered: [...prev.programListFiltered, {...objectCreation}],
+            listToShow: [data]
+          }));
+          
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setError(error.message);
+        });
+    }
+    
+    
+  };
 
   const scrollPrograms = (value) => {
     //console.log("testValue: ", value);
@@ -83,142 +92,110 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   // 30perc = 1800 second
   // 30perc = 1800000 milisecond
   // 1800000 milisecond = 150px
+  const timelineTimesHandler = () => {
+    let startTime = [];
+    let endTime = [];
+    programsState.listToShow.forEach((item) => {
+      item.channels.forEach((channel) => {
+        startTime.push(channel.programs[0].start_ts);
+        endTime.push(
+          Math.floor(
+            new Date(
+              channel.programs[channel.programs.length - 1].end_datetime
+            ).getTime() / 1000
+          )
+        );
+      });
+    });
 
+    const minStart = Math.min(...startTime);
+    const minStartMiliseconds = minStart * 1000;
+    const startDateObject = new Date(minStartMiliseconds);
+    //console.log("startDateObject: ", startDateObject);
+    const startDateFormatHour = startDateObject.toLocaleString("hu-HU", {
+      hour: "numeric",
+    });
+    const startDateFormatMinute = startDateObject.toLocaleString("hu-HU", {
+      minute: "numeric",
+    });
+
+    const startDateFormatMinuteModulo = startDateFormatMinute % 30;
+    const startDateFormatMinuteFinal =
+      startDateFormatMinute - startDateFormatMinuteModulo;
+
+    const newStartDate = startDateObject.setMinutes(startDateFormatMinuteFinal);
+
+    //console.log("startDateObject: ", startDateObject);
+    //console.log("newDate: ", newStartDate);
+
+    // ------------------------------------------------------------------------
+
+    const maxEnd = Math.max(...endTime);
+    const maxEndMiliseconds = maxEnd * 1000;
+    const endDateObject = new Date(maxEndMiliseconds);
+    const endDateFormatHour = endDateObject.toLocaleString("hu-HU", {
+      hour: "numeric",
+    });
+    const endDateFormatMinute = endDateObject.toLocaleString("hu-HU", {
+      minute: "numeric",
+    });
+
+    const endDateFormatMinuteModulo = endDateFormatMinute % 30;
+    const endDateFormatMinuteFinal =
+      endDateFormatMinute + endDateFormatMinuteModulo;
+
+    const newEndDate = endDateObject.setMinutes(endDateFormatMinuteFinal);
+
+    setTimelineTimes({
+      startTimestamp: newStartDate,
+      endTimestamp: newEndDate,
+      startMinute: startDateFormatMinuteFinal,
+      startHour: +startDateFormatHour,
+      endMinute: endDateFormatMinuteFinal,
+      endHour: +endDateFormatHour,
+      firstProgramsStartTime: startTime,
+    });
+  };
   useEffect(() => {
-    if (programs.length > 0) {
       //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
-      let startTime = [];
-      let endTime = [];
-      programs.forEach((item) => {
-        item.channels.forEach((channel) => {
-          startTime.push(channel.programs[0].start_ts);
-          endTime.push(
-            Math.floor(
-              new Date(
-                channel.programs[channel.programs.length - 1].end_datetime
-              ).getTime() / 1000
-            )
-          );
-        });
-      });
-
-      const minStart = Math.min(...startTime);
-      const minStartMiliseconds = minStart * 1000;
-      const startDateObject = new Date(minStartMiliseconds);
-      //console.log("startDateObject: ", startDateObject);
-      const startDateFormatHour = startDateObject.toLocaleString("hu-HU", {
-        hour: "numeric",
-      });
-      const startDateFormatMinute = startDateObject.toLocaleString("hu-HU", {
-        minute: "numeric",
-      });
-
-      const startDateFormatMinuteModulo = startDateFormatMinute % 30;
-      const startDateFormatMinuteFinal =
-        startDateFormatMinute - startDateFormatMinuteModulo;
-
-      const newStartDate = startDateObject.setMinutes(
-        startDateFormatMinuteFinal
-      );
-
-      //console.log("startDateObject: ", startDateObject);
-      //console.log("newDate: ", newStartDate);
-
-      // ------------------------------------------------------------------------
-
-      const maxEnd = Math.max(...endTime);
-      const maxEndMiliseconds = maxEnd * 1000;
-      const endDateObject = new Date(maxEndMiliseconds);
-      const endDateFormatHour = endDateObject.toLocaleString("hu-HU", {
-        hour: "numeric",
-      });
-      const endDateFormatMinute = endDateObject.toLocaleString("hu-HU", {
-        minute: "numeric",
-      });
-
-      const endDateFormatMinuteModulo = endDateFormatMinute % 30;
-      const endDateFormatMinuteFinal =
-        endDateFormatMinute + endDateFormatMinuteModulo;
-
-      const newEndDate = endDateObject.setMinutes(endDateFormatMinuteFinal);
-
-      setTimelineTimes({
-        startTimestamp: newStartDate,
-        endTimestamp: newEndDate,
-        startMinute: startDateFormatMinuteFinal,
-        startHour: +startDateFormatHour,
-        endMinute: endDateFormatMinuteFinal,
-        endHour: +endDateFormatHour,
-        firstProgramsStartTime: startTime,
-      });
-      //console.log("endTime: ", endTime);
-      //console.log("startDateFormatMinuteFinal: ", startDateFormatMinuteFinal);
-    }
-  }, [programs]);
+      timelineTimesHandler();
+  }, [programsState.listToShow]);
 
   useEffect(() => {
-    if (channelFilter.state) {
+    if (!programsState.isFiltered) {
       setIsLoading(true);
-      fetch(`${url[basicUrlIndex]}`)
+      fetch(`${url[programsState.urlIndex]}`)
         .then((res) => {
           return res.json();
         })
         .then((data) => {
-          setPrograms((prevPrograms) => {
-            return [
-              ...prevPrograms,
-              {
-                channels: data.channels,
-                date: data.date,
-                date_from: data.date_from,
-                date_to: data.date_to,
-                eveningStartTime: data.eveningStartTime,
-              },
-            ];
-          });
+          setProgramsState(prev => ({
+            ...prev,
+            programListUnfiltered: [...prev.programListUnfiltered, data],
+            listToShow: [...prev.listToShow, data]
+          }));
+          
           setIsLoading(false);
         })
         .catch((error) => {
           setError(error.message);
         });
+        console.log("useEffect");
     }
-  }, [channelFilter]);
+  }, [programsState.urlIndex]);
 
-  useEffect(() => {
-    setIsLoading(true);
-    fetch(`${url[basicUrlIndex]}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setPrograms((prevPrograms) => {
-          return [
-            ...prevPrograms,
-            {
-              channels: data.channels,
-              date: data.date,
-              date_from: data.date_from,
-              date_to: data.date_to,
-              eveningStartTime: data.eveningStartTime,
-            },
-          ];
-        });
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
-  }, [basicUrlIndex]);
-
-  console.log("programs: ", programs);
+  console.log("programListUnfiltered: ", programsState.programListUnfiltered);
+  console.log("programListFiltered: ", programsState.programListFiltered);
+  console.log("programsToShow: ", programsState.listToShow);
 
   return (
     <>
-      {programsToShow.length > 0 && <FilterList initData={initData} />}
-      {programsToShow.length > 0 && (
+      {programsState.listToShow.length > 0 && <FilterList initData={initData} />}
+      {programsState.listToShow.length > 0 && (
         <Timeline
           onChangeApiFetch={scrollProgramsOnFetch}
           onChangeDelta={scrollPrograms}
+          onFilterChannels={filterChannelsHandler}
           initData={initData}
           timelineTimes={timelineTimes}
         />
@@ -226,8 +203,8 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
         <div className={classes.logoContainer}>
-          {programsToShow.length > 0 &&
-            programsToShow.map((program, parentIndex) =>
+          {programsState.listToShow.length > 0 &&
+            programsState.listToShow.map((program, parentIndex) =>
               program.channels.map((channel, index) => (
                 <AllChannelLogo
                   channel={channel}
@@ -241,8 +218,8 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
         </div>
         <div ref={programsContainer} className={classes.programsContainer}>
           <Marker time={initData} timelineTimes={timelineTimes} />
-          {programsToShow.length > 0 &&
-            programsToShow.map((program, index) => (
+          {programsState.listToShow.length > 0 &&
+            programsState.listToShow.map((program, index) => (
               <AllChannelPrograms
                 programs={program}
                 initData={initData}
@@ -252,7 +229,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
             ))}
         </div>
       </div>
-      {programsToShow.length > 0 && (
+      {programsState.listToShow.length > 0 && (
         <button onClick={urlIndexHandler}>Increse</button>
       )}
     </>

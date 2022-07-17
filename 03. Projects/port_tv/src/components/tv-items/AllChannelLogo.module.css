@@ -4,8 +4,8 @@
   display: flex;
   /* justify-content: center; */
   align-items: center;
-  min-width: 184px;
-  max-width: 184px;
+  min-width: 150px;
+  max-width: 150px;
   height: 60px;
   border: 1px solid #e8e8e8;
   padding-left: .5rem;
