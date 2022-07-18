@@ -9,11 +9,12 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 
 import classes from "./FilterList.module.css";
 
-const FilterList = ({ initData }) => {
+const FilterList = ({ initData, dayHandler }) => {
   const [modal, setModal] = useState(false);
   const value = { modal, setModal };
 
   const [days, setDays] = useState([]);
+  const [counter, setCounter] = useState(3);
   const [active, setActive] = useState(false);
   const [daysSelector, setDaysSelector] = useState(false);
 
@@ -21,11 +22,23 @@ const FilterList = ({ initData }) => {
     setModal(!modal);
   };
 
-  const dayHandler = (e) => {
-    console.log("event", e);
+  const counterHandler = (e) => {
+    setCounter(e);
+    setDaysSelector(!daysSelector);
+    dayHandler(days[counter].timestamp);
+    if (e === 2) {
+      setActive(false);
+    } else {
+      setActive(true);
+    }
   };
 
   useEffect(() => {
+    const expanse = "T00:00:00+02:00"
+    let today = initData.date;
+    today = today.split('T')[0];
+    let final = today + expanse;
+    const todayDate = new Date(final * 1000);
     initData.days.forEach((day) => {
       const date = new Date(day * 1000);
       const day_text = date.toLocaleString("hu-HU", { weekday: "long" });
@@ -34,7 +47,7 @@ const FilterList = ({ initData }) => {
 
       setDays((prev) => [
         ...prev,
-        { day_text: day_text, day_num: day_num, month: month, timestamp: day },
+        { day_text: day_text, day_num: day_num, month: month, daysDate: initData.daysDate, timestamp: day, today: todayDate },
       ]);
     });
   }, [initData.days]);
@@ -55,16 +68,16 @@ const FilterList = ({ initData }) => {
               <span className={classes.day}>Ma</span>
               <span className={classes.date}>{days[2].month} {days[2].day_num}</span>
             </button>
-            <button className={`${classes.buttons} ${active ? classes.active : ""}`} onClick={(e=>(dayHandler(days[3].timestamp)))}>
+            <button className={`${classes.buttons} ${active ? classes.active : ""}`} onClick={(e=>(dayHandler(days[counter].timestamp)))}>
               <span className={classes.day}>Holnap</span>
-              <span className={classes.date}>{days[3].month} {days[3].day_num}</span>
+              <span className={classes.date}>{days[counter].month} {days[counter].day_num}</span>
             </button>
             <button className={classes.openDates} onClick={(e)=>(setDaysSelector(!daysSelector))}>
               <MdKeyboardArrowDown className={classes.downIcon} />
             </button>
             <div className={`${classes.daysSelector} ${daysSelector ? classes.open : ""}`}>
-            {days.map((day) => 
-              <button className={classes.daySelectorButtons}>
+            {days.map((day, index) => 
+              <button className={classes.daySelectorButtons} onClick={(e)=>(counterHandler(index))}>
                 <span className={classes.daySelectorBold}>{`${day.day_text} - `}<span className={classes.daySelectorRegular}>{`${day.month} ${day.day_num}`}</span></span>
               </button>
             )}
