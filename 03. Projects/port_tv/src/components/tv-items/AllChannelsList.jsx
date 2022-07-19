@@ -190,7 +190,6 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
 
   return (
     <>
-      {programsState.listToShow.length > 0 && <FilterList initData={initData} />}
       {programsState.listToShow.length > 0 && (
         <Timeline
           onChangeApiFetch={scrollProgramsOnFetch}
@@ -202,20 +201,6 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       )}
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
-        <div className={classes.logoContainer}>
-          {programsState.listToShow.length > 0 &&
-            programsState.listToShow.map((program, parentIndex) =>
-              program.channels.map((channel, index) => (
-                <AllChannelLogo
-                  channel={channel}
-                  parentIndex={parentIndex}
-                  index={index}
-                  key={channel.id}
-                  id={channel.id}
-                />
-              ))
-            )}
-        </div>
         <div ref={programsContainer} className={classes.programsContainer}>
           <Marker time={initData} timelineTimes={timelineTimes} />
           {programsState.listToShow.length > 0 &&

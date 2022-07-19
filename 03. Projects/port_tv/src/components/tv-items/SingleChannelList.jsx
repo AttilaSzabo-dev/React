@@ -17,10 +17,18 @@ const SingleChannelList = ({ initData }) => {
   //const [error, setError] = useState(null);
   const params = useParams();
 
+
+
+  
   useEffect(() => {
+    console.log("window.location.protocol: ", window.location.protocol);
+    console.log("window.location.host: ", window.location.host);
+    console.log("params.channelId: ", params.channelId);
+    console.log("params.channelname: ", params.channelName);
+    let channelId = params.channelId.split("?")[0]
     setIsLoading(true);
     fetch(
-      `https://port.hu/tvapi?channel_id=${params.channelId}&i_datetime_from=${
+      `https://port.hu/tvapi?channel_id=${channelId}&i_datetime_from=${
         initData.daysDate[0].split("T")[0]
       }&i_datetime_to=${initData.daysDate[14].split("T")[0]}`
     )

@@ -8,7 +8,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 
 import classes from "./AllChannelLogo.module.css";
 
-const AllChannelLogo = ({ channel, parentIndex, index, id, favorite }) => {
+const AllChannelLogo = ({ channel, id }) => {
   const [addToFavorites, setAddToFavorites] = useState(false);
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
 
@@ -58,22 +58,16 @@ const AllChannelLogo = ({ channel, parentIndex, index, id, favorite }) => {
     setAddToFavorites(!addToFavorites);
   };
 
+  let date = "?date=2022-07-20";
+  let channelName = channel.name.replace(" ", "-").toLowerCase();
+  let channelId = channel.id + date;
+
   useEffect(() => {
     setAddToFavorites(tvData["favorite"].includes(id));
   }, [tvData, id]);
 
   return (
     <>
-      {/* {parentIndex === 0 && index === 3 ? (
-        <div className={classes.spacerDivTop}></div>
-      ) : (
-        ""
-      )}
-      {parentIndex === 0 && index === 17 ? (
-        <div className={classes.spacerDivBottom}></div>
-      ) : (
-        ""
-      )} */}
       <div className={classes.logoWrapper}>
         <div onClick={onAddFavoritesHandler} className={classes.likeButton}>
           {addToFavorites && <AiFillHeart className={classes.buttonActive} />}
@@ -81,7 +75,7 @@ const AllChannelLogo = ({ channel, parentIndex, index, id, favorite }) => {
             <AiOutlineHeart className={classes.buttonInactive} />
           )}
         </div>
-        <Link className={classes.imgWrapper} to={`/tv&${channel.id}`}>
+        <Link className={classes.imgWrapper} to={`/csatorna/tv/${channelName}/${channelId}`}>
           <img src={channel.logo} alt="logo" />
         </Link>
       </div>

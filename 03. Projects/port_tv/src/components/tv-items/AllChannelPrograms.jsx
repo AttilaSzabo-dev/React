@@ -1,4 +1,5 @@
 import ProgramsWrapper from "./ProgramsWrapper";
+import AllChannelLogo from "./AllChannelLogo";
 import ProgramItem from "./ProgramItem";
 import AdItemTop from "../ad-items/AdItemTop";
 import AdItemBottom from "../ad-items/AdItemBottom";
@@ -11,6 +12,7 @@ const AllChannelPrograms = (props) => {
       {/* {props.index === 0 && index === 3 ? <AdItemTop /> : ""}
       {props.index === 0 && index === 17 ? <AdItemBottom /> : ""} */}
       <ProgramsWrapper timelineTimes={props.timelineTimes} index={index}>
+        <AllChannelLogo channel={channel} key={channel.id} id={channel.id} />
         {channel.programs.map((item) => (
           <ProgramItem
             key={item.id}

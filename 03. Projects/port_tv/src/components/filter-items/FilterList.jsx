@@ -9,50 +9,103 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 
 import classes from "./FilterList.module.css";
 
-const FilterList = ({ initData, dayHandler }) => {
+const FilterList = ({ initData, dayHandler, programHandler }) => {
   const [modal, setModal] = useState(false);
   const value = { modal, setModal };
 
   const [days, setDays] = useState([]);
   const [counter, setCounter] = useState(3);
   const [active, setActive] = useState(false);
-  const [daysSelector, setDaysSelector] = useState(false);
+  const [daysSelectorDropdown, setDaysSelectorDropdown] = useState(false);
+  const [programFilter, setProgramFilter] = useState({
+    film: false,
+    sorozat: false,
+    sport: false,
+    sportLive: false,
+    reality: false,
+    gastro: false,
+    activeFilters: [],
+  });
 
   const onModalOpen = () => {
     setModal(!modal);
   };
 
   const counterHandler = (e) => {
-    setCounter(e);
-    setDaysSelector(!daysSelector);
-    dayHandler(days[counter].timestamp);
     if (e === 2) {
       setActive(false);
+      dayHandler(days[e].timestamp);
+      setCounter(e + 1);
     } else {
       setActive(true);
+      setCounter(e);
+      dayHandler(days[e].timestamp);
+    }
+    setDaysSelectorDropdown(false);
+  };
+
+  const programFilterHandler = (e) => {
+    if (!programFilter.activeFilters.includes(e)) {
+      setProgramFilter((prev) => ({
+        ...prev,
+        activeFilters: [...prev.activeFilters, e],
+        [e]: true,
+      }));
+    } else {
+      const filtered = programFilter.activeFilters.filter(
+        (toremove) => toremove !== e
+      );
+      setProgramFilter((prev) => ({
+        ...prev,
+        activeFilters: filtered,
+        [e]: false,
+      }));
     }
   };
 
+  useEffect(()=> {
+    programHandler(programFilter.activeFilters);
+  }, [programFilter.activeFilters]);
+
   useEffect(() => {
-    const expanse = "T00:00:00+02:00"
-    let today = initData.date;
-    today = today.split('T')[0];
-    let final = today + expanse;
-    const todayDate = new Date(final * 1000);
+    let today = initData.date.split("T")[0];
+    const date = new Date(today);
+    const unixTimestamp = Math.floor(date.getTime() / 1000);
     initData.days.forEach((day) => {
       const date = new Date(day * 1000);
       const day_text = date.toLocaleString("hu-HU", { weekday: "long" });
+      let dayFinal = day_text.charAt(0).toUpperCase() + day_text.slice(1);
       const day_num = date.toLocaleString("hu-HU", { day: "numeric" });
       const month = date.toLocaleString("hu-HU", { month: "long" });
 
+      let tegnap = unixTimestamp - 86400;
+      let ma = unixTimestamp;
+      let holnap = unixTimestamp + 86400;
+      let dayName;
+
+      if (tegnap === day) {
+        dayName = "Tegnap";
+      } else if (ma === day) {
+        dayName = "Ma";
+      } else if (holnap === day) {
+        dayName = "Holnap";
+      } else {
+        dayName = dayFinal;
+      }
+
       setDays((prev) => [
         ...prev,
-        { day_text: day_text, day_num: day_num, month: month, daysDate: initData.daysDate, timestamp: day, today: todayDate },
+        {
+          day_text: dayName,
+          day_num: day_num,
+          month: month,
+          daysDateText: initData.daysDate,
+          timestamp: day,
+          today: unixTimestamp,
+        },
       ]);
     });
   }, [initData.days]);
-
-  console.log("days: ", days);
 
   return (
     <>
@@ -63,36 +116,107 @@ const FilterList = ({ initData, dayHandler }) => {
       </ModalContext.Provider>
       <div className={classes.filterWrapper}>
         <div className={classes.filterContainers}>
-        {days.length > 0 && <div className={classes.dateContainer}>
-             <button className={`${classes.buttons} ${!active ? classes.active : ""}`} onClick={(e=>(dayHandler(days[2].timestamp)))}>
-              <span className={classes.day}>Ma</span>
-              <span className={classes.date}>{days[2].month} {days[2].day_num}</span>
-            </button>
-            <button className={`${classes.buttons} ${active ? classes.active : ""}`} onClick={(e=>(dayHandler(days[counter].timestamp)))}>
-              <span className={classes.day}>Holnap</span>
-              <span className={classes.date}>{days[counter].month} {days[counter].day_num}</span>
-            </button>
-            <button className={classes.openDates} onClick={(e)=>(setDaysSelector(!daysSelector))}>
-              <MdKeyboardArrowDown className={classes.downIcon} />
-            </button>
-            <div className={`${classes.daysSelector} ${daysSelector ? classes.open : ""}`}>
-            {days.map((day, index) => 
-              <button className={classes.daySelectorButtons} onClick={(e)=>(counterHandler(index))}>
-                <span className={classes.daySelectorBold}>{`${day.day_text} - `}<span className={classes.daySelectorRegular}>{`${day.month} ${day.day_num}`}</span></span>
+          {days.length > 0 && (
+            <div className={classes.dateContainer}>
+              <button
+                className={`${classes.buttons} ${
+                  !active ? classes.active : ""
+                }`}
+                onClick={(e) => counterHandler(2)}
+              >
+                <span className={classes.day}>{days[2].day_text}</span>
+                <span className={classes.date}>
+                  {days[2].month} {days[2].day_num}
+                </span>
               </button>
-            )}
+              <button
+                className={`${classes.buttons} ${active ? classes.active : ""}`}
+                onClick={(e) => counterHandler(counter)}
+              >
+                <span className={classes.day}>{days[counter].day_text}</span>
+                <span className={classes.date}>
+                  {days[counter].month} {days[counter].day_num}
+                </span>
+              </button>
+              <button
+                className={classes.openDates}
+                onClick={(e) => setDaysSelectorDropdown(true)}
+              >
+                <MdKeyboardArrowDown className={classes.downIcon} />
+              </button>
+              <div
+                className={`${classes.daysSelector} ${
+                  daysSelectorDropdown ? classes.open : ""
+                }`}
+              >
+                {days.map((day, index) => (
+                  <button
+                    className={classes.daySelectorButtons}
+                    onClick={(e) => counterHandler(index)}
+                  >
+                    <span className={classes.daySelectorBold}>
+                      {`${day.day_text} - `}
+                      <span
+                        className={classes.daySelectorRegular}
+                      >{`${day.month} ${day.day_num}`}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>}
+          )}
           <button className={classes.modalButton} onClick={onModalOpen}>
-            <RiHeartAddFill className={classes.editFavIcon}/>
+            <RiHeartAddFill className={classes.editFavIcon} />
           </button>
           <div className={classes.programFilterContainer}>
-            <button className={`${classes.programFilterButtons} ${classes.programFilterFilm}`}>Film</button>
-            <button className={`${classes.programFilterButtons} ${classes.programFilterSeries}`}>Sorozat</button>
-            <button className={`${classes.programFilterButtons} ${classes.programFilterSport}`}>Sport</button>
-            <button className={`${classes.programFilterButtons} ${classes.programFilterSportLive}`}>Sport (élő)</button>
-            <button className={`${classes.programFilterButtons} ${classes.programFilterReality}`}>Reality</button>
-            <button className={`${classes.programFilterButtons} ${classes.programFilterGastro}`}>Gasztró</button>
+            <button
+              className={`${classes.programFilterButtons} ${
+                classes.programFilterFilm
+              } ${programFilter.film ? classes.isOn : ""}`}
+              onClick={(e) => programFilterHandler("film")}
+            >
+              Film
+            </button>
+            <button
+              className={`${classes.programFilterButtons} ${
+                classes.programFilterSeries
+              } ${programFilter.sorozat ? classes.isOn : ""}`}
+              onClick={(e) => programFilterHandler("sorozat")}
+            >
+              Sorozat
+            </button>
+            <button
+              className={`${classes.programFilterButtons} ${
+                classes.programFilterSport
+              } ${programFilter.sport ? classes.isOn : ""}`}
+              onClick={(e) => programFilterHandler("sport")}
+            >
+              Sport
+            </button>
+            <button
+              className={`${classes.programFilterButtons} ${
+                classes.programFilterSportLive
+              } ${programFilter.sportLive ? classes.isOn : ""}`}
+              onClick={(e) => programFilterHandler("sportLive")}
+            >
+              Sport (élő)
+            </button>
+            <button
+              className={`${classes.programFilterButtons} ${
+                classes.programFilterReality
+              } ${programFilter.reality ? classes.isOn : ""}`}
+              onClick={(e) => programFilterHandler("reality")}
+            >
+              Reality
+            </button>
+            <button
+              className={`${classes.programFilterButtons} ${
+                classes.programFilterGastro
+              } ${programFilter.gastro ? classes.isOn : ""}`}
+              onClick={(e) => programFilterHandler("gastro")}
+            >
+              Gasztró
+            </button>
           </div>
         </div>
       </div>

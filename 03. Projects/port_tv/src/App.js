@@ -78,7 +78,7 @@ function App() {
   }, []); */
 
   useEffect(() => {
-    fetch("tv-event/init")
+    fetch("https://port.hu/tv-event/init")
       .then((res) => {
         return res.json();
       })
@@ -89,9 +89,9 @@ function App() {
         console.log(error.message);
       });
   }, []);
-
+  //TODO: élesítés előtt ezt átállítani https://port.hu/ -ra
   useEffect(() => {
-    fetch("dashboard/get-tv-data")
+    fetch("https://szaboa-3.dev.port.hu/dashboard/get-tv-data")
       .then((res) => {
         return res.json();
       })
@@ -113,6 +113,14 @@ function App() {
     createInitUrls();
   }
 
+  const onDateChange = (value) => {
+    console.log("day: ", value);
+  };
+
+  const onProgramChange = (value) => {
+    console.log("programChange: ", value);
+  };
+
   console.log("initData: ", initData);
   //console.log("tvData: ", tvData);
   //console.log("url: ", url);
@@ -125,8 +133,9 @@ function App() {
         <Test />
       </TvControllerProvider> */}
       <TvDataContext.Provider value={value}>
+        {initData !== null && Object.keys(tvData).length !== 0 && <FilterList initData={initData} dayHandler={onDateChange} programHandler={onProgramChange} />}
         <Switch>
-          <Route path={"/tv"} exact>
+          <Route path={"/tv"}>
             {initData !== null && Object.keys(tvData).length !== 0 && (
               <AllChannelsList
                 initData={initData}
@@ -135,7 +144,8 @@ function App() {
               />
             )}
           </Route>
-          <Route path={"/tv&:channelId"}>
+          <Route path={"/csatorna/tv/:channelName/:channelId"}>
+            valami
             { initData !== null && Object.keys(tvData).length !== 0 && <SingleChannelList initData={initData} />}
           </Route>
         </Switch>

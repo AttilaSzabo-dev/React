@@ -1,4 +1,5 @@
 .programsWrapper {
+  position: relative;
   display: flex;
   height: 60px;
 }
