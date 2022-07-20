@@ -8,8 +8,6 @@ import SingleChannelList from "./components/tv-items/SingleChannelList";
 
 import Test from "./UI/Test.jsx";
 import "./App.css";
-import AdItemTop from "./components/ad-items/AdItemTop";
-import AdItemBottom from "./components/ad-items/AdItemBottom";
 
 function App() {
   const [tvData, setTvData] = useState({});
@@ -127,8 +125,6 @@ function App() {
   //console.log("channelFilterUrl: ", channelFilterUrl);
   return (
     <>
-    {/* <AdItemTop />
-    <AdItemBottom /> */}
       {/*<TvControllerProvider>
         <Test />
       </TvControllerProvider> */}
