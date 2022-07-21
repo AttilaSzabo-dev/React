@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import "./ad.css";
 
 const AdRB = () => {
   const adRef = useRef();

@@ -1,0 +1,10 @@
+.adItem {
+    position: sticky;
+    left: 0;
+    background-color: #fff;
+    z-index: 90;
+  }
+  
+  .adContent {
+    margin: 0 auto;
+  }
