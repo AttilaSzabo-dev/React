@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 
-const AdRBB = (props) => {
+const AdRBB = () => {
   const adRef = useRef();
+  const zones = window.zonesToLoad;
 
   useEffect(()=> {
-    let zones = window.zonesToLoad;
 
     const zone = {
       "id": zones.roadblock_b.id,
@@ -39,7 +39,7 @@ const AdRBB = (props) => {
   return (
     <div className={"adItem"}>
       <div className={"adContent"}>
-        <div ref={adRef} className="iap iap--ado empty bg--transparent" id="adoceanindexhuodioitrhfw" data-id="adoceanindexhuodioitrhfw"></div>
+        <div ref={adRef} className="iap iap--ado empty bg--transparent" id={zones.roadblock_b.id} data-id={zones.roadblock_b.id}></div>
       </div>
     </div>
   );

@@ -1,18 +1,17 @@
 import { useEffect, useRef } from "react";
 
-const AdRB = () => {
+const AdRich = () => {
   const adRef = useRef();
   const zones = window.zonesToLoad;
 
   useEffect(()=> {
-
     const zone = {
-      "id": zones.roadblock_a.id,
+      "id": zones.richmedia.id,
       "empty": true,
       "lazy": false,
-      "quality": zones.roadblock_a.quality,
-      "masterless": zones.roadblock_a.masterless, 
-      "area": zones.roadblock_a.area, /* Roadblock */
+      "quality": zones.richmedia.quality,
+      "masterless": zones.richmedia.masterless, 
+      "area": zones.richmedia.area, /* richmedia */
       "node": adRef.current,
       "events": {
         "loaded": false, 
@@ -39,10 +38,10 @@ const AdRB = () => {
   return (
     <div className={"adItem"}>
       <div className={"adContent"}>
-        <div ref={adRef} className="iap iap--ado empty bg--transparent" id={zones.roadblock_a.id} data-id={zones.roadblock_a.id}></div>
+        <div ref={adRef} className="iap iap--ado empty bg--transparent" id={zones.richmedia.id} data-id={zones.richmedia.id}></div>
       </div>
     </div>
   );
 };
 
-export default AdRB;
+export default AdRich;

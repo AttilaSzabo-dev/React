@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
 
-const AdLB = (props) => {
+const AdLB = () => {
   const adRef = useRef();
+  const zones = window.zonesToLoad;
 
   useEffect(()=> {
-    let zones = window.zonesToLoad;
-
     const zone = {
       "id": zones.superleaderboard.id,
       "empty": true,
@@ -25,7 +24,6 @@ const AdLB = (props) => {
         "type": "tv/nyito"
       }
     }
-
     console.log("zones: ", zones);
 
     if (typeof window.ADOLoader === "undefined") {
@@ -41,7 +39,7 @@ const AdLB = (props) => {
   return (
     <div className={"adItem"}>
       <div className={"adContent"}>
-        <div ref={adRef} className="iap iap--ado empty bg--transparent" id="adoceanindexhuqbnqnqjsra" data-id="adoceanindexhuqbnqnqjsra"></div>
+        <div ref={adRef} className="iap iap--ado empty bg--transparent" id={zones.superleaderboard.id} data-id={zones.superleaderboard.id}></div>
       </div>
     </div>
   );
