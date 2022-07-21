@@ -6,6 +6,7 @@ import AdLB from "../ad-items/AdLB";
 import AdMR from "../ad-items/AdMR";
 import AdRB from "../ad-items/AdRB";
 import AdRBB from "../ad-items/AdRBB";
+import SlickSlider from "./SlickSlider";
 
 /* import classes from "./AllChannelPrograms.module.css"; */
 
@@ -22,6 +23,7 @@ const AllChannelPrograms = (props) => {
       {props.index === 0 && index === 5 && zones.medium_rectangle_b !== undefined ? <AdMR/> : ""} {/* carousel ad */}
       {props.index === 0 && index === 7 && zones.roadblock_a !== undefined && zones.roadblock_a.device === "desktop" ? <AdRB/> : ""}
       {props.index === 0 && index === 9 && zones.roadblock_b !== undefined ? <AdRBB/> : ""}
+      {props.index === 0 && index === 11 ? <SlickSlider/> : ""}
 
       <ProgramsWrapper timelineTimes={props.timelineTimes} index={index}>
         <AllChannelLogo channel={channel} key={channel.id} id={channel.id} />

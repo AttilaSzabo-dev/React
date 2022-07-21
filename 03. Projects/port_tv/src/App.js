@@ -62,19 +62,6 @@ function App() {
     channelFilterUrl = filterUrl;
   };
 
-  /* useEffect(() => {
-    fetch("tvapi/proposer")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log("proposer: ", data);
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  }, []); */
-
   useEffect(() => {
     fetch("https://port.hu/tv-event/init")
       .then((res) => {
