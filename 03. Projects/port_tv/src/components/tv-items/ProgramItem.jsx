@@ -120,34 +120,37 @@ const ProgramItem = ({
   }, [tvData.notifications, tvData.reminders, notificId, reminderId]);
 
   return (
-    <div
-      onMouseLeave={toggleHover}
-      onMouseEnter={toggleHover}
-      className={classes.programItem}
-      style={addCss}
-    >
-      <div className={classes.time}>
-        {`${startTime} - ${endTime}`}
-        <div className={classes.noti}>
-          <BsEnvelope
-            onClick={setNotiHandler}
-            className={`${classes.envelope} ${
-              notiStatus ? classes.active : ""
-            }`}
-            style={hover ? visible : notVisible}
-            title="Kérek értesítőt"
-          />
-          <BsClock
-            onClick={setRemindHandler}
-            className={`${classes.clock} ${remindStatus ? classes.active : ""}`}
-            style={hover ? visible : notVisible}
-            title="Emlékeztető beállítása"
-          />
+    <div className={classes.programHoverContainer}>
+      <div className={classes.hoverInfoContainer}></div>
+      <div
+        onMouseLeave={toggleHover}
+        onMouseEnter={toggleHover}
+        className={classes.programItem}
+        style={addCss}
+      >
+        <div className={classes.time}>
+          {`${startTime} - ${endTime}`}
+          <div className={classes.noti}>
+            <BsEnvelope
+              onClick={setNotiHandler}
+              className={`${classes.envelope} ${
+                notiStatus ? classes.active : ""
+              }`}
+              style={hover ? visible : notVisible}
+              title="Kérek értesítőt"
+            />
+            <BsClock
+              onClick={setRemindHandler}
+              className={`${classes.clock} ${remindStatus ? classes.active : ""}`}
+              style={hover ? visible : notVisible}
+              title="Emlékeztető beállítása"
+            />
+          </div>
         </div>
+        <a href={filmUrl} className={classes.title}>
+          {title}
+        </a>
       </div>
-      <a href={filmUrl} className={classes.title}>
-        {title}
-      </a>
     </div>
   );
 };

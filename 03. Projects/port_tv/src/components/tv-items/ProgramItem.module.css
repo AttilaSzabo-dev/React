@@ -1,3 +1,7 @@
+.programHoverContainer {
+  position: relative;
+}
+
 .programItem {
   height: 60px;
   border: 1px solid #e8e8e8;
@@ -14,6 +18,33 @@
   -moz-box-shadow: 0 2px 10px 0 rgba(54, 54, 54, 0.3);
   -o-box-shadow: 0 2px 10px 0 rgba(54, 54, 54, 0.3);
   box-shadow: 0 2px 10px 0 rgb(54 54 54 / 30%);
+}
+
+.programItem:hover + .hoverInfoContainer {
+  display: block;
+}
+
+.hoverInfoContainer {
+  display: none;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 250px;
+  height: 150px;
+  background-color: black;
+  z-index: 1000;
+}
+
+.hoverInfoContainer:before {
+  content: "";
+  position: absolute;
+  top: -11px;
+  left: 125px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 11px solid black;
 }
 
 .time {
