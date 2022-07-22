@@ -75,7 +75,6 @@ const SingleChannelList = ({ initData }) => {
 
   return (
     <>
-      {<FilterList initData={initData} />}
       {isLoading && <Spinner />}
       <div className={classes.singleChannelLogoWrapper}>
         {singleProgramArray !== null && (

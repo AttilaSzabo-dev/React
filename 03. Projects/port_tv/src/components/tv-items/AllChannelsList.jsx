@@ -19,7 +19,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     endHour: 0,
     firstProgramsStartTime: [],
   });
-  console.log("AllChannelList render");
+
   const [programsState, setProgramsState] = useState({
     urlIndex: 0,
     isFiltered: false,
@@ -180,12 +180,9 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
         .catch((error) => {
           setError(error.message);
         });
-        console.log("useEffect");
     }
   }, [programsState.urlIndex]);
 
-  console.log("programListUnfiltered: ", programsState.programListUnfiltered);
-  console.log("programListFiltered: ", programsState.programListFiltered);
   console.log("programsToShow: ", programsState.listToShow);
 
   return (

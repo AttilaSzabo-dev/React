@@ -63,8 +63,10 @@ const FilterList = ({ initData, dayHandler, programHandler }) => {
     }
   };
 
-  useEffect(()=> {
-    programHandler(programFilter.activeFilters);
+  useEffect(() => {
+    if (typeof programHandler === 'function') {
+      programHandler(programFilter.activeFilters);
+    }
   }, [programFilter.activeFilters]);
 
   useEffect(() => {

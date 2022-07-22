@@ -16,8 +16,6 @@ function App() {
   const csrf = document.querySelector('meta[name="csrf-token"]').content;
   const value = { tvData, setTvData, csrf };
 
-  console.log("App render");
-
   let url;
   let channelFilterUrl;
 
@@ -128,7 +126,6 @@ function App() {
             )}
           </Route>
           <Route path={"/csatorna/tv/:channelName/:channelId"}>
-            valami
             { initData !== null && Object.keys(tvData).length !== 0 && <SingleChannelList initData={initData} />}
           </Route>
         </Switch>

@@ -10,8 +10,6 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, onFilterChannels, initData,
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);
   const [categories, setCategories] = useState([]);
-  console.log("timeline render");
-  console.log("timelineTimes: ", timelineTimes);
 
   const mouseWheelHandler = (e) => {
     e.preventDefault();
@@ -53,9 +51,7 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, onFilterChannels, initData,
   };
 
   const onSelectChange = (e) => {
-    //const event = e.target.value;
     onFilterChannels(e.target.value);
-    console.log("item: ", e.target.value);
   };
   
   useEffect(() => {
@@ -80,8 +76,6 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, onFilterChannels, initData,
       setCategories(groups);
     }
   }, [initData, timelineTimes, onChangeApiFetch]);
-
-  console.log("categories out: ", categories);
 
   useEffect(() => {
     container.current.addEventListener("wheel", mouseWheelHandler, {
@@ -119,8 +113,6 @@ const Timeline = ({ onChangeDelta, onChangeApiFetch, onFilterChannels, initData,
       incrementValue += 1800000;
     } while (incrementValue <= timelineTimes.endTimestamp - 1800000);
   }, [timelineTimes]);
-
-  //console.log("timeline: ", timeline);
 
   return (
     <div className={classes["timeline-wrapper"]}>
