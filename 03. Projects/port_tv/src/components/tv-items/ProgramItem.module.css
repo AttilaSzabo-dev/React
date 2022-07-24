@@ -20,26 +20,27 @@
   box-shadow: 0 2px 10px 0 rgb(54 54 54 / 30%);
 }
 
-.programItem:hover + .hoverInfoContainer {
-  display: block;
-}
-
 .hoverInfoContainer {
   display: none;
   position: absolute;
-  top: 40px;
-  left: 0;
+  top: 60px;
   width: 250px;
-  height: 150px;
   background-color: black;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px 0 rgb(54 54 54 / 70%);
+  padding: 5px 10px;
   z-index: 1000;
+}
+
+.hoverInfoContainer.show {
+  display: block;
 }
 
 .hoverInfoContainer:before {
   content: "";
   position: absolute;
   top: -11px;
-  left: 125px;
+  left: 48%;
   width: 0;
   height: 0;
   border-left: 8px solid transparent;
@@ -47,7 +48,36 @@
   border-bottom: 11px solid black;
 }
 
-.time {
+.hoverInfoContainer span {
+  display: block;
+  white-space: nowrap;
+  font-family: "Source Sans Pro", sans-serif;
+  text-overflow: ellipsis;
+  color: #fff;
+  overflow: hidden;
+}
+
+.hoverInfoContainer .title {
+  font-weight: 400;
+  font-size: 1.1rem;
+  margin-bottom: 2px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #787878;
+}
+
+.hoverInfoContainer .title .time {
+  display: inline;
+  font-weight: 300;
+  font-size: .8rem;
+  padding-left: 5px;
+}
+
+.hoverInfoContainer .desc {
+  font-weight: 300;
+  font-size: .8rem;
+}
+
+.programItem .time {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -60,7 +90,7 @@
   text-overflow: ellipsis;
 }
 
-.title {
+.programItem .title {
   display: inline-block;
   max-width: 100%;
   color: #414141;
@@ -77,7 +107,7 @@
   cursor: pointer;
 }
 
-.title:hover {
+.programItem .title:hover {
   color: #d63632;
 }
 

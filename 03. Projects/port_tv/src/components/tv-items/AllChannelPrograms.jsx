@@ -39,6 +39,7 @@ const AllChannelPrograms = (props) => {
             filmUrl={item.film_url}
             start_ts={item.start_ts}
             end_datetime={item.end_datetime}
+            short_description={item.short_description}
           />
         ))}
       </ProgramsWrapper>

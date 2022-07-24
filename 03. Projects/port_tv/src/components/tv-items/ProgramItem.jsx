@@ -17,11 +17,13 @@ const ProgramItem = ({
   filmUrl,
   start_ts,
   end_datetime,
+  short_description
 }) => {
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
   const [notiStatus, setNotiStatus] = useState(false);
   const [remindStatus, setRemindStatus] = useState(false);
   const [hover, setHover] = useState(false);
+  const [popUp, setPopUp] = useState(false);
   const background =
     start_ts > Math.floor(new Date(actualTime).getTime() / 1000)
       ? "#fff"
@@ -36,6 +38,10 @@ const ProgramItem = ({
     backgroundColor: background,
   };
 
+  const popUpCss = {
+    left: (widthCalc.replace('px', '') / 2 - 130) + "px"
+  };
+
   const visible = {
     opacity: 1,
     pointerEvents: "all",
@@ -48,6 +54,10 @@ const ProgramItem = ({
 
   const toggleHover = () => {
     setHover(!hover);
+  };
+
+  const togglePopUp = () => {
+    setPopUp(!popUp);
   };
 
   const setNotiHandler = () => {
@@ -109,7 +119,6 @@ const ProgramItem = ({
   };
 
   useEffect(() => {
-
     if (tvData.notifications.includes(notificId)) {
       setNotiStatus(true);
     }
@@ -120,8 +129,16 @@ const ProgramItem = ({
   }, [tvData.notifications, tvData.reminders, notificId, reminderId]);
 
   return (
-    <div className={classes.programHoverContainer}>
-      <div className={classes.hoverInfoContainer}></div>
+    <div
+      onMouseLeave={togglePopUp}
+      onMouseEnter={togglePopUp}
+      className={classes.programHoverContainer}
+    >
+      <div className={`${classes.hoverInfoContainer} ${popUp ? classes.show : ""}`} style={popUpCss}>
+        <span className={classes.title}>{title} <span className={classes.time}>{`(${startTime} - ${endTime})`}</span></span>
+        
+        <span className={classes.desc}>{short_description}</span>
+      </div>
       <div
         onMouseLeave={toggleHover}
         onMouseEnter={toggleHover}
@@ -141,7 +158,9 @@ const ProgramItem = ({
             />
             <BsClock
               onClick={setRemindHandler}
-              className={`${classes.clock} ${remindStatus ? classes.active : ""}`}
+              className={`${classes.clock} ${
+                remindStatus ? classes.active : ""
+              }`}
               style={hover ? visible : notVisible}
               title="Emlékeztető beállítása"
             />
