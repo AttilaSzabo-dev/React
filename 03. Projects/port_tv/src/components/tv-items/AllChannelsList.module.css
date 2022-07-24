@@ -4,14 +4,8 @@
   flex-direction: row;
 }
 
-.logoContainer {
-  min-width: 150px;
-  max-width: 150px;
-}
-
 .programsContainer {
   width: 100%;
   overflow: hidden;
-  scroll-behavior: smooth;
   position: relative;
 }

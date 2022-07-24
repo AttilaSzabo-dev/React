@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
-import FilterList from "../filter-items/FilterList";
+import MarginContext from "../../context/MarginContext";
 import Timeline from "../timeline-items/Timeline";
-import AllChannelLogo from "./AllChannelLogo";
 import AllChannelPrograms from "./AllChannelPrograms";
 import Marker from "../timeline-items/Marker";
 import Spinner from "../../UI/Spinner";
@@ -25,8 +24,12 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     isFiltered: false,
     programListUnfiltered: [],
     programListFiltered: [],
-    listToShow: []
+    listToShow: [],
   });
+
+  const [marginLeftValue, setMarginLeftValue] = useState();
+  const value = { marginLeftValue, setMarginLeftValue };
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -40,11 +43,10 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   };
 
   const filterChannelsHandler = (value) => {
-    
     if (value === "0") {
-      setProgramsState(prev => ({
+      setProgramsState((prev) => ({
         ...prev,
-        listToShow: [...prev.programListUnfiltered]
+        listToShow: [...prev.programListUnfiltered],
       }));
     } else {
       setIsLoading(true);
@@ -56,37 +58,21 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           let objectCreation = {};
           objectCreation.value = value;
           objectCreation.data = data;
-          setProgramsState(prev => ({
+          setProgramsState((prev) => ({
             ...prev,
-            programListFiltered: [...prev.programListFiltered, {...objectCreation}],
-            listToShow: [data]
+            programListFiltered: [
+              ...prev.programListFiltered,
+              { ...objectCreation },
+            ],
+            listToShow: [data],
           }));
-          
+
           setIsLoading(false);
         })
         .catch((error) => {
           setError(error.message);
         });
     }
-    
-    
-  };
-
-  const scrollPrograms = (value) => {
-    //console.log("testValue: ", value);
-    programsContainer.current.scrollLeft += value;
-    //console.log("programs scrollWidth: ", programsContainer.current.scrollWidth);
-    //console.log("programs scrollLeft: ", programsContainer.current.scrollLeft);
-    //console.log("programs scrollWidth - scrollLeft: ", programsContainer.current.scrollWidth - programsContainer.current.scrollLeft);
-    //console.log("programs offsetWidth: ", programsContainer.current.offsetWidth);
-  };
-
-  const scrollProgramsOnFetch = (value) => {
-    programsContainer.current.scrollTo({
-      top: 0,
-      left: value,
-      behavior: "smooth",
-    });
   };
 
   // 30perc = 1800 second
@@ -157,8 +143,8 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     });
   };
   useEffect(() => {
-      //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
-      timelineTimesHandler();
+    //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
+    timelineTimesHandler();
   }, [programsState.listToShow]);
 
   useEffect(() => {
@@ -169,12 +155,12 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           return res.json();
         })
         .then((data) => {
-          setProgramsState(prev => ({
+          setProgramsState((prev) => ({
             ...prev,
             programListUnfiltered: [...prev.programListUnfiltered, data],
-            listToShow: [...prev.listToShow, data]
+            listToShow: [...prev.listToShow, data],
           }));
-          
+
           setIsLoading(false);
         })
         .catch((error) => {
@@ -188,13 +174,13 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   return (
     <>
       {programsState.listToShow.length > 0 && (
-        <Timeline
-          onChangeApiFetch={scrollProgramsOnFetch}
-          onChangeDelta={scrollPrograms}
-          onFilterChannels={filterChannelsHandler}
-          initData={initData}
-          timelineTimes={timelineTimes}
-        />
+        <MarginContext.Provider value={value}>
+          <Timeline
+            onFilterChannels={filterChannelsHandler}
+            initData={initData}
+            timelineTimes={timelineTimes}
+          />
+        </MarginContext.Provider>
       )}
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
@@ -202,12 +188,14 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           <Marker time={initData} timelineTimes={timelineTimes} />
           {programsState.listToShow.length > 0 &&
             programsState.listToShow.map((program, index) => (
-              <AllChannelPrograms
-                programs={program}
-                initData={initData}
-                timelineTimes={timelineTimes}
-                index={index}
-              />
+              <MarginContext.Provider value={value}>
+                <AllChannelPrograms
+                  programs={program}
+                  initData={initData}
+                  timelineTimes={timelineTimes}
+                  index={index}
+                />
+              </MarginContext.Provider>
             ))}
         </div>
       </div>

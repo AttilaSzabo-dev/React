@@ -1,6 +1,5 @@
 .logoWrapper {
   position: absolute;
-  top: 0;
   left: 0;
   background-color: #fff;
   display: flex;
@@ -15,6 +14,7 @@
   -moz-box-shadow: 2px 0 0 0 rgba(160, 160, 160, 0.7);
   -o-box-shadow: 2px 0 0 0 rgba(160, 160, 160, 0.7);
   box-shadow: 2px 0 0 0 rgb(160 160 160 / 70%);
+  z-index: 90;
 }
 
 .imgWrapper {

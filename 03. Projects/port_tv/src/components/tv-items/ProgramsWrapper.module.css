@@ -1,5 +1,5 @@
 .programsWrapper {
-  position: relative;
   display: flex;
   height: 60px;
+  transition: margin-left .5s;
 }
