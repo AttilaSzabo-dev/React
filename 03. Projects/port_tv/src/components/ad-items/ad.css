@@ -8,3 +8,8 @@
   .adContent {
     margin: 0 auto;
   }
+
+  .virtualImage {
+    width: 100%;
+    height: auto;
+  }

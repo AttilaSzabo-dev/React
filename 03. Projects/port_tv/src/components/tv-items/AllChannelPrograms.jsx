@@ -1,11 +1,10 @@
 import ProgramsWrapper from "./ProgramsWrapper";
 import AllChannelLogo from "./AllChannelLogo";
 import ProgramItem from "./ProgramItem";
-import AdFejlecCsik from "../ad-items/AdFejlecCsik";
 import AdLB from "../ad-items/AdLB";
-import AdMR from "../ad-items/AdMR";
 import AdRB from "../ad-items/AdRB";
 import AdRBB from "../ad-items/AdRBB";
+import AdVirtual from "../ad-items/AdVirtual";
 import SlickSlider from "./SlickSlider";
 
 /* import classes from "./AllChannelPrograms.module.css"; */
@@ -19,13 +18,14 @@ const AllChannelPrograms = (props) => {
     <>
       {/* <AdFejlecCsik/> */}
       
-      {props.index === 0 && index === 3 && zones.superleaderboard !== undefined && zones.superleaderboard.device === "desktop"  ? <AdLB/> : ""}
-      {props.index === 0 && index === 5 && zones.medium_rectangle_b !== undefined ? <AdMR/> : ""} {/* carousel ad */}
-      {props.index === 0 && index === 7 && zones.roadblock_a !== undefined && zones.roadblock_a.device === "desktop" ? <AdRB/> : ""}
-      {props.index === 0 && index === 9 && zones.roadblock_b !== undefined ? <AdRBB/> : ""}
-      {props.index === 0 && index === 11 ? <SlickSlider/> : ""}
+      {props.index === 0 && channel === "Virtual"  ? <AdVirtual/> : ""}
+      {props.index === 0 && index === 4 && zones.superleaderboard !== undefined && zones.superleaderboard.device === "desktop"  ? <AdLB/> : ""}
+      {/* props.index === 0 && index === 5 && zones.medium_rectangle_b !== undefined ? <AdMR/> : "" */} {/* carousel ad */}
+      {props.index === 0 && index === 18 && zones.roadblock_a !== undefined && zones.roadblock_a.device === "desktop" ? <AdRB/> : ""}
+      {props.index === 0 && index === 20 && zones.roadblock_b !== undefined ? <AdRBB/> : ""}
+      {props.index === 0 && index === 13 ? <SlickSlider/> : ""}
 
-      <ProgramsWrapper timelineTimes={props.timelineTimes} index={index}>
+      {channel !== "Virtual" && <ProgramsWrapper timelineTimes={props.timelineTimes} index={index}>
         <AllChannelLogo channel={channel} key={channel.id} id={channel.id} />
         {channel.programs.map((item) => (
           <ProgramItem
@@ -42,7 +42,7 @@ const AllChannelPrograms = (props) => {
             short_description={item.short_description}
           />
         ))}
-      </ProgramsWrapper>
+      </ProgramsWrapper>}
     </>
   ));
 };

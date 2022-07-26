@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import "./ad.css";
 
 const AdFejlecCsik = () => {
   const adRef = useRef();
@@ -36,14 +37,12 @@ const AdFejlecCsik = () => {
 
   return (
     <div className={"adItem"}>
-      <div className={"adContent"}>
-        <div
-          ref={adRef}
-          className="iap iap--ado empty bg--transparent"
-          id={zones.tv_top_sponsoration.id}
-          data-id={zones.tv_top_sponsoration.id}
-        ></div>
-      </div>
+      <div
+        ref={adRef}
+        id={zones.tv_top_sponsoration.id}
+        data-id={zones.tv_top_sponsoration.id}
+        className={"adContent"}
+      ></div>
     </div>
   );
 };

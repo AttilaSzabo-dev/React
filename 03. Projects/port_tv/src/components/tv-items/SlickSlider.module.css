@@ -2,30 +2,29 @@
   position: sticky;
   left: 0;
   z-index: 90;
-}
-
-.container {
-  width: 350px;
-  height: 250px;
+  background-color: #fff;
+  width: 100%;
 }
 
 .mainLink {
+  display: block;
   position: relative;
-  width: 100%;
-  height: 100%;
+  height: 270px;
+  padding-top: 16px;
+  padding-right: 7px;
 }
 
 .mainLink .image {
   height: 100%;
-  aspect-ratio: 16 / 9;
+  width: 100%;
+  /* aspect-ratio: 16 / 9; */
   object-fit: cover;
-  margin: 0 auto;
 }
 
 .mainLink .title {
   position: absolute;
-  left: 25px;
-  bottom: 10px;
+  left: 4%;
+  bottom: 4%;
   display: inline-block;
   height: 26px;
   font-family: "Source Sans Pro", sans-serif;
@@ -38,8 +37,8 @@
 
 .channelLink {
   position: absolute;
-  top: 7px;
-  right: 20px;
+  top: 10%;
+  right: 4%;
   height: 21px;
   background-color: #f2070b;
   padding: 0 5px;

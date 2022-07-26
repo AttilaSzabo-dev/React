@@ -1,46 +1,28 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import "./ad.css";
 
 const AdVirtual = () => {
-  const adRef = useRef();
-  const zones = window.zonesToLoad;
+  const [virtual, setVirtual] = useState({
+    ct: "",
+    img: "",
+  });
+  
+  const zone = window.virtualChannelSponsoration;
 
   useEffect(()=> {
-
-    const zone = {
-      "id": zones.tv_virtual_sponsoration.id,
-      "empty": true,
-      "lazy": false,
-      "quality": zones.tv_virtual_sponsoration.quality,
-      "masterless": zones.tv_virtual_sponsoration.masterless, 
-      "area": zones.tv_virtual_sponsoration.area, /* Virtual channel */
-      "node": adRef.current,
-      "events": {
-        "loaded": false, 
-        "visible": false,
-        "viewed": false
-      },
-      "stat": {
-        "site": "port",
-        "path": "",
-        "type": "tv/nyito"
-      }
-    }
-
-    if (typeof window.ADOLoader === "undefined") {
-      window.iap_zones = window.iap_zones || [];
-      window.iap_zones.push(zone);
-    }else {
-      const callback = () => {};
-      window.ADOLoader.AdEngine.append(zone, callback)
-    }
-  }, [])
+    setVirtual({
+      ct: zone.ct,
+      img: zone.img
+    })
+  }, [zone.ct, zone.img])
   
 
   return (
     <div className={"adItem"}>
       <div className={"adContent"}>
-        <div ref={adRef} className="iap iap--ado empty bg--transparent" id={zones.tv_virtual_sponsoration.id} data-id={zones.tv_virtual_sponsoration.id}></div>
+        <a href={virtual.ct}>
+          <img src={virtual.img} alt="Virtual Channel" className="virtualImage" />
+        </a>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import MarginContext from "../../context/MarginContext";
 import Timeline from "../timeline-items/Timeline";
+import AdFejlecCsik from "../ad-items/AdFejlecCsik";
 import AllChannelPrograms from "./AllChannelPrograms";
 import Marker from "../timeline-items/Marker";
 import Spinner from "../../UI/Spinner";
@@ -26,12 +27,14 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     programListFiltered: [],
     listToShow: [],
   });
-
+  const [virtualIsActive, setVirtualIsActive] = useState(false);
   const [marginLeftValue, setMarginLeftValue] = useState();
   const value = { marginLeftValue, setMarginLeftValue };
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const zones = window.zonesToLoad;
 
   const programsContainer = useRef(null);
 
@@ -83,14 +86,16 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     let endTime = [];
     programsState.listToShow.forEach((item) => {
       item.channels.forEach((channel) => {
-        startTime.push(channel.programs[0].start_ts);
-        endTime.push(
-          Math.floor(
-            new Date(
-              channel.programs[channel.programs.length - 1].end_datetime
-            ).getTime() / 1000
-          )
-        );
+        if (channel !== "Virtual") {
+          startTime.push(channel.programs[0].start_ts);
+          endTime.push(
+            Math.floor(
+              new Date(
+                channel.programs[channel.programs.length - 1].end_datetime
+              ).getTime() / 1000
+            )
+          );
+        }
       });
     });
 
@@ -169,7 +174,34 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     }
   }, [programsState.urlIndex]);
 
+  useEffect(() => {
+    if (virtualIsActive) {
+      const zone = window.virtualChannelSponsoration;
+      let tempState = { ...programsState };
+      let element = [...tempState.listToShow[0].channels];
+      element.splice(zone.position, 0, "Virtual");
+      tempState.listToShow[0].channels = element;
+      setProgramsState((prev) => ({
+        ...prev,
+        listToShow: tempState.listToShow,
+      }));
+      console.log("tempState: ", tempState);
+      console.log("element: ", element);
+    }
+  }, [virtualIsActive]);
+
+  useEffect(() => {
+    window.addEventListener(
+      `AD.SHOW.${zones.tv_virtual_sponsoration.id}`,
+      (event) => {
+        setVirtualIsActive(true);
+        //console.log("event.detail: ", event.detail);
+      }
+    );
+  }, [zones.tv_virtual_sponsoration.id]);
+
   console.log("programsToShow: ", programsState.listToShow);
+  console.log("programsState: ", programsState);
 
   return (
     <>
@@ -182,6 +214,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           />
         </MarginContext.Provider>
       )}
+      <AdFejlecCsik/>
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
         <div ref={programsContainer} className={classes.programsContainer}>
