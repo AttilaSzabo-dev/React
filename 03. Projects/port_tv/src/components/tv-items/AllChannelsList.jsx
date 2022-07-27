@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useMediaQuery } from 'react-responsive'
 
 import MarginContext from "../../context/MarginContext";
 import Timeline from "../timeline-items/Timeline";
@@ -33,6 +34,9 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const isDesktop = useMediaQuery({ query: '(min-width: 500px)' })
+  const isMobile = useMediaQuery({ query: '(max-width: 499px)' })
 
   const zones = window.zonesToLoad;
 
@@ -198,7 +202,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
         //console.log("event.detail: ", event.detail);
       }
     );
-  }, [zones.tv_virtual_sponsoration.id]);
+  }, []);
 
   console.log("programsToShow: ", programsState.listToShow);
   console.log("programsState: ", programsState);

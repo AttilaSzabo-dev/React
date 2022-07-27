@@ -37,12 +37,14 @@ const AdFejlecCsik = () => {
 
   return (
     <div className={"adItem"}>
-      <div
-        ref={adRef}
-        id={zones.tv_top_sponsoration.id}
-        data-id={zones.tv_top_sponsoration.id}
-        className={"adContent"}
-      ></div>
+      <div className={"adContent"}>
+        <div
+          ref={adRef}
+          id={zones.tv_top_sponsoration.id}
+          data-id={zones.tv_top_sponsoration.id}
+          className="iap iap--ado ad-label--hidden ad-label--ghost empty bg--transparent"
+        ></div>
+      </div>
     </div>
   );
 };
