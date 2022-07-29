@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useMediaQuery } from "react-responsive";
 import ModalContext from "../../context/ModalContext";
 
 import Modal from "../../UI/Modal";
@@ -8,11 +9,18 @@ import { RiHeartAddFill } from "react-icons/ri";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
 import classes from "./FilterList.module.css";
+import ChannelFilter from "./ChannelFilter";
 
-const FilterList = ({ initData, dayHandler, programHandler }) => {
+const FilterList = ({
+  initData,
+  dayHandler,
+  programHandler,
+  onFilterChannels,
+}) => {
   const [modal, setModal] = useState(false);
   const value = { modal, setModal };
 
+  const [categories, setCategories] = useState([]);
   const [days, setDays] = useState([]);
   const [counter, setCounter] = useState(3);
   const [active, setActive] = useState(false);
@@ -26,6 +34,8 @@ const FilterList = ({ initData, dayHandler, programHandler }) => {
     gastro: false,
     activeFilters: [],
   });
+
+  const isMobile = useMediaQuery({ query: "(max-width: 499px)" });
 
   const onModalOpen = () => {
     setModal(!modal);
@@ -63,8 +73,12 @@ const FilterList = ({ initData, dayHandler, programHandler }) => {
     }
   };
 
+  const onSelectChange = (e) => {
+    onFilterChannels(e.target.value);
+  };
+
   useEffect(() => {
-    if (typeof programHandler === 'function') {
+    if (typeof programHandler === "function") {
       programHandler(programFilter.activeFilters);
     }
   }, [programFilter.activeFilters]);
@@ -109,6 +123,11 @@ const FilterList = ({ initData, dayHandler, programHandler }) => {
     });
   }, [initData.days]);
 
+  useEffect(() => {
+    let groups = Object.values(initData.channelGroups);
+    setCategories(groups);
+  }, [initData]);
+
   return (
     <>
       <ModalContext.Provider value={value}>
@@ -117,109 +136,115 @@ const FilterList = ({ initData, dayHandler, programHandler }) => {
         </Modal>
       </ModalContext.Provider>
       <div className={classes.filterWrapper}>
-        <div className={classes.filterContainers}>
-          {days.length > 0 && (
-            <div className={classes.dateContainer}>
-              <button
-                className={`${classes.buttons} ${
-                  !active ? classes.active : ""
-                }`}
-                onClick={(e) => counterHandler(2)}
-              >
-                <span className={classes.day}>{days[2].day_text}</span>
-                <span className={classes.date}>
-                  {days[2].month} {days[2].day_num}
-                </span>
-              </button>
-              <button
-                className={`${classes.buttons} ${active ? classes.active : ""}`}
-                onClick={(e) => counterHandler(counter)}
-              >
-                <span className={classes.day}>{days[counter].day_text}</span>
-                <span className={classes.date}>
-                  {days[counter].month} {days[counter].day_num}
-                </span>
-              </button>
-              <button
-                className={classes.openDates}
-                onClick={(e) => setDaysSelectorDropdown(true)}
-              >
-                <MdKeyboardArrowDown className={classes.downIcon} />
-              </button>
-              <div
-                className={`${classes.daysSelector} ${
-                  daysSelectorDropdown ? classes.open : ""
-                }`}
-              >
-                {days.map((day, index) => (
-                  <button
-                    className={classes.daySelectorButtons}
-                    onClick={(e) => counterHandler(index)}
-                  >
-                    <span className={classes.daySelectorBold}>
-                      {`${day.day_text} - `}
-                      <span
-                        className={classes.daySelectorRegular}
-                      >{`${day.month} ${day.day_num}`}</span>
-                    </span>
-                  </button>
-                ))}
-              </div>
+        {days.length > 0 && (
+          <div className={classes.dateContainer}>
+            <button
+              className={`${classes.buttons} ${!active ? classes.active : ""}`}
+              onClick={(e) => counterHandler(2)}
+            >
+              <span className={classes.day}>{days[2].day_text}</span>
+              <span className={classes.date}>
+                {days[2].month} {days[2].day_num}
+              </span>
+            </button>
+            <button
+              className={`${classes.buttons} ${active ? classes.active : ""}`}
+              onClick={(e) => counterHandler(counter)}
+            >
+              <span className={classes.day}>{days[counter].day_text}</span>
+              <span className={classes.date}>
+                {days[counter].month} {days[counter].day_num}
+              </span>
+            </button>
+            <button
+              className={classes.openDates}
+              onClick={(e) => setDaysSelectorDropdown(true)}
+            >
+              <MdKeyboardArrowDown className={classes.downIcon} />
+            </button>
+            <div
+              className={`${classes.daysSelector} ${
+                daysSelectorDropdown ? classes.open : ""
+              }`}
+            >
+              {days.map((day, index) => (
+                <button
+                  className={classes.daySelectorButtons}
+                  onClick={(e) => counterHandler(index)}
+                >
+                  <span className={classes.daySelectorBold}>
+                    {`${day.day_text} - `}
+                    <span
+                      className={classes.daySelectorRegular}
+                    >{`${day.month} ${day.day_num}`}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className={classes.channelFilterEditContainer}>
+          {isMobile && (
+            <div className={classes.channelFilterMobile}>
+              <ChannelFilter
+                categories={categories}
+                onSelectChange={onSelectChange}
+              />
             </div>
           )}
           <button className={classes.modalButton} onClick={onModalOpen}>
             <RiHeartAddFill className={classes.editFavIcon} />
           </button>
-          <div className={classes.programFilterContainer}>
-            <button
-              className={`${classes.programFilterButtons} ${
-                classes.programFilterFilm
-              } ${programFilter.film ? classes.isOn : ""}`}
-              onClick={(e) => programFilterHandler("film")}
-            >
-              Film
-            </button>
-            <button
-              className={`${classes.programFilterButtons} ${
-                classes.programFilterSeries
-              } ${programFilter.sorozat ? classes.isOn : ""}`}
-              onClick={(e) => programFilterHandler("sorozat")}
-            >
-              Sorozat
-            </button>
-            <button
-              className={`${classes.programFilterButtons} ${
-                classes.programFilterSport
-              } ${programFilter.sport ? classes.isOn : ""}`}
-              onClick={(e) => programFilterHandler("sport")}
-            >
-              Sport
-            </button>
-            <button
-              className={`${classes.programFilterButtons} ${
-                classes.programFilterSportLive
-              } ${programFilter.sportLive ? classes.isOn : ""}`}
-              onClick={(e) => programFilterHandler("sportLive")}
-            >
-              Sport (élő)
-            </button>
-            <button
-              className={`${classes.programFilterButtons} ${
-                classes.programFilterReality
-              } ${programFilter.reality ? classes.isOn : ""}`}
-              onClick={(e) => programFilterHandler("reality")}
-            >
-              Reality
-            </button>
-            <button
-              className={`${classes.programFilterButtons} ${
-                classes.programFilterGastro
-              } ${programFilter.gastro ? classes.isOn : ""}`}
-              onClick={(e) => programFilterHandler("gastro")}
-            >
-              Gasztró
-            </button>
-          </div>
+        </div>
+        <div className={classes.programFilterContainer}>
+          <button
+            className={`${classes.programFilterButtons} ${
+              classes.programFilterFilm
+            } ${programFilter.film ? classes.isOn : ""}`}
+            onClick={(e) => programFilterHandler("film")}
+          >
+            Film
+          </button>
+          <button
+            className={`${classes.programFilterButtons} ${
+              classes.programFilterSeries
+            } ${programFilter.sorozat ? classes.isOn : ""}`}
+            onClick={(e) => programFilterHandler("sorozat")}
+          >
+            Sorozat
+          </button>
+          <button
+            className={`${classes.programFilterButtons} ${
+              classes.programFilterSport
+            } ${programFilter.sport ? classes.isOn : ""}`}
+            onClick={(e) => programFilterHandler("sport")}
+          >
+            Sport
+          </button>
+          <button
+            className={`${classes.programFilterButtons} ${
+              classes.programFilterSportLive
+            } ${programFilter.sportLive ? classes.isOn : ""}`}
+            onClick={(e) => programFilterHandler("sportLive")}
+          >
+            Sport (élő)
+          </button>
+          <button
+            className={`${classes.programFilterButtons} ${
+              classes.programFilterReality
+            } ${programFilter.reality ? classes.isOn : ""}`}
+            onClick={(e) => programFilterHandler("reality")}
+          >
+            Reality
+          </button>
+          <button
+            className={`${classes.programFilterButtons} ${
+              classes.programFilterGastro
+            } ${programFilter.gastro ? classes.isOn : ""}`}
+            onClick={(e) => programFilterHandler("gastro")}
+          >
+            Gasztró
+          </button>
         </div>
       </div>
     </>

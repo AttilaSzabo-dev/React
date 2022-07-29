@@ -6,30 +6,15 @@
   margin-top: 78px;
 }
 
-.filterContainers {
-  display: flex;
-  height: 42px;
-  width: 100%;
-}
-
-.modalButton {
-  display: flex;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  align-items: center;
-  background-color: #fff;
-  border: 1px solid #d9d9d9;
-}
-
 .dateContainer {
   display: flex;
   flex-direction: row;
   position: relative;
+  height: 42px;
   margin-right: 30px;
 }
 
-.buttons {
+.dateContainer .buttons {
   width: 102px;
   height: 42px;
   border: 1px solid #d9d9d9;
@@ -37,18 +22,24 @@
   background-color: #fff;
 }
 
-.buttons span {
+.dateContainer .buttons span {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 14px;
 }
 
-.buttons .day {
+.dateContainer .buttons .day {
   display: block;
   font-weight: bold;
   height: 16px;
 }
 
-.openDates {
+.dateContainer .buttons.active {
+  border: 1px solid #ef3b39;
+  background-color: #ef3b39;
+  color: #fff;
+}
+
+.dateContainer .openDates {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -58,7 +49,7 @@
   background-color: #fff;
 }
 
-.daysSelector {
+.dateContainer .daysSelector {
   position: absolute;
   bottom: -200px;
   right: -116px;
@@ -74,26 +65,30 @@
   scrollbar-width: thin;
 }
 
-.daysSelector::-webkit-scrollbar {
+.dateContainer .daysSelector.open {
+  display: block;
+}
+
+.dateContainer .daysSelector::-webkit-scrollbar {
   width: 5px;
   background: transparent;
 }
 
-.daysSelector::-webkit-scrollbar-track {
+.dateContainer .daysSelector::-webkit-scrollbar-track {
   box-shadow: inset 0 0 5px grey;
   border-radius: 10px;
 }
 
-.daysSelector::-webkit-scrollbar-thumb {
+.dateContainer .daysSelector::-webkit-scrollbar-thumb {
   background: #ef3b39;
   border-radius: 10px;
 }
 
-.daysSelector::-webkit-scrollbar-thumb:hover {
+.dateContainer .daysSelector::-webkit-scrollbar-thumb:hover {
   background: #ef3c3991;
 }
 
-.daySelectorButtons {
+.dateContainer .daySelectorButtons {
   height: 38px;
   width: 100%;
   background-color: #fff;
@@ -103,19 +98,19 @@
   transition: background-color .2s;
 }
 
-.daySelectorButtons:hover {
+.dateContainer .daySelectorButtons:hover {
   background-color: #ef3b39;
 }
 
-.daySelectorButtons:hover > span {
+.dateContainer .daySelectorButtons:hover > span {
   color: #fff;
 }
 
-.daySelectorButtons:hover > span > span {
+.dateContainer .daySelectorButtons:hover > span > span {
   color: #fff;
 }
 
-.daySelectorBold {
+.dateContainer .daySelectorBold {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 14px;
   font-weight: bold;
@@ -123,7 +118,7 @@
   transition: color .2s;
 }
 
-.daySelectorRegular {
+.dateContainer .daySelectorRegular {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 13px;
   color: #b8b8b8;
@@ -131,12 +126,24 @@
   transition: color .2s;
 }
 
-.downIcon {
+.dateContainer .downIcon {
   transform: scale(1.4);
   fill: #ef3b39;
 }
 
-.editFavIcon {
+
+
+.channelFilterEditContainer .modalButton {
+  display: flex;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+}
+
+.channelFilterEditContainer .editFavIcon {
   transform: scale(1.4);
 }
 
@@ -145,6 +152,11 @@
   align-items: end;
   margin-left: 30px;
 }
+
+/* .programFilterContainer::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+} */
 
 .programFilterButtons {
   height: 26px;
@@ -157,6 +169,7 @@
   margin-right: 30px;
   padding: 1px 0;
   opacity: .5;
+  white-space: nowrap;
 }
 
 .programFilterFilm {
@@ -183,16 +196,44 @@
   border-bottom: 5px solid #29df2f;
 }
 
-.active {
-  border: 1px solid #ef3b39;
-  background-color: #ef3b39;
-  color: #fff;
-}
-
-.open {
-  display: block;
-}
-
 .isOn {
   opacity: 1;
+}
+
+@media screen and (max-width: 499px) {
+  .filterWrapper {
+    flex-wrap: wrap;
+    height: 200px;
+    padding: 20px 16px;
+    overflow: hidden;
+  }
+
+  .dateContainer {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 25px;
+  }
+
+  .dateContainer .buttons {
+    width: 45%;
+  }
+
+  .dateContainer .daysSelector {
+    right: -1px;
+  }
+
+  .channelFilterEditContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+  }
+
+  .programFilterContainer {
+    overflow-x: scroll;
+    padding-bottom: 40px;
+    margin-left: unset;
+  }
+
+  
 }

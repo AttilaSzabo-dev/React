@@ -25,7 +25,6 @@ const AdLB = () => {
         "type": "tv/nyito"
       }
     }
-    console.log("zones: ", zones);
 
     if (typeof window.ADOLoader === "undefined") {
       window.iap_zones = window.iap_zones || [];

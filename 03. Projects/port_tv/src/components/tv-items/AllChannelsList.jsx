@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { useMediaQuery } from 'react-responsive'
 
 import MarginContext from "../../context/MarginContext";
 import Timeline from "../timeline-items/Timeline";
@@ -27,6 +26,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     programListUnfiltered: [],
     programListFiltered: [],
     listToShow: [],
+    lazyPrograms: [],
   });
   const [virtualIsActive, setVirtualIsActive] = useState(false);
   const [marginLeftValue, setMarginLeftValue] = useState();
@@ -34,9 +34,6 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const isDesktop = useMediaQuery({ query: '(min-width: 500px)' })
-  const isMobile = useMediaQuery({ query: '(max-width: 499px)' })
 
   const zones = window.zonesToLoad;
 
@@ -156,6 +153,14 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     timelineTimesHandler();
   }, [programsState.listToShow]);
 
+  const createLazyPrograms = (data) => {
+    let newData = [];
+    setProgramsState((prev) => ({
+      ...prev,
+      lazyPrograms: [...prev.lazyPrograms, newData],
+    }));
+  };
+
   useEffect(() => {
     if (!programsState.isFiltered) {
       setIsLoading(true);
@@ -164,6 +169,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           return res.json();
         })
         .then((data) => {
+          createLazyPrograms(data);
           setProgramsState((prev) => ({
             ...prev,
             programListUnfiltered: [...prev.programListUnfiltered, data],
@@ -189,19 +195,19 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
         ...prev,
         listToShow: tempState.listToShow,
       }));
-      console.log("tempState: ", tempState);
-      console.log("element: ", element);
     }
   }, [virtualIsActive]);
 
   useEffect(() => {
-    window.addEventListener(
-      `AD.SHOW.${zones.tv_virtual_sponsoration.id}`,
-      (event) => {
-        setVirtualIsActive(true);
-        //console.log("event.detail: ", event.detail);
-      }
-    );
+    if (zones.tv_virtual_sponsoration !== undefined) {
+      window.addEventListener(
+        `AD.SHOW.${zones.tv_virtual_sponsoration.id}`,
+        (event) => {
+          setVirtualIsActive(true);
+          //console.log("event.detail: ", event.detail);
+        }
+      );
+    }
   }, []);
 
   console.log("programsToShow: ", programsState.listToShow);
@@ -218,7 +224,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           />
         </MarginContext.Provider>
       )}
-      <AdFejlecCsik/>
+      <AdFejlecCsik />
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
         <div ref={programsContainer} className={classes.programsContainer}>

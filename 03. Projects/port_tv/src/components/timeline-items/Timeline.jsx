@@ -3,6 +3,7 @@ import MarginContext from "../../context/MarginContext";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
+import ChannelFilter from "../filter-items/ChannelFilter";
 import TimelineSection from "./TimelineSection";
 
 import classes from "./Timeline.module.css";
@@ -110,20 +111,7 @@ const Timeline = ({
   return (
     <div className={classes.timelineWrapper}>
       <div className={classes.timelineFilter}>
-        {
-          <select
-            className={classes.select}
-            name="selectList"
-            id="selectList"
-            onChange={(e) => onSelectChange(e)}
-          >
-            <option value="0">Összes csatorna</option>
-            {categories.length > 0 &&
-              categories.map((item) => (
-                <option value={item.id}>{item.name}</option>
-              ))}
-          </select>
-        }
+        <ChannelFilter categories={categories} onSelectChange={onSelectChange}/>
       </div>
       <button onClick={goLeft} className={classes.buttons}>
         <MdKeyboardArrowLeft className={classes.arrows} />

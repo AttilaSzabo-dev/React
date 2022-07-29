@@ -12,16 +12,14 @@ import SlickSlider from "./SlickSlider";
 const AllChannelPrograms = (props) => {
   let zones = window.zonesToLoad;
 
-  console.log("zones: ", zones);
-
   return props.programs.channels.map((channel, index) => (
     <>
       {/* <AdFejlecCsik/> */}
       
       {props.index === 0 && channel === "Virtual"  ? <AdVirtual/> : ""}
-      {props.index === 0 && index === 4 && zones.superleaderboard !== undefined && zones.superleaderboard.device === "desktop"  ? <AdLB/> : ""}
+      {props.index === 0 && index === 4 && zones.superleaderboard !== undefined && zones.superleaderboard.device === "desktop"  ? <AdLB/> : ""}{/* mobilon is */}
       {/* props.index === 0 && index === 5 && zones.medium_rectangle_b !== undefined ? <AdMR/> : "" */} {/* carousel ad */}
-      {props.index === 0 && index === 18 && zones.roadblock_a !== undefined && zones.roadblock_a.device === "desktop" ? <AdRB/> : ""}
+      {props.index === 0 && index === 18 && zones.roadblock_a !== undefined && zones.roadblock_a.device === "desktop" ? <AdRB/> : ""}{/* mobilon is */}
       {props.index === 0 && index === 20 && zones.roadblock_b !== undefined ? <AdRBB/> : ""}
       {props.index === 0 && index === 13 ? <SlickSlider/> : ""}
 
