@@ -106,6 +106,8 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
     } while (incrementValue <= timelineTimes.endTimestamp - 1800000);
   }, [timelineTimes]); */
 
+  //mi kell a mobileData-ból: date(hogy tudjuk az aktuális időt) / channelsből: id, logo, url / programsból: end_datetime, end_time, film_url, start_datetime, start_time, title
+
   const createListToShow = (data) => {
     let update = [];
     let today = data.date.replace("T", " ");
