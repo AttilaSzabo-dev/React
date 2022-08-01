@@ -10,6 +10,11 @@ import classes from "./AllChannelMobile.module.css";
 const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
   const [timeline, setTimeline] = useState([]);
   const [urlIndex, setUrlIndex] = useState(0);
+  const [listToShow, setListToShow] = useState({
+    actualTime: 0,
+    mobileChannelsAll: [],
+    mobileChannelsUnfiltered: [],
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   /* const timelineTimesHandler = () => {
@@ -106,16 +111,71 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
     } while (incrementValue <= timelineTimes.endTimestamp - 1800000);
   }, [timelineTimes]); */
 
-  //mi kell a mobileData-ból: date(hogy tudjuk az aktuális időt) / channelsből: id, logo, url / programsból: end_datetime, end_time, film_url, start_datetime, start_time, title
+  //mi kell a mobileData-ból: date(hogy tudjuk az aktuális időt) / channelsből: id, logo, name, url / programsból: end_datetime, end_time, film_url, start_datetime, start_time, title
 
   const createListToShow = (data) => {
+    let indexHelper = 0;
+    let useIndex = false;
     let update = [];
+    let updateShort = [];
     let today = data.date.replace("T", " ");
     const date = new Date(today);
     const unixTimestamp = Math.floor(date.getTime() / 1000);
     const milliseconds = unixTimestamp * 1000;
     const dateObject = new Date(milliseconds);
     const humanDateFormat = dateObject.toLocaleString("hu-HU");
+    data.channels.forEach((channel)=> {
+      const channelObject = {
+        id: channel.id,
+        logo: channel.logo,
+        name: channel.name,
+        url: channel.url,
+        programs: []
+      };
+      const channelObjectFinal = {
+        id: channel.id,
+        logo: channel.logo,
+        name: channel.name,
+        url: channel.url,
+        programs: []
+      };
+      channel.programs.forEach((program, index)=> {
+        const dateStart = new Date(program.start_datetime);
+        const unixTimestampStart = Math.floor(dateStart.getTime() / 1000);
+        const dateEnd = new Date(program.end_datetime);
+        const unixTimestampEnd = Math.floor(dateEnd.getTime() / 1000);
+        const programObject = {
+          start_datetime: unixTimestampStart,
+          start_time: program.start_time,
+          end_datetime:unixTimestampEnd,
+          end_time: program.end_time,
+          film_url: program.film_url,
+          title: program.title
+        };
+        channelObject.programs.push(programObject);
+        if (unixTimestampStart < unixTimestamp && unixTimestampEnd > unixTimestamp) {
+          channelObjectFinal.programs.push(programObject);
+          indexHelper = index;
+          useIndex = true
+        }
+        if (useIndex && index + 2 <= indexHelper) {
+          channelObjectFinal.programs.push(programObject);
+        }
+      });
+      update.push(channelObject);
+      updateShort.push(channelObjectFinal);
+    });
+
+    setListToShow((prev)=> ({
+      ...prev,
+      actualTime: unixTimestamp,
+      mobileChannelsAll: [...prev.mobileChannelsAll, update],
+      mobileChannelsUnfiltered: [...prev.mobileChannelsUnfiltered, updateShort]
+      
+    }));
+    //setActualTimeDate(unixTimestamp);
+    console.log("update: ", update);
+    console.log("updateShort: ", updateShort);
     console.log("mobileData: ", data);
     console.log("mobileDataDateTS: ", unixTimestamp);
     console.log("mobileDataDataReverse: ", humanDateFormat);
