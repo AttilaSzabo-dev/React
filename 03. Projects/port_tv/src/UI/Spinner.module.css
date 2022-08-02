@@ -72,3 +72,10 @@
     transform: translate(24px, 0);
   }
 }
+
+@media screen and (max-width: 499px) {
+  .overlay {
+    width: 150px;
+    left: calc(50% - 75px);
+  }
+}
