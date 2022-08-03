@@ -107,7 +107,7 @@
   left: 0;
   width: 22px;
   height: 100%;
-  background-color: transparent;
+  background-color: #414141;
   border: unset;
   border-right: 1px solid #676767;
   z-index: 50;
@@ -123,4 +123,32 @@
 .timelineArrow {
   transform: scale(3);
   fill: #fff;
+}
+
+.sectionWrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  overflow: hidden;
+}
+
+.timelineSections {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 20%;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 16px;
+  color: #fff;
+}
+
+.timelineSections.active {
+  font-weight: bold;
+  color: #414141;
+  background-color: #d9d9d9;
+}
+
+.timelineSections.hide {
+  display: none;
 }

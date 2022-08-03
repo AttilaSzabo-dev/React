@@ -17,6 +17,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
   const [urlIndex, setUrlIndex] = useState(0);
   const [listToShow, setListToShow] = useState({
     actualTime: 0,
+    roundedActualTime: 0,
     timelineTimes: [],
     mobileChannelsAll: [],
     mobileChannelsShow: [],
@@ -31,9 +32,12 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
     let today = data.date.replace("T", " ");
     const date = new Date(today);
     const unixTimestamp = Math.floor(date.getTime() / 1000);
-    const milliseconds = unixTimestamp * 1000;
-    const dateObject = new Date(milliseconds);
-    const humanDateFormat = dateObject.toLocaleString("hu-HU");
+    date.setMinutes(0);
+    date.setSeconds(0);
+    const unixTimestampModified = Math.floor(date.getTime() / 1000);
+    //const milliseconds = unixTimestamp * 1000;
+    //const dateObject = new Date(milliseconds);
+    //const convertToFullTime = dateObject.toLocaleString("hu-HU");
     data.channels.forEach((channel) => {
       let indexHelper = 0;
       let useIndex = false;
@@ -84,15 +88,17 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
     setListToShow((prev) => ({
       ...prev,
       actualTime: unixTimestamp,
+      roundedActualTime: unixTimestampModified,
       mobileChannelsAll: [...prev.mobileChannelsAll, update],
       mobileChannelsShow: [...prev.mobileChannelsShow, updateShort],
     }));
-    //setActualTimeDate(unixTimestamp);
-    console.log("update: ", update);
-    console.log("updateShort: ", updateShort);
-    console.log("mobileData: ", data);
-    console.log("mobileDataDateTS: ", unixTimestamp);
-    console.log("mobileDataDataReverse: ", humanDateFormat);
+    console.log("unixTimestamp: ", unixTimestamp);
+    console.log("unixTimestampModified: ", unixTimestampModified);
+    //console.log("update: ", update);
+    //console.log("updateShort: ", updateShort);
+    //console.log("mobileData: ", data);
+    //console.log("mobileDataDateTS: ", unixTimestamp);
+    //console.log("mobileDataDataReverse: ", humanDateFormat);
   };
   console.log("listToShow: ", listToShow);
 
@@ -188,61 +194,83 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
         <button className={classes.timelineButton}>
           <MdKeyboardArrowRight className={classes.timelineArrow} />
         </button>
-        {/* {listToShow.timelineTimes.map(item => ({
-          item.timestamp 
-        }))} */}
+        <div className={classes.sectionWrapper}>
+          {listToShow.timelineTimes.map((item) => (
+            <div
+              className={`${classes.timelineSections} ${
+                item.timestamp >= listToShow.roundedActualTime - 7200 &&
+                item.timestamp <= listToShow.roundedActualTime + 7200
+                  ? ""
+                  : classes.hide
+              } ${
+                item.timestamp === listToShow.roundedActualTime
+                  ? classes.active
+                  : ""
+              }`}
+            >
+              {item.humanTime}
+            </div>
+          ))}
+        </div>
       </div>
       <AdFejlecCsik />
-      {listToShow.mobileChannelsShow.length !== 0 && listToShow.mobileChannelsShow.map((group, outerIndex) =>
-        group.map((channel, innerIndex) => (
-          <>
-            {outerIndex === 0 && innerIndex === 2 && <AdLB />}
-            {outerIndex === 0 && innerIndex === 6 && <AdRich />}
-            {outerIndex === 0 && innerIndex === 10 && <AdRB />}
-            <div key={channel.id} className={classes.channelWrapper}>
-              <div className={classes.logoWrapper}>
-                <img src={channel.logo} alt={channel.id} />
-              </div>
-              <div className={classes.programsWrapper}>
-                <span className={classes.text}>{channel.name}</span>
-                <span
-                  className={`${classes.text} ${classes.firstProgram}`}
-                >{`${channel.programs[0].start_time} ${channel.programs[0].title}`}</span>
-                <div className={classes.progressBarContainer}>
-                  <div className={classes.progressBarBackground}></div>
-                  <div
-                    className={classes.progressBarProgress}
-                    style={{
-                      width:
-                        100 -
-                        ((channel.programs[0].end_datetime -
-                          listToShow.actualTime) /
-                          (channel.programs[0].end_datetime -
-                            channel.programs[0].start_datetime)) *
-                          100 +
-                        "%",
-                    }}
-                  ></div>
+      {listToShow.mobileChannelsShow.length !== 0 &&
+        listToShow.mobileChannelsShow.map((group, outerIndex) =>
+          group.map((channel, innerIndex) => (
+            <>
+              {outerIndex === 0 && innerIndex === 2 && <AdLB />}
+              {outerIndex === 0 && innerIndex === 6 && <AdRich />}
+              {outerIndex === 0 && innerIndex === 10 && <AdRB />}
+              {channel.programs[0] !== undefined && (
+                <div key={channel.id} className={classes.channelWrapper}>
+                  <div className={classes.logoWrapper}>
+                    <img src={channel.logo} alt={channel.id} />
+                  </div>
+                  <div className={classes.programsWrapper}>
+                    <span className={classes.text}>{channel.name}</span>
+                    <span
+                      className={`${classes.text} ${classes.firstProgram}`}
+                    >{`${channel.programs[0].start_time} ${channel.programs[0].title}`}</span>
+                    <div className={classes.progressBarContainer}>
+                      <div className={classes.progressBarBackground}></div>
+                      <div
+                        className={classes.progressBarProgress}
+                        style={{
+                          width:
+                            100 -
+                            ((channel.programs[0].end_datetime -
+                              listToShow.actualTime) /
+                              (channel.programs[0].end_datetime -
+                                channel.programs[0].start_datetime)) *
+                              100 +
+                            "%",
+                        }}
+                      ></div>
+                    </div>
+                    {channel.programs[1] !== undefined && (
+                      <span
+                        className={classes.text}
+                      >{`${channel.programs[1].start_time} ${channel.programs[1].title}`}</span>
+                    )}
+                    {channel.programs[2] !== undefined && (
+                      <span
+                        className={classes.text}
+                      >{`${channel.programs[2].start_time} ${channel.programs[2].title}`}</span>
+                    )}
+                  </div>
+                  <Link
+                    className={classes.toSingleChannelButton}
+                    to={`/csatorna/tv/${channel.name
+                      .replace(" ", "-")
+                      .toLowerCase()}/${channel.id}`}
+                  >
+                    <MdKeyboardArrowRight className={classes.channelArrow} />
+                  </Link>
                 </div>
-                {channel.programs[1] !== undefined && <span
-                  className={classes.text}
-                >{`${channel.programs[1].start_time} ${channel.programs[1].title}`}</span>}
-                {channel.programs[2] !== undefined && <span
-                  className={classes.text}
-                >{`${channel.programs[2].start_time} ${channel.programs[2].title}`}</span>}
-              </div>
-              <Link
-                className={classes.toSingleChannelButton}
-                to={`/csatorna/tv/${channel.name
-                  .replace(" ", "-")
-                  .toLowerCase()}/${channel.id}`}
-              >
-                <MdKeyboardArrowRight className={classes.channelArrow} />
-              </Link>
-            </div>
-          </>
-        ))
-      )}
+              )}
+            </>
+          ))
+        )}
     </div>
   );
 };
