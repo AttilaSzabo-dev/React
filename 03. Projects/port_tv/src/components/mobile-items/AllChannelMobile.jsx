@@ -96,7 +96,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
     console.log("unixTimestampModified: ", unixTimestampModified);
     //console.log("update: ", update);
     //console.log("updateShort: ", updateShort);
-    //console.log("mobileData: ", data);
+    console.log("mobileData: ", data);
     //console.log("mobileDataDateTS: ", unixTimestamp);
     //console.log("mobileDataDataReverse: ", humanDateFormat);
   };
@@ -132,32 +132,24 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
       const minStart = Math.min(...startTime);
       const minMilliseconds = minStart * 1000;
       const minDateObject = new Date(minMilliseconds);
-      const testStartTimeBefore = minDateObject.toLocaleString("hu-HU");
+      //const testStartTimeBefore = minDateObject.toLocaleString("hu-HU");
       minDateObject.setMinutes(0);
       minDateObject.setSeconds(0);
-      const testStartTimeAfter = minDateObject.toLocaleString("hu-HU");
+      //const testStartTimeAfter = minDateObject.toLocaleString("hu-HU");
       const startUnixTimestamp = Math.floor(minDateObject.getTime() / 1000);
 
       const minEnd = Math.min(...endTime);
       const maxMilliseconds = minEnd * 1000;
       const maxDateObject = new Date(maxMilliseconds);
-      const testEndTimeBefore = maxDateObject.toLocaleString("hu-HU");
+      //const testEndTimeBefore = maxDateObject.toLocaleString("hu-HU");
       //const maxHour = maxDateObject.toLocaleString("hu-HU", {hour: "numeric"});
       //console.log("maxHour: ", maxHour);
       //console.log("maxHour: ", parseInt(maxHour, 10) + 1);
       //maxDateObject.setHours(parseInt(maxHour, 10) + 1);
       maxDateObject.setMinutes(0);
       maxDateObject.setSeconds(0);
-      const testEndTimeAfter = maxDateObject.toLocaleString("hu-HU");
+      //const testEndTimeAfter = maxDateObject.toLocaleString("hu-HU");
       const endUnixTimestamp = Math.floor(maxDateObject.getTime() / 1000);
-
-      console.log("timestamp before: ", minEnd);
-      console.log("timestamp after: ", endUnixTimestamp);
-
-      console.log("testStartTimeBefore: ", testStartTimeBefore);
-      console.log("testStartTimeAfter: ", testStartTimeAfter);
-      console.log("testEndTimeBefore: ", testEndTimeBefore);
-      console.log("testEndTimeAfter: ", testEndTimeAfter);
 
       let incrementValue = startUnixTimestamp;
       let timelineArray = [];
@@ -184,19 +176,98 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
     }
   }, [listToShow.mobileChannelsAll]);
 
+  const updateListToShow = (timestampValue) => {
+    let updateShort = [];
+    const unixTimestampModified = timestampValue;
+
+    listToShow.mobileChannelsAll.forEach((group) => {
+      let groupArray = [];
+      let indexHelper = 0;
+      let useIndex = false;
+      group.forEach((channel) => {
+        const channelObject = {
+          id: channel.id,
+          logo: channel.logo,
+          name: channel.name,
+          url: channel.url,
+          programs: [],
+        };
+        channel.programs.forEach((program, index) => {
+          const unixTimestampStart = program.start_datetime;
+          const unixTimestampEnd = program.end_datetime;
+          const programObject = {
+            start_datetime: unixTimestampStart,
+            start_time: program.start_time,
+            end_datetime: unixTimestampEnd,
+            end_time: program.end_time,
+            film_url: program.film_url,
+            title: program.title,
+          };
+
+          if (
+            unixTimestampStart < unixTimestampModified &&
+            unixTimestampEnd > unixTimestampModified
+          ) {
+            channelObject.programs.push(programObject);
+            indexHelper = index;
+            useIndex = true;
+          }
+          if (useIndex && index <= indexHelper + 2 && index !== indexHelper) {
+            channelObject.programs.push(programObject);
+          }
+        });
+        groupArray.push(channelObject);
+      });
+      updateShort.push(groupArray);
+    });
+
+    setListToShow((prev) => ({
+      ...prev,
+      mobileChannelsShow: updateShort
+    }));
+  };
+
+  const selectTimeHandler = (e) => {
+    const attr = e.currentTarget.attributes;
+    console.log(attr[0].value);
+    setListToShow((prev) => ({
+      ...prev,
+      roundedActualTime: parseInt(attr[0].value, 10)
+    }));
+    updateListToShow(parseInt(attr[0].value, 10));
+  };
+
+  const timeHandlerLeft = () => {
+    setListToShow((prev) => ({
+      ...prev,
+      roundedActualTime: listToShow.roundedActualTime - 3600
+    }));
+    updateListToShow(listToShow.roundedActualTime - 3600);
+  };
+
+  const timeHandlerRight = () => {
+    setListToShow((prev) => ({
+      ...prev,
+      roundedActualTime: listToShow.roundedActualTime + 3600
+    }));
+    updateListToShow(listToShow.roundedActualTime + 3600);
+  };
+
   return (
     <div>
       {isLoading && <Spinner />}
       <div className={classes.timelineWrapper}>
-        <button className={classes.timelineButton}>
+        <button onClick={timeHandlerLeft} className={classes.timelineButton}>
           <MdKeyboardArrowLeft className={classes.timelineArrow} />
         </button>
-        <button className={classes.timelineButton}>
+        <button onClick={timeHandlerRight} className={classes.timelineButton}>
           <MdKeyboardArrowRight className={classes.timelineArrow} />
         </button>
         <div className={classes.sectionWrapper}>
           {listToShow.timelineTimes.map((item) => (
             <div
+              key={item.timestamp}
+              value={item.timestamp}
               className={`${classes.timelineSections} ${
                 item.timestamp >= listToShow.roundedActualTime - 7200 &&
                 item.timestamp <= listToShow.roundedActualTime + 7200
@@ -207,6 +278,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
                   ? classes.active
                   : ""
               }`}
+              onClick={(e) => selectTimeHandler(e)}
             >
               {item.humanTime}
             </div>
@@ -239,7 +311,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
                           width:
                             100 -
                             ((channel.programs[0].end_datetime -
-                              listToShow.actualTime) /
+                              listToShow.roundedActualTime) /
                               (channel.programs[0].end_datetime -
                                 channel.programs[0].start_datetime)) *
                               100 +

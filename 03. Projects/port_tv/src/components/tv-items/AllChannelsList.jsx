@@ -184,6 +184,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     }
   }, [programsState.urlIndex]);
 
+  //TODO: 192.sorban hiba lehet gyorsabb gépeken
   useEffect(() => {
     if (virtualIsActive) {
       const zone = window.virtualChannelSponsoration;
