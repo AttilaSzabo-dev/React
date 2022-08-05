@@ -1,22 +1,24 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import TvDataContext from "./context/TvDataContext";
+import FilterContext from "./context/FilterContext";
 import { useMediaQuery } from "react-responsive";
 
 import FilterList from "./components/filter-items/FilterList";
 import AllChannelsList from "./components/tv-items/AllChannelsList";
 import SingleChannelList from "./components/tv-items/SingleChannelList";
 
-import Test from "./UI/Test.jsx";
 import "./App.css";
 import AllChannelMobile from "./components/mobile-items/AllChannelMobile";
 
 function App() {
   const [tvData, setTvData] = useState({});
+  const [filterValues, setFilterValues] = useState({});
   const [initData, setInitData] = useState(null);
 
   const csrf = document.querySelector('meta[name="csrf-token"]').content;
-  const value = { tvData, setTvData, csrf };
+  const tvValue = { tvData, setTvData, csrf };
+  const filterValue = { filterValues, setFilterValues };
 
   const isDesktop = useMediaQuery({ query: "(min-width: 500px)" });
   const isMobile = useMediaQuery({ query: "(max-width: 499px)" });
@@ -101,63 +103,47 @@ function App() {
     createInitUrls();
   }
 
-  const onDateChange = (value) => {
-    console.log("day: ", value);
-  };
-
-  const onProgramChange = (value) => {
-    console.log("programChange: ", value);
-  };
-
-  const filterChannelsHandler = (value) => {
-    console.log("filterChannelsHandler: ", value);
-  };
-
   console.log("initData: ", initData);
   //console.log("tvData: ", tvData);
   //console.log("url: ", url);
   //console.log("channelFilterUrl: ", channelFilterUrl);
   return (
     <>
-      {/*<TvControllerProvider>
-        <Test />
-      </TvControllerProvider> */}
-      <TvDataContext.Provider value={value}>
-        {initData !== null && Object.keys(tvData).length !== 0 && (
-          <FilterList
-            initData={initData}
-            dayHandler={onDateChange}
-            programHandler={onProgramChange}
-            onFilterChannels={filterChannelsHandler}
-          />
-        )}
-        <Switch>
-          <Route path={"/tv"}>
-            {initData !== null &&
-              Object.keys(tvData).length !== 0 &&
-              isDesktop && (
-                <AllChannelsList
-                  initData={initData}
-                  url={url}
-                  channelFilterUrl={channelFilterUrl}
-                />
+      <TvDataContext.Provider value={tvValue}>
+        <FilterContext.Provider value={filterValue}>
+          {initData !== null && Object.keys(tvData).length !== 0 && (
+            <FilterList
+              initData={initData}
+            />
+          )}
+          <Switch>
+            <Route path={"/tv"}>
+              {initData !== null &&
+                Object.keys(tvData).length !== 0 &&
+                isDesktop && (
+                  <AllChannelsList
+                    initData={initData}
+                    url={url}
+                    channelFilterUrl={channelFilterUrl}
+                  />
+                )}
+              {initData !== null &&
+                Object.keys(tvData).length !== 0 &&
+                isMobile && (
+                  <AllChannelMobile
+                    initData={initData}
+                    url={url}
+                    channelFilterUrl={channelFilterUrl}
+                  />
+                )}
+            </Route>
+            <Route path={"/csatorna/tv/:channelName/:channelId"}>
+              {initData !== null && Object.keys(tvData).length !== 0 && (
+                <SingleChannelList initData={initData} />
               )}
-            {initData !== null &&
-              Object.keys(tvData).length !== 0 &&
-              isMobile && (
-                <AllChannelMobile
-                  initData={initData}
-                  url={url}
-                  channelFilterUrl={channelFilterUrl}
-                />
-              )}
-          </Route>
-          <Route path={"/csatorna/tv/:channelName/:channelId"}>
-            {initData !== null && Object.keys(tvData).length !== 0 && (
-              <SingleChannelList initData={initData} />
-            )}
-          </Route>
-        </Switch>
+            </Route>
+          </Switch>
+        </FilterContext.Provider>
       </TvDataContext.Provider>
     </>
   );

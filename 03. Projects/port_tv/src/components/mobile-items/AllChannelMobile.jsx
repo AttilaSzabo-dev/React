@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
+import FilterContext from "../../context/FilterContext";
 import Spinner from "../../UI/Spinner";
 import AdFejlecCsik from "../ad-items/AdFejlecCsik";
 import AdLB from "../ad-items/AdLB";
@@ -22,6 +23,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
     mobileChannelsAll: [],
     mobileChannelsShow: [],
   });
+  const { filterValues, setFilterValues } = useContext(FilterContext);
   const [isLoading, setIsLoading] = useState(false);
 
   //mi kell a mobileData-ból: date(hogy tudjuk az aktuális időt) / channelsből: id, logo, name, url / programsból: end_datetime, end_time, film_url, start_datetime, start_time, title
@@ -101,6 +103,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
     //console.log("mobileDataDataReverse: ", humanDateFormat);
   };
   console.log("listToShow: ", listToShow);
+  console.log("filterValues: ", filterValues);
 
   useEffect(() => {
     setIsLoading(true);
@@ -182,9 +185,9 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
 
     listToShow.mobileChannelsAll.forEach((group) => {
       let groupArray = [];
-      let indexHelper = 0;
-      let useIndex = false;
       group.forEach((channel) => {
+        let indexHelper = 0;
+        let useIndex = false;
         const channelObject = {
           id: channel.id,
           logo: channel.logo,

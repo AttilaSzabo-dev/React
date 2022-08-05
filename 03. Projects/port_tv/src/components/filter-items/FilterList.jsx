@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useMediaQuery } from "react-responsive";
 import ModalContext from "../../context/ModalContext";
+import FilterContext from "../../context/FilterContext";
 
 import Modal from "../../UI/Modal";
 import EditFavoriteChannels from "./EditFavoriteChannels";
@@ -11,12 +12,8 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import classes from "./FilterList.module.css";
 import ChannelFilter from "./ChannelFilter";
 
-const FilterList = ({
-  initData,
-  dayHandler,
-  programHandler,
-  onFilterChannels,
-}) => {
+const FilterList = ({ initData }) => {
+  const { filterValues, setFilterValues } = useContext(FilterContext);
   const [modal, setModal] = useState(false);
   const value = { modal, setModal };
 
@@ -44,12 +41,18 @@ const FilterList = ({
   const counterHandler = (e) => {
     if (e === 2) {
       setActive(false);
-      dayHandler(days[e].timestamp);
+      setFilterValues((prev) => ({
+        ...prev,
+        dateFilter: days[e].timestamp,
+      }));
       setCounter(e + 1);
     } else {
       setActive(true);
       setCounter(e);
-      dayHandler(days[e].timestamp);
+      setFilterValues((prev) => ({
+        ...prev,
+        dateFilter: days[e].timestamp,
+      }));
     }
     setDaysSelectorDropdown(false);
   };
@@ -74,13 +77,17 @@ const FilterList = ({
   };
 
   const onSelectChange = (e) => {
-    onFilterChannels(e.target.value);
+    setFilterValues((prev) => ({
+      ...prev,
+      channelFilter: e.target.value,
+    }));
   };
 
   useEffect(() => {
-    if (typeof programHandler === "function") {
-      programHandler(programFilter.activeFilters);
-    }
+    setFilterValues((prev) => ({
+      ...prev,
+      programFilter: programFilter.activeFilters,
+    }));
   }, [programFilter.activeFilters]);
 
   useEffect(() => {
@@ -158,7 +165,7 @@ const FilterList = ({
             </button>
             <button
               className={classes.openDates}
-              onClick={(e) => setDaysSelectorDropdown(true)}
+              onClick={(e) => setDaysSelectorDropdown(!daysSelectorDropdown)}
             >
               <MdKeyboardArrowDown className={classes.downIcon} />
             </button>
