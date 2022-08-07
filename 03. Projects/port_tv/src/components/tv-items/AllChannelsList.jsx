@@ -211,6 +211,17 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (typeof window.pp_gemius_hit === 'function' && typeof window.gemius_identifier === 'string') {
+      //nyito gemius kod
+      let code = '.cebkuN07HnYk6HbokIXZaRv38OGw.sbhU.kKB3eEiP.Y7';
+      if (window.gemius_identifier !== code) {
+        window.pp_gemius_hit(code);
+        window.gemius_identifier = '';
+      }
+    }
+  }, [initData]);
+
   console.log("programsToShow: ", programsState.listToShow);
   console.log("programsState: ", programsState);
 

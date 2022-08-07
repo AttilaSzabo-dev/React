@@ -205,7 +205,7 @@
     flex-wrap: wrap;
     height: 200px;
     padding: 20px 16px;
-    overflow: hidden;
+    /* overflow: hidden; */
   }
 
   .dateContainer {
@@ -220,6 +220,7 @@
 
   .dateContainer .daysSelector {
     right: -1px;
+    width: 175px;
   }
 
   .channelFilterEditContainer {

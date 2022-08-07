@@ -54,6 +54,14 @@ const SingleChannelList = ({ initData }) => {
         console.log(error.message);
         //setError(error.message);
       });
+      if (typeof window.pp_gemius_hit === 'function' && typeof window.gemius_identifier === 'string') {
+        //aloldal gemius kod
+        let code = 'nS01l.MEgV5oZImyqtlj0JaE33kpsPtPCr5ONH2P1RD.D7';
+        if (window.gemius_identifier !== code) {
+          window.pp_gemius_hit(code);
+          window.gemius_identifier = '';
+        }
+      }
   }, [initData, params.channelId]);
 
   const goLeft = () => {

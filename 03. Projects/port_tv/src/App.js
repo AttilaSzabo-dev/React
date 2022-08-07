@@ -104,9 +104,7 @@ function App() {
   }
 
   console.log("initData: ", initData);
-  //console.log("tvData: ", tvData);
-  //console.log("url: ", url);
-  //console.log("channelFilterUrl: ", channelFilterUrl);
+  
   return (
     <>
       <TvDataContext.Provider value={tvValue}>

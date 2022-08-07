@@ -2,8 +2,8 @@ import React from "react";
 
 const FilterContext = React.createContext({
     filterValues: {
-        dateFilter: null,
-        programFilter: null,
+        dateFilter: 0,
+        programFilter: [],
         channelFilter: null
     },
     setFilterValues: () => {}

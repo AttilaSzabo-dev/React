@@ -18,31 +18,49 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
   const [urlIndex, setUrlIndex] = useState(0);
   const [listToShow, setListToShow] = useState({
     actualTime: 0,
-    roundedActualTime: 0,
+    timelineActualTime: 0,
     timelineTimes: [],
+    lastKeyword: "",
+    lastUrl: "",
+    dateFilter: null,
+    activeFilters: {
+      date: false,
+      channel: false,
+      program: false,
+    },
+    mobileChannelFilter: [],
     mobileChannelsAll: [],
     mobileChannelsShow: [],
   });
-  const { filterValues, setFilterValues } = useContext(FilterContext);
+  const { filterValues } = useContext(FilterContext);
   const [isLoading, setIsLoading] = useState(false);
-
+  // lekérni az aktuális időt: const manualDate = new Date(); - const unixTimestamp = Math.floor(manualDate.getTime() / 1000);
   //mi kell a mobileData-ból: date(hogy tudjuk az aktuális időt) / channelsből: id, logo, name, url / programsból: end_datetime, end_time, film_url, start_datetime, start_time, title
 
-  const createListToShow = (data) => {
-    let update = [];
-    let updateShort = [];
-    let today = data.date.replace("T", " ");
-    const date = new Date(today);
-    const unixTimestamp = Math.floor(date.getTime() / 1000);
-    date.setMinutes(0);
-    date.setSeconds(0);
-    const unixTimestampModified = Math.floor(date.getTime() / 1000);
-    //const milliseconds = unixTimestamp * 1000;
-    //const dateObject = new Date(milliseconds);
-    //const convertToFullTime = dateObject.toLocaleString("hu-HU");
+  const createFullList = (data, type) => {
+    let actualTime;
+    let actualTimeUnix;
+    let timelineActualTime;
+    let timelineActualTimeUnix;
+
+    if (listToShow.activeFilters.date) {
+      actualTimeUnix = listToShow.actualTime;
+      timelineActualTime = new Date(listToShow.actualTime * 1000);
+      timelineActualTime.setMinutes(0);
+      timelineActualTime.setSeconds(0);
+      timelineActualTimeUnix = Math.floor(timelineActualTime.getTime() / 1000);
+    } else {
+      actualTime = new Date();
+      actualTimeUnix = Math.floor(actualTime.getTime() / 1000);
+      timelineActualTime = new Date();
+      timelineActualTime.setMinutes(0);
+      timelineActualTime.setSeconds(0);
+      timelineActualTimeUnix = Math.floor(timelineActualTime.getTime() / 1000);
+    }
+    let fullListArray = [];
+
+    // végigmegyünk az összes csatornán és elkészítjük a csatorna objectet
     data.channels.forEach((channel) => {
-      let indexHelper = 0;
-      let useIndex = false;
       const channelObject = {
         id: channel.id,
         logo: channel.logo,
@@ -50,143 +68,107 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
         url: channel.url,
         programs: [],
       };
-      const channelObjectFinal = {
-        id: channel.id,
-        logo: channel.logo,
-        name: channel.name,
-        url: channel.url,
-        programs: [],
-      };
-      channel.programs.forEach((program, index) => {
+      // végigmegyünk az összes programon és elkészítjük a program objectet
+      channel.programs.forEach((program) => {
         const dateStart = new Date(program.start_datetime);
         const unixTimestampStart = Math.floor(dateStart.getTime() / 1000);
         const dateEnd = new Date(program.end_datetime);
         const unixTimestampEnd = Math.floor(dateEnd.getTime() / 1000);
         const programObject = {
-          start_datetime: unixTimestampStart,
+          start_unixtime: unixTimestampStart,
           start_time: program.start_time,
-          end_datetime: unixTimestampEnd,
+          end_unixtime: unixTimestampEnd,
           end_time: program.end_time,
           film_url: program.film_url,
           title: program.title,
         };
         channelObject.programs.push(programObject);
-        if (
-          unixTimestampStart < unixTimestamp &&
-          unixTimestampEnd > unixTimestamp
-        ) {
-          channelObjectFinal.programs.push(programObject);
-          indexHelper = index;
-          useIndex = true;
-        }
-        if (useIndex && index <= indexHelper + 2 && index !== indexHelper) {
-          channelObjectFinal.programs.push(programObject);
-        }
       });
-      update.push(channelObject);
-      updateShort.push(channelObjectFinal);
+      fullListArray.push(channelObject);
     });
+
+    switch (type) {
+      case "mobileChannelsAll":
+        setListToShow((prev) => ({
+          ...prev,
+          actualTime: actualTimeUnix,
+          timelineActualTime: timelineActualTimeUnix,
+          lastKeyword: type,
+          mobileChannelsAll: [...prev.mobileChannelsAll, fullListArray],
+        }));
+        break;
+      case "mobileChannelFilter":
+        setListToShow((prev) => ({
+          ...prev,
+          actualTime: actualTimeUnix,
+          timelineActualTime: timelineActualTimeUnix,
+          lastKeyword: type,
+          mobileChannelFilter: [fullListArray],
+        }));
+        break;
+      default:
+        break;
+    }
+  };
+
+  const createTimelineTimes = (stateId) => {
+    let startTime = [];
+    let endTime = [];
+    listToShow[stateId].forEach((group) => {
+      group.forEach((channels) => {
+        startTime.push(channels.programs[0].start_unixtime);
+        endTime.push(
+          channels.programs[channels.programs.length - 1].end_unixtime
+        );
+      });
+    });
+    const minStart = Math.min(...startTime);
+    const minMilliseconds = minStart * 1000;
+    const minDateObject = new Date(minMilliseconds);
+    minDateObject.setMinutes(0);
+    minDateObject.setSeconds(0);
+    const startUnixTimestamp = Math.floor(minDateObject.getTime() / 1000);
+
+    const minEnd = Math.min(...endTime);
+    const maxMilliseconds = minEnd * 1000;
+    const maxDateObject = new Date(maxMilliseconds);
+    maxDateObject.setMinutes(0);
+    maxDateObject.setSeconds(0);
+    const endUnixTimestamp = Math.floor(maxDateObject.getTime() / 1000);
+
+    let incrementValue = startUnixTimestamp;
+    let timelineArray = [];
+
+    do {
+      const startDateObject = new Date(incrementValue * 1000);
+      const endDateFormatHour = startDateObject.toLocaleString("hu-HU", {
+        hour: "2-digit",
+      });
+
+      let timeObject = {
+        timestamp: incrementValue,
+        humanTime: endDateFormatHour + ":00",
+      };
+      timelineArray.push(timeObject);
+
+      incrementValue += 3600;
+    } while (incrementValue <= endUnixTimestamp);
 
     setListToShow((prev) => ({
       ...prev,
-      actualTime: unixTimestamp,
-      roundedActualTime: unixTimestampModified,
-      mobileChannelsAll: [...prev.mobileChannelsAll, update],
-      mobileChannelsShow: [...prev.mobileChannelsShow, updateShort],
+      timelineTimes: timelineArray,
     }));
-    console.log("unixTimestamp: ", unixTimestamp);
-    console.log("unixTimestampModified: ", unixTimestampModified);
-    //console.log("update: ", update);
-    //console.log("updateShort: ", updateShort);
-    console.log("mobileData: ", data);
-    //console.log("mobileDataDateTS: ", unixTimestamp);
-    //console.log("mobileDataDataReverse: ", humanDateFormat);
   };
-  console.log("listToShow: ", listToShow);
-  console.log("filterValues: ", filterValues);
 
-  useEffect(() => {
-    setIsLoading(true);
-    fetch(`${url[urlIndex]}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        createListToShow(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        //setError(error.message);
-      });
-  }, [urlIndex]);
+  const createPartialPrograms = (taskId) => {
+    let taskArray = [...listToShow[listToShow.lastKeyword]];
+    let arrayToShow = [];
 
-  useEffect(() => {
-    if (listToShow.mobileChannelsAll.length !== 0) {
-      let startTime = [];
-      let endTime = [];
-      listToShow.mobileChannelsAll.forEach((group) => {
-        group.forEach((channels) => {
-          startTime.push(channels.programs[0].start_datetime);
-          endTime.push(
-            channels.programs[channels.programs.length - 1].end_datetime
-          );
-        });
-      });
-      const minStart = Math.min(...startTime);
-      const minMilliseconds = minStart * 1000;
-      const minDateObject = new Date(minMilliseconds);
-      //const testStartTimeBefore = minDateObject.toLocaleString("hu-HU");
-      minDateObject.setMinutes(0);
-      minDateObject.setSeconds(0);
-      //const testStartTimeAfter = minDateObject.toLocaleString("hu-HU");
-      const startUnixTimestamp = Math.floor(minDateObject.getTime() / 1000);
-
-      const minEnd = Math.min(...endTime);
-      const maxMilliseconds = minEnd * 1000;
-      const maxDateObject = new Date(maxMilliseconds);
-      //const testEndTimeBefore = maxDateObject.toLocaleString("hu-HU");
-      //const maxHour = maxDateObject.toLocaleString("hu-HU", {hour: "numeric"});
-      //console.log("maxHour: ", maxHour);
-      //console.log("maxHour: ", parseInt(maxHour, 10) + 1);
-      //maxDateObject.setHours(parseInt(maxHour, 10) + 1);
-      maxDateObject.setMinutes(0);
-      maxDateObject.setSeconds(0);
-      //const testEndTimeAfter = maxDateObject.toLocaleString("hu-HU");
-      const endUnixTimestamp = Math.floor(maxDateObject.getTime() / 1000);
-
-      let incrementValue = startUnixTimestamp;
-      let timelineArray = [];
-
-      do {
-        const startDateObject = new Date(incrementValue * 1000);
-        const endDateFormatHour = startDateObject.toLocaleString("hu-HU", {
-          hour: "2-digit",
-        });
-
-        let timeObject = {
-          timestamp: incrementValue,
-          humanTime: endDateFormatHour + ":00",
-        };
-        timelineArray.push(timeObject);
-
-        incrementValue += 3600;
-      } while (incrementValue <= endUnixTimestamp);
-
-      setListToShow((prev) => ({
-        ...prev,
-        timelineTimes: timelineArray,
-      }));
-    }
-  }, [listToShow.mobileChannelsAll]);
-
-  const updateListToShow = (timestampValue) => {
-    let updateShort = [];
-    const unixTimestampModified = timestampValue;
-
-    listToShow.mobileChannelsAll.forEach((group) => {
+    console.log("taskArray: ", taskArray);
+    taskArray.forEach((group) => {
       let groupArray = [];
       group.forEach((channel) => {
-        let indexHelper = 0;
+        let programIndex = 0;
         let useIndex = false;
         const channelObject = {
           id: channel.id,
@@ -196,64 +178,246 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
           programs: [],
         };
         channel.programs.forEach((program, index) => {
-          const unixTimestampStart = program.start_datetime;
-          const unixTimestampEnd = program.end_datetime;
-          const programObject = {
-            start_datetime: unixTimestampStart,
-            start_time: program.start_time,
-            end_datetime: unixTimestampEnd,
-            end_time: program.end_time,
-            film_url: program.film_url,
-            title: program.title,
-          };
-
           if (
-            unixTimestampStart < unixTimestampModified &&
-            unixTimestampEnd > unixTimestampModified
+            (program.start_unixtime < listToShow.timelineActualTime &&
+              program.end_unixtime > listToShow.timelineActualTime) ||
+            (program.start_unixtime === listToShow.timelineActualTime &&
+              program.end_unixtime > listToShow.timelineActualTime)
           ) {
-            channelObject.programs.push(programObject);
-            indexHelper = index;
+            programIndex = index;
             useIndex = true;
+
+            let width =
+              100 -
+              ((program.end_unixtime - listToShow.actualTime) /
+                (program.end_unixtime - program.start_unixtime)) *
+                100;
+            if (width > 100) {
+              width = 100;
+            } else if (width < 0) {
+              width = 0;
+            }
+
+            const programObject = {
+              start_unixtime: program.start_unixtime,
+              start_time: program.start_time,
+              end_unixtime: program.end_unixtime,
+              end_time: program.end_time,
+              film_url: program.film_url,
+              title: program.title,
+              width: width + "%",
+            };
+
+            channelObject.programs.push(programObject);
           }
-          if (useIndex && index <= indexHelper + 2 && index !== indexHelper) {
+
+          if (useIndex && index <= programIndex + 2 && index !== programIndex) {
+            const programObject = {
+              start_unixtime: program.start_unixtime,
+              start_time: program.start_time,
+              end_unixtime: program.end_unixtime,
+              end_time: program.end_time,
+              film_url: program.film_url,
+              title: program.title,
+            };
             channelObject.programs.push(programObject);
           }
         });
         groupArray.push(channelObject);
       });
-      updateShort.push(groupArray);
+      arrayToShow.push(groupArray);
     });
 
     setListToShow((prev) => ({
       ...prev,
-      mobileChannelsShow: updateShort
+      mobileChannelsShow: arrayToShow,
     }));
   };
+
+  useEffect(() => {
+    if (listToShow.timelineActualTime !== 0) {
+      createPartialPrograms();
+    }
+  }, [listToShow.timelineActualTime]);
+
+  useEffect(() => {
+    if (listToShow.mobileChannelsAll.length !== 0) {
+      createTimelineTimes("mobileChannelsAll");
+      createPartialPrograms("mobileChannelsAll");
+    }
+  }, [listToShow.mobileChannelsAll]);
+
+  useEffect(() => {
+    if (listToShow.mobileChannelFilter.length !== 0) {
+      createTimelineTimes("mobileChannelFilter");
+      createPartialPrograms("mobileChannelFilter");
+    }
+  }, [listToShow.mobileChannelFilter]);
+
+  useEffect(() => {
+    console.log("filterValues: ", filterValues);
+    if (
+      filterValues.dateFilter !== undefined &&
+      filterValues.dateFilter !== 0 &&
+      filterValues.dateFilter !== listToShow.dateFilter
+    ) {
+      const filterDate = new Date(filterValues.dateFilter * 1000);
+      const year = filterDate.getFullYear();
+      const yearUpdate = filterDate.getFullYear();
+      const month = filterDate.toLocaleString("hu-HU", { month: "2-digit" });
+      const monthUpdate = filterDate.getMonth();
+      const day = filterDate.toLocaleString("hu-HU", { day: "2-digit" });
+      const dayUpdate = filterDate.getDate();
+      const finalDate = `${year}-${month}-${day}`;
+
+      const actualDate = new Date();
+      actualDate.setFullYear(yearUpdate);
+      actualDate.setMonth(monthUpdate);
+      actualDate.setDate(dayUpdate);
+      const actualDateUnix = Math.floor(actualDate.getTime() / 1000);
+
+      setListToShow((prev) => ({
+        ...prev,
+        actualTime: actualDateUnix,
+        dateFilter: finalDate,
+        activeFilters: { ...prev.activeFilters, date: true },
+      }));
+    }
+
+    if (
+      filterValues.channelFilter !== undefined &&
+      filterValues.channelFilter !== null
+    ) {
+      let filterUrl;
+      if (listToShow.activeFilters.date && filterValues.channelFilter !== "0") {
+        let originalUrl =
+          channelFilterUrl[filterValues.channelFilter].split("date=")[0];
+          filterUrl = `${originalUrl}date=${listToShow.dateFilter}`;
+      } else {
+        filterUrl = channelFilterUrl[filterValues.channelFilter];
+      }
+      if (filterValues.channelFilter === "0") {
+        if (listToShow.activeFilters.date) {
+          let defaultUrl = url[0].split("date=")[0];
+          filterUrl = `${defaultUrl}date=${listToShow.dateFilter}`;
+        }else {
+          filterUrl = url[0];
+        }
+      }
+
+      setIsLoading(true);
+      fetch(`${filterUrl}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setListToShow((prev) => ({
+            ...prev,
+            lastUrl: filterUrl,
+          }));
+          createFullList(data, "mobileChannelFilter");
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          //setError(error.message);
+        });
+      setListToShow((prev) => ({
+        ...prev,
+        activeFilters: { ...prev.activeFilters, channel: true },
+      }));
+    }
+  }, [filterValues]);
+
+  // filterdate url fetch
+  useEffect(() => {
+    let lastUrl = listToShow.lastUrl;
+    let lastUrlSplit = lastUrl.split("date=")[0];
+    let newUrl = "";
+    if (listToShow.dateFilter === null) {
+      const actualDate = new Date();
+      const year = actualDate.getFullYear();
+      const month = actualDate.toLocaleString("hu-HU", { month: "2-digit" });
+      const day = actualDate.toLocaleString("hu-HU", { day: "2-digit" });
+      const finalDate = `${year}-${month}-${day}`;
+      newUrl = `${lastUrlSplit}date=${finalDate}`;
+    } else {
+      newUrl = `${lastUrlSplit}date=${listToShow.dateFilter}`;
+    }
+    setIsLoading(true);
+    fetch(`${newUrl}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setListToShow((prev) => ({
+          ...prev,
+          lastUrl: newUrl,
+        }));
+        createFullList(data, "mobileChannelFilter");
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        //setError(error.message);
+      });
+  }, [listToShow.dateFilter]);
+
+  console.log("listToShow: ", listToShow);
+
+  // aznapi default url fetch
+  useEffect(() => {
+    if (!listToShow.activeFilters.date) {
+      setIsLoading(true);
+      fetch(`${url[urlIndex]}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setListToShow((prev) => ({
+            ...prev,
+            lastUrl: url[urlIndex],
+            dateFilter: url[urlIndex].split("date=")[1]
+          }));
+          createFullList(data, "mobileChannelsAll");
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          //setError(error.message);
+        });
+    }
+  }, [urlIndex]);
+
+  useEffect(() => {
+    if (typeof window.pp_gemius_hit === 'function' && typeof window.gemius_identifier === 'string') {
+      //nyito gemius kod
+      let code = '.cebkuN07HnYk6HbokIXZaRv38OGw.sbhU.kKB3eEiP.Y7';
+      if (window.gemius_identifier !== code) {
+        window.pp_gemius_hit(code);
+        window.gemius_identifier = '';
+      }
+    }
+  }, [initData]);
 
   const selectTimeHandler = (e) => {
     const attr = e.currentTarget.attributes;
     console.log(attr[0].value);
     setListToShow((prev) => ({
       ...prev,
-      roundedActualTime: parseInt(attr[0].value, 10)
+      timelineActualTime: parseInt(attr[0].value, 10),
     }));
-    updateListToShow(parseInt(attr[0].value, 10));
   };
 
   const timeHandlerLeft = () => {
     setListToShow((prev) => ({
       ...prev,
-      roundedActualTime: listToShow.roundedActualTime - 3600
+      timelineActualTime: listToShow.timelineActualTime - 3600,
     }));
-    updateListToShow(listToShow.roundedActualTime - 3600);
   };
 
   const timeHandlerRight = () => {
     setListToShow((prev) => ({
       ...prev,
-      roundedActualTime: listToShow.roundedActualTime + 3600
+      timelineActualTime: listToShow.timelineActualTime + 3600,
     }));
-    updateListToShow(listToShow.roundedActualTime + 3600);
   };
 
   return (
@@ -272,12 +436,12 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
               key={item.timestamp}
               value={item.timestamp}
               className={`${classes.timelineSections} ${
-                item.timestamp >= listToShow.roundedActualTime - 7200 &&
-                item.timestamp <= listToShow.roundedActualTime + 7200
+                item.timestamp >= listToShow.timelineActualTime - 7200 &&
+                item.timestamp <= listToShow.timelineActualTime + 7200
                   ? ""
                   : classes.hide
               } ${
-                item.timestamp === listToShow.roundedActualTime
+                item.timestamp === listToShow.timelineActualTime
                   ? classes.active
                   : ""
               }`}
@@ -299,7 +463,13 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
               {channel.programs[0] !== undefined && (
                 <div key={channel.id} className={classes.channelWrapper}>
                   <div className={classes.logoWrapper}>
-                    <img src={channel.logo} alt={channel.id} />
+                    <Link
+                      to={`/csatorna/tv/${channel.name
+                        .replace(" ", "-")
+                        .toLowerCase()}/${channel.id}?date=${listToShow.dateFilter}`}
+                    >
+                      <img src={channel.logo} alt={channel.id} />
+                    </Link>
                   </div>
                   <div className={classes.programsWrapper}>
                     <span className={classes.text}>{channel.name}</span>
@@ -311,14 +481,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
                       <div
                         className={classes.progressBarProgress}
                         style={{
-                          width:
-                            100 -
-                            ((channel.programs[0].end_datetime -
-                              listToShow.roundedActualTime) /
-                              (channel.programs[0].end_datetime -
-                                channel.programs[0].start_datetime)) *
-                              100 +
-                            "%",
+                          width: channel.programs[0].width,
                         }}
                       ></div>
                     </div>
@@ -337,7 +500,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
                     className={classes.toSingleChannelButton}
                     to={`/csatorna/tv/${channel.name
                       .replace(" ", "-")
-                      .toLowerCase()}/${channel.id}`}
+                      .toLowerCase()}/${channel.id}?date=${listToShow.dateFilter}`}
                   >
                     <MdKeyboardArrowRight className={classes.channelArrow} />
                   </Link>
