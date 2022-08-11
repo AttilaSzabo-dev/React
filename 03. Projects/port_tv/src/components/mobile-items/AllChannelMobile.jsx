@@ -34,6 +34,15 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
   });
   const { filterValues } = useContext(FilterContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [programFilterArray, setProgramFilterArray] = useState([]);
+  const programFilterDict = {
+    film: ['documentary','dokumentumfilm','film'],
+    sorozat: ['filmsorozat','series'],
+    sport: ['sportmusor','sports'],
+    sportLive: [],
+    reality: ['reality-musor','reality-show'],
+    gastro: ['cooking','gasztronomiai-musor']
+  };
   // lekérni az aktuális időt: const manualDate = new Date(); - const unixTimestamp = Math.floor(manualDate.getTime() / 1000);
   //mi kell a mobileData-ból: date(hogy tudjuk az aktuális időt) / channelsből: id, logo, name, url / programsból: end_datetime, end_time, film_url, start_datetime, start_time, title
 
@@ -81,6 +90,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
           end_time: program.end_time,
           film_url: program.film_url,
           title: program.title,
+          restriction: program.restriction
         };
         channelObject.programs.push(programObject);
       });
@@ -176,6 +186,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
           name: channel.name,
           url: channel.url,
           programs: [],
+          programFilters: []
         };
         channel.programs.forEach((program, index) => {
           if (
@@ -221,6 +232,9 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
               title: program.title,
             };
             channelObject.programs.push(programObject);
+          }
+          if (!channelObject.programFilters.includes(program.restriction.category)) {
+            channelObject.programFilters.push(program.restriction.category)
           }
         });
         groupArray.push(channelObject);
@@ -325,6 +339,14 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
         ...prev,
         activeFilters: { ...prev.activeFilters, channel: true },
       }));
+    }
+
+    if (filterValues.programFilter !== undefined) {
+      let allFilters = [];
+      filterValues.programFilter.forEach((filter)=> {
+        allFilters.push(...programFilterDict[filter]);
+      });
+      setProgramFilterArray(allFilters);
     }
   }, [filterValues]);
 
@@ -461,7 +483,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
               {outerIndex === 0 && innerIndex === 6 && <AdRich />}
               {outerIndex === 0 && innerIndex === 10 && <AdRB />}
               {channel.programs[0] !== undefined && (
-                <div key={channel.id} className={classes.channelWrapper}>
+                <div key={channel.id} className={`${classes.channelWrapper} ${channel.programFilters.some(r=> programFilterArray.includes(r)) ? classes.highlight : ""}`}>
                   <div className={classes.logoWrapper}>
                     <Link
                       to={`/csatorna/tv/${channel.name

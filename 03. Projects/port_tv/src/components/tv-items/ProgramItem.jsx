@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import TvDataContext from "../../context/TvDataContext";
+import FilterContext from "../../context/FilterContext";
 
 import { BsEnvelope } from "react-icons/bs";
 import { BsClock } from "react-icons/bs";
@@ -17,13 +18,16 @@ const ProgramItem = ({
   filmUrl,
   start_ts,
   end_datetime,
-  short_description
+  short_description,
+  restriction
 }) => {
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
+  const { filterValues } = useContext(FilterContext);
   const [notiStatus, setNotiStatus] = useState(false);
   const [remindStatus, setRemindStatus] = useState(false);
   const [hover, setHover] = useState(false);
   const [popUp, setPopUp] = useState(false);
+  const [activeProgram, setActiveProgram] = useState(false);
   const background =
     start_ts > Math.floor(new Date(actualTime).getTime() / 1000)
       ? "#fff"
@@ -50,6 +54,15 @@ const ProgramItem = ({
   const notVisible = {
     opacity: 0,
     pointerEvents: "none",
+  };
+
+  const programFilterDict = {
+    film: ['documentary','dokumentumfilm','film'],
+    sorozat: ['filmsorozat','series'],
+    sport: ['sportmusor','sports'],
+    sportLive: [],
+    reality: ['reality-musor','reality-show'],
+    gastro: ['cooking','gasztronomiai-musor']
   };
 
   const toggleHover = () => {
@@ -118,6 +131,18 @@ const ProgramItem = ({
     xhttp.send(entity);
   };
 
+  useEffect(()=>{
+    let allFilters = [];
+    filterValues.programFilter.forEach((filter)=> {
+      allFilters.push(...programFilterDict[filter]);
+    });
+    if (allFilters.includes(restriction.category)) {
+      setActiveProgram(true);
+    }else {
+      setActiveProgram(false);
+    }
+  },[filterValues]);
+
   useEffect(() => {
     if (tvData.notifications.includes(notificId)) {
       setNotiStatus(true);
@@ -142,7 +167,7 @@ const ProgramItem = ({
       <div
         onMouseLeave={toggleHover}
         onMouseEnter={toggleHover}
-        className={classes.programItem}
+        className={`${classes.programItem} ${activeProgram ? classes.highlight : ""}`}
         style={addCss}
       >
         <div className={classes.time}>

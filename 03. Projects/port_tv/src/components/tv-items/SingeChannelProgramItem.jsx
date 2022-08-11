@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 
 import TvDataContext from "../../context/TvDataContext";
+import FilterContext from "../../context/FilterContext";
 
 import { BsEnvelope } from "react-icons/bs";
 import { BsClock } from "react-icons/bs";
@@ -15,11 +16,14 @@ const SingeChannelProgramItem = ({
   title,
   filmUrl,
   description,
+  restriction
 }) => {
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
+  const { filterValues } = useContext(FilterContext);
   const [notiStatus, setNotiStatus] = useState(false);
   const [remindStatus, setRemindStatus] = useState(false);
   const [hover, setHover] = useState(false);
+  const [activeProgram, setActiveProgram] = useState(false);
 
   const visible = {
     opacity: 1,
@@ -29,6 +33,15 @@ const SingeChannelProgramItem = ({
   const notVisible = {
     opacity: 0,
     pointerEvents: "none",
+  };
+
+  const programFilterDict = {
+    film: ['documentary','dokumentumfilm','film'],
+    sorozat: ['filmsorozat','series'],
+    sport: ['sportmusor','sports'],
+    sportLive: [],
+    reality: ['reality-musor','reality-show'],
+    gastro: ['cooking','gasztronomiai-musor']
   };
 
   const toggleHover = () => {
@@ -89,6 +102,18 @@ const SingeChannelProgramItem = ({
     xhttp.send(entity);
   };
 
+  useEffect(()=>{
+    let allFilters = [];
+    filterValues.programFilter.forEach((filter)=> {
+      allFilters.push(...programFilterDict[filter]);
+    });
+    if (allFilters.includes(restriction.category)) {
+      setActiveProgram(true);
+    }else {
+      setActiveProgram(false);
+    }
+  },[filterValues]);
+
   useEffect(() => {
     for (const key in tvData.notifications) {
       if (key === notificId) {
@@ -107,7 +132,7 @@ const SingeChannelProgramItem = ({
     <div
       onMouseLeave={toggleHover}
       onMouseEnter={toggleHover}
-      className={classes.programItem}
+      className={`${classes.programItem} ${activeProgram ? classes.highlight : ""}`}
     >
       <div className={classes.time}>
         {startTime}

@@ -34,6 +34,7 @@ const SingleChannelItem = ({day, programs}) => {
             title={item.title}
             filmUrl={item.film_url}
             description={item.short_description}
+            restriction={item.restriction}
           />
         ))}
       </div>

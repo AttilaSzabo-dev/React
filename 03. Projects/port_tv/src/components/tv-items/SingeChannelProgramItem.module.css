@@ -12,6 +12,10 @@
   -o-transition: box-shadow 0.25s ease-in-out;
 }
 
+.highlight {
+  border: 1px solid red;
+}
+
 .programItem:hover {
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.19);
   -webkit-box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.19);

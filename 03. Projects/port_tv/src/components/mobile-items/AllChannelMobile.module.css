@@ -8,6 +8,10 @@
   background-color: #fff;
 }
 
+.highlight {
+  border: 1px solid red;
+}
+
 .logoWrapper {
   display: flex;
   align-items: center;
