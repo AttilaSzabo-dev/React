@@ -15,11 +15,11 @@ import classes from "./AllChannelMobile.module.css";
 
 const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
   const [timeline, setTimeline] = useState([]);
-  const [urlIndex, setUrlIndex] = useState(0);
   const [listToShow, setListToShow] = useState({
     actualTime: 0,
     timelineActualTime: 0,
     timelineTimes: [],
+    urlIndex: 0,
     lastKeyword: "",
     lastUrl: "",
     dateFilter: null,
@@ -292,6 +292,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
 
       setListToShow((prev) => ({
         ...prev,
+        urlIndex: 0,
         actualTime: actualDateUnix,
         dateFilter: finalDate,
         activeFilters: { ...prev.activeFilters, date: true },
@@ -352,36 +353,45 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
 
   // filterdate url fetch
   useEffect(() => {
-    let lastUrl = listToShow.lastUrl;
-    let lastUrlSplit = lastUrl.split("date=")[0];
-    let newUrl = "";
-    if (listToShow.dateFilter === null) {
-      const actualDate = new Date();
-      const year = actualDate.getFullYear();
-      const month = actualDate.toLocaleString("hu-HU", { month: "2-digit" });
-      const day = actualDate.toLocaleString("hu-HU", { day: "2-digit" });
-      const finalDate = `${year}-${month}-${day}`;
-      newUrl = `${lastUrlSplit}date=${finalDate}`;
-    } else {
-      newUrl = `${lastUrlSplit}date=${listToShow.dateFilter}`;
+    if (listToShow.activeFilters.date) {
+      let newUrl = "";
+      let lastUrl = listToShow.lastUrl;
+      let lastUrlSplit = lastUrl.split("date=")[0];
+      let noChannelFilter = url[listToShow.urlIndex];
+      let noChannelFilterSplit = noChannelFilter.split("date=")[0];
+      if (!listToShow.activeFilters.channel && listToShow.activeFilters.date) {
+        newUrl = `${noChannelFilterSplit}date=${listToShow.dateFilter}`;
+      } 
+      if (listToShow.activeFilters.channel && listToShow.activeFilters.date) {
+        if (listToShow.dateFilter === null) {
+          const actualDate = new Date();
+          const year = actualDate.getFullYear();
+          const month = actualDate.toLocaleString("hu-HU", { month: "2-digit" });
+          const day = actualDate.toLocaleString("hu-HU", { day: "2-digit" });
+          const finalDate = `${year}-${month}-${day}`;
+          newUrl = `${lastUrlSplit}date=${finalDate}`;
+        } else {
+          newUrl = `${lastUrlSplit}date=${listToShow.dateFilter}`;
+        }
+      }
+      setIsLoading(true);
+      fetch(`${newUrl}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setListToShow((prev) => ({
+            ...prev,
+            lastUrl: newUrl,
+          }));
+          createFullList(data, "mobileChannelFilter");
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          //setError(error.message);
+        });
     }
-    setIsLoading(true);
-    fetch(`${newUrl}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setListToShow((prev) => ({
-          ...prev,
-          lastUrl: newUrl,
-        }));
-        createFullList(data, "mobileChannelFilter");
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        //setError(error.message);
-      });
-  }, [listToShow.dateFilter]);
+  }, [listToShow.dateFilter, listToShow.urlIndex]);
 
   console.log("listToShow: ", listToShow);
 
@@ -389,15 +399,15 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
   useEffect(() => {
     if (!listToShow.activeFilters.date) {
       setIsLoading(true);
-      fetch(`${url[urlIndex]}`)
+      fetch(`${url[listToShow.urlIndex]}`)
         .then((res) => {
           return res.json();
         })
         .then((data) => {
           setListToShow((prev) => ({
             ...prev,
-            lastUrl: url[urlIndex],
-            dateFilter: url[urlIndex].split("date=")[1]
+            lastUrl: url[listToShow.urlIndex],
+            dateFilter: url[listToShow.urlIndex].split("date=")[1]
           }));
           createFullList(data, "mobileChannelsAll");
           setIsLoading(false);
@@ -406,7 +416,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
           //setError(error.message);
         });
     }
-  }, [urlIndex]);
+  }, [listToShow.urlIndex]);
 
   useEffect(() => {
     if (typeof window.pp_gemius_hit === 'function' && typeof window.gemius_identifier === 'string') {
@@ -439,6 +449,13 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
     setListToShow((prev) => ({
       ...prev,
       timelineActualTime: listToShow.timelineActualTime + 3600,
+    }));
+  };
+
+  const urlIndexHandler = () => {
+    setListToShow((prevData) => ({
+      ...prevData,
+      urlIndex: prevData.urlIndex + 1,
     }));
   };
 
@@ -531,6 +548,9 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
             </>
           ))
         )}
+        {listToShow.mobileChannelsShow.length > 0 && (
+          <button className={classes.moreChannels} onClick={urlIndexHandler}>Több csatorna</button>
+      ) }
     </div>
   );
 };

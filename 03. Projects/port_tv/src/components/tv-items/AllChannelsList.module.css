@@ -9,3 +9,39 @@
   overflow: hidden;
   position: relative;
 }
+
+.moreChannels {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  border-top: 1px solid #414141;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  background-color: #ef3b39;
+  font-family: "Source Sans Pro", sans-serif;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.moreChannels:hover {
+  background-color: #d63632;
+}
+
+.moreChannels::after {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 100%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #d63632;
+  transform: translate3d(-50%, 0, 0);
+}

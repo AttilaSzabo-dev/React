@@ -411,7 +411,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
         </div>
       </div>
       {listToShow.channelsShow.length > 0 && (
-        <button onClick={urlIndexHandler}>Increse</button>
+        <button className={classes.moreChannels} onClick={urlIndexHandler}>Több csatorna</button>
       )}
     </>
   );
