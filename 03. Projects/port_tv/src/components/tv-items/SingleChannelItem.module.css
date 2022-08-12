@@ -34,3 +34,10 @@
 .channelProgramWrapper {
   width: 100%;
 }
+
+@media screen and (max-width: 499px) {
+  .tvSingleItemWrapper {
+    width: unset;
+    min-width: 91.5vw;
+  }
+}

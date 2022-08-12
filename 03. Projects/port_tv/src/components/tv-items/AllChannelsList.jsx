@@ -405,6 +405,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
                   actualTime={listToShow.actualTime}
                   timelineTimes={timelineTimes}
                   index={index}
+                  date={listToShow.dateFilter}
                 />
               </MarginContext.Provider>
             ))}

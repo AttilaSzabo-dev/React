@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import SingeChannelProgramItem from "./SingeChannelProgramItem";
 
 import classes from "./SingleChannelItem.module.css";
 
-const SingleChannelItem = ({day, programs}) => {
+const SingleChannelItem = ({day, programs, sendOffset}) => {
+  const ref = useRef(null);
   
   const date = new Date(day * 1000);
   const day_text = date.toLocaleString("hu-HU", {weekday: "long"});
@@ -11,14 +12,12 @@ const SingleChannelItem = ({day, programs}) => {
   const month = date.toLocaleString("hu-HU", {month: "long"});
 
   useEffect(() => {
-    //console.log("date: ", date);
-    //console.log("day: ", day);
-    //console.log("programs: ", programs.channels[0].programs);
-  }, [day, programs]);
+    sendOffset(ref.current.offsetWidth)
+  }, []);
 
 
   return (
-    <div className={classes.tvSingleItemWrapper}>
+    <div ref={ref} className={classes.tvSingleItemWrapper}>
       <div className={classes.headWrapper}>
         <span className={classes.day}>{day_text}</span>
         <span className={classes.month}>{month} {day_num}</span>

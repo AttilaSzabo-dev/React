@@ -8,7 +8,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 
 import classes from "./AllChannelLogo.module.css";
 
-const AllChannelLogo = ({ channel, id }) => {
+const AllChannelLogo = ({ channel, id, actualDate }) => {
   const [addToFavorites, setAddToFavorites] = useState(false);
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
 
@@ -58,10 +58,6 @@ const AllChannelLogo = ({ channel, id }) => {
     setAddToFavorites(!addToFavorites);
   };
 
-  let date = "?date=2022-07-20";
-  let channelName = channel.name.replace(" ", "-").toLowerCase();
-  let channelId = channel.id + date;
-
   useEffect(() => {
     setAddToFavorites(tvData["favorite"].includes(id));
   }, [tvData, id]);
@@ -75,7 +71,9 @@ const AllChannelLogo = ({ channel, id }) => {
             <AiOutlineHeart className={classes.buttonInactive} />
           )}
         </div>
-        <Link className={classes.imgWrapper} to={`/csatorna/tv/${channelName}/${channelId}`}>
+        <Link className={classes.imgWrapper} to={`/csatorna/tv/${channel.name
+                        .replace(" ", "-")
+                        .toLowerCase()}/${channel.id}?date=${actualDate}`}>
           <img src={channel.logo} alt="logo" />
         </Link>
       </div>
