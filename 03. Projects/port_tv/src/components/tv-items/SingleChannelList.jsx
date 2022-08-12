@@ -1,16 +1,17 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 
 import SingleChannelItem from "./SingleChannelItem";
 
+import FilterContext from "../../context/FilterContext";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { IoIosArrowBack } from "react-icons/io";
 
 import classes from "./SingleChannelList.module.css";
 import FilterList from "../filter-items/FilterList";
 import Spinner from "../../UI/Spinner";
-import { useMemo } from "react";
 
 const SingleChannelList = ({ initData }) => {
   const [singleProgramArray, setSingleProgramArray] = useState(null);
@@ -20,6 +21,7 @@ const SingleChannelList = ({ initData }) => {
   const [isLoading, setIsLoading] = useState(false);
   //const [error, setError] = useState(null);
   const params = useParams();
+  const { filterValues } = useContext(FilterContext);
 
   const isDesktop = useMediaQuery({ query: "(min-width: 500px)" });
   const isMobile = useMediaQuery({ query: "(max-width: 499px)" });
@@ -76,11 +78,19 @@ const SingleChannelList = ({ initData }) => {
   }, [initData, params.channelId]);
 
   const goLeft = () => {
-    container.current.scrollLeft -= 300;
+    if (isMobile) {
+      container.current.scrollLeft -= forwardRefValue;
+    } else {
+      container.current.scrollLeft -= 300;
+    }
   };
 
   const goRight = () => {
-    container.current.scrollLeft += 300;
+    if (isMobile) {
+      container.current.scrollLeft += forwardRefValue;
+    } else {
+      container.current.scrollLeft += 300;
+    }
   };
 
   const initScroll = (value) => {
@@ -88,9 +98,9 @@ const SingleChannelList = ({ initData }) => {
 
     if (isMobile) {
       if (value !== 0) {
-        positionToScroll = value * forwardRefValue + 2;
+        positionToScroll = value * forwardRefValue;
       }
-    }else {
+    } else {
       if (value !== 0) {
         positionToScroll = value * 300;
       }
@@ -108,7 +118,7 @@ const SingleChannelList = ({ initData }) => {
   };
 
   const sendOffsetHandler = (value) => {
-    setForwardRefValue(value)
+    setForwardRefValue(value);
   };
 
   useEffect(() => {
@@ -116,6 +126,32 @@ const SingleChannelList = ({ initData }) => {
       findIndex();
     }
   }, [singleProgramArray, forwardRefValue]);
+
+  useEffect(() => {
+    const filterDate = new Date(filterValues.dateFilter * 1000);
+    const year = filterDate.getFullYear();
+    const month = filterDate.toLocaleString("hu-HU", { month: "2-digit" });
+    const day = filterDate.toLocaleString("hu-HU", { day: "2-digit" });
+    const finalDate = `${year}-${month}-${day}`;
+    if (singleProgramArray !== null) {
+      const resultIndex = singleProgramArray.findIndex(
+        (item) =>
+          Object.values(item)[0].formattedDate.split("T")[0] === finalDate
+      );
+      let positionToScroll;
+
+      if (isMobile) {
+        if (resultIndex !== 0) {
+          positionToScroll = resultIndex * forwardRefValue;
+        }
+      } else {
+        if (resultIndex !== 0) {
+          positionToScroll = resultIndex * 300;
+        }
+      }
+      container.current.scrollLeft = positionToScroll;
+    }
+  }, [filterValues]);
 
   return (
     <>
@@ -131,7 +167,8 @@ const SingleChannelList = ({ initData }) => {
           onClick={goLeft}
           className={`${classes.leftButton} ${classes.buttons}`}
         >
-          <MdKeyboardArrowLeft className={classes.arrows} />
+          {/* <MdKeyboardArrowLeft className={classes.arrows} /> */}
+          <IoIosArrowBack className={classes.arrows} />
         </button>
         <button
           onClick={goRight}

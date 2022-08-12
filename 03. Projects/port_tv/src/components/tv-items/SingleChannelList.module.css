@@ -42,4 +42,6 @@
 .arrows {
   transform: scale(1.4);
   fill: #414141;
+  -webkit-text-fill-color: #414141;
+  
 }

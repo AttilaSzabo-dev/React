@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 import ModalContext from "../../context/ModalContext";
 import FilterContext from "../../context/FilterContext";
@@ -8,6 +8,7 @@ import EditFavoriteChannels from "./EditFavoriteChannels";
 
 import { RiHeartAddFill } from "react-icons/ri";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { BsSearch } from "react-icons/bs";
 
 import classes from "./FilterList.module.css";
 import ChannelFilter from "./ChannelFilter";
@@ -16,6 +17,10 @@ const FilterList = ({ initData }) => {
   const { filterValues, setFilterValues } = useContext(FilterContext);
   const [modal, setModal] = useState(false);
   const value = { modal, setModal };
+  const inputRef = useRef(null);
+
+  const [search, setSearch] = useState();
+  const [searchModal, setSearchModal] = useState(false);
 
   const [categories, setCategories] = useState([]);
   const [days, setDays] = useState([]);
@@ -31,6 +36,7 @@ const FilterList = ({ initData }) => {
     gastro: false,
     activeFilters: [],
   });
+  const [expandSearchField, setExpandSearchField] = useState(false);
 
   const isMobile = useMediaQuery({ query: "(max-width: 499px)" });
 
@@ -135,6 +141,34 @@ const FilterList = ({ initData }) => {
     setCategories(groups);
   }, [initData]);
 
+  useEffect(() => {
+    if (inputRef !== null) {
+      inputRef.current.addEventListener("keyup", function (event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+          // Cancel the default action, if needed
+          event.preventDefault();
+          // Trigger the button element with a click
+          let searchValue = inputRef.current.value;
+          fetch("https://port.hu/tvapi/search?q=" + searchValue)
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            setSearchModal(true);
+            setSearch(data);
+            /* setIsLoading(false); */
+          })
+          .catch((error) => {
+            //setError(error.message);
+          });
+        }
+      });
+    }
+  }, [inputRef]);
+
+  console.log("search: ", search);
+
   return (
     <>
       <ModalContext.Provider value={value}>
@@ -142,6 +176,9 @@ const FilterList = ({ initData }) => {
           <EditFavoriteChannels initData={initData} />
         </Modal>
       </ModalContext.Provider>
+      <div className={`${classes.searchModal} ${searchModal ? "" : classes.modalHide}`}>
+        <div className={classes.header}></div>
+      </div>
       <div className={classes.filterWrapper}>
         {days.length > 0 && (
           <div className={classes.dateContainer}>
@@ -251,6 +288,30 @@ const FilterList = ({ initData }) => {
             onClick={(e) => programFilterHandler("gastro")}
           >
             Gasztró
+          </button>
+        </div>
+        <div
+          className={`${classes.searchFilterContainer} ${
+            expandSearchField ? classes.expand : ""
+          }`}
+        >
+          <div className={classes.inputFieldWrapper}>
+            <input
+              className={`${classes.inputField} ${
+                expandSearchField ? "" : classes.hide
+              }`}
+              ref={inputRef}
+              type="text"
+              placeholder="Műsor keresése"
+              name=""
+              id=""
+            />
+          </div>
+          <button
+            className={classes.searchButton}
+            onClick={(e) => setExpandSearchField(!expandSearchField)}
+          >
+            <BsSearch className={classes.searchIcon} />
           </button>
         </div>
       </div>

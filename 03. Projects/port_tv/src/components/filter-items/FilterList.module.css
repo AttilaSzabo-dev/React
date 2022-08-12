@@ -1,3 +1,20 @@
+.searchModal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100vh;
+  background-color: lightgray;
+  z-index: 2000;
+  padding: 20px;
+  box-shadow: 0 5px 10px 0 rgb(54 54 54 / 30%);
+  overflow-y: scroll;
+}
+
+.searchModal.modalHide {
+  display: none;
+}
+
 .filterWrapper {
   display: flex;
   align-items: center;
@@ -95,7 +112,7 @@
   border: unset;
   text-align: left;
   padding-left: 12px;
-  transition: background-color .2s;
+  transition: background-color 0.2s;
 }
 
 .dateContainer .daySelectorButtons:hover {
@@ -115,7 +132,7 @@
   font-size: 14px;
   font-weight: bold;
   color: #414141;
-  transition: color .2s;
+  transition: color 0.2s;
 }
 
 .dateContainer .daySelectorRegular {
@@ -123,15 +140,13 @@
   font-size: 13px;
   color: #b8b8b8;
   font-weight: normal;
-  transition: color .2s;
+  transition: color 0.2s;
 }
 
 .dateContainer .downIcon {
   transform: scale(1.4);
   fill: #ef3b39;
 }
-
-
 
 .channelFilterEditContainer .modalButton {
   display: flex;
@@ -168,7 +183,7 @@
   border: unset;
   margin-right: 30px;
   padding: 1px 0;
-  opacity: .5;
+  opacity: 0.5;
   white-space: nowrap;
 }
 
@@ -198,6 +213,55 @@
 
 .isOn {
   opacity: 1;
+}
+
+.searchFilterContainer {
+  display: flex;
+  flex-direction: row;
+  height: 42px;
+  width: 42px;
+  margin-left: auto;
+  border: 1px solid #d9d9d9;
+  transition: all 0.3s;
+}
+
+.searchFilterContainer.expand {
+  display: flex;
+  flex-direction: row;
+  width: 185px;
+  box-shadow: 0 2px 0 0 rgba(160, 160, 160, 0.7);
+}
+
+.inputFieldWrapper {
+  display: inline;
+  padding-left: 3px;
+  width: 80%;
+}
+
+.inputFieldWrapper .inputField {
+  height: 100%;
+  width: 100%;
+  border: 0;
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+.inputFieldWrapper .inputField.hide {
+  display: none;
+}
+
+.searchFilterContainer .searchButton {
+  display: flex;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  background-color: #fff;
+  padding-right: 10px;
+  border: 0;
+}
+
+.searchFilterContainer .searchButton .searchIcon {
+  transform: scale(1.4);
 }
 
 @media screen and (max-width: 499px) {
@@ -235,6 +299,4 @@
     padding-bottom: 40px;
     margin-left: unset;
   }
-
-  
 }
