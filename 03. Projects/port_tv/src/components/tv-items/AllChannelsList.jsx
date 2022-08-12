@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 
 import MarginContext from "../../context/MarginContext";
+import FilterContext from "../../context/FilterContext";
 import Timeline from "../timeline-items/Timeline";
 import AdFejlecCsik from "../ad-items/AdFejlecCsik";
 import AllChannelPrograms from "./AllChannelPrograms";
@@ -19,15 +20,34 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     endHour: 0,
     firstProgramsStartTime: [],
   });
-
-  const [programsState, setProgramsState] = useState({
+  const [listToShow, setListToShow] = useState({
+    actualTime: 0,
+    timelineActualTime: 0,
+    timelineTimes: [],
+    lastKeyword: "",
+    lastUrl: "",
     urlIndex: 0,
+    dateFilter: null,
+    activeFilters: {
+      date: false,
+      channel: false,
+      program: false,
+    },
+    channelFilter: [],
+    channelsAll: [],
+    channelsShow: [],
+  });
+
+  const { filterValues } = useContext(FilterContext);
+
+  /* const [programsState, setProgramsState] = useState({
+    
     isFiltered: false,
     programListUnfiltered: [],
     programListFiltered: [],
     listToShow: [],
     lazyPrograms: [],
-  });
+  }); */
   const [virtualIsActive, setVirtualIsActive] = useState(false);
   const [marginLeftValue, setMarginLeftValue] = useState();
   const value = { marginLeftValue, setMarginLeftValue };
@@ -39,63 +59,80 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
 
   const programsContainer = useRef(null);
 
-  const urlIndexHandler = () => {
-    setProgramsState((prevData) => ({
-      ...prevData,
-      urlIndex: prevData.urlIndex + 1,
-    }));
-  };
+  const createFullList = (data, type) => {
+    let actualTime;
+    let actualTimeUnix;
 
-  const filterChannelsHandler = (value) => {
-    if (value === "0") {
-      setProgramsState((prev) => ({
-        ...prev,
-        listToShow: [...prev.programListUnfiltered],
-      }));
+    if (listToShow.activeFilters.date) {
+      actualTimeUnix = listToShow.actualTime;
     } else {
-      setIsLoading(true);
-      fetch(`${channelFilterUrl[value]}`)
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          let objectCreation = {};
-          objectCreation.value = value;
-          objectCreation.data = data;
-          setProgramsState((prev) => ({
-            ...prev,
-            programListFiltered: [
-              ...prev.programListFiltered,
-              { ...objectCreation },
-            ],
-            listToShow: [data],
-          }));
+      actualTime = new Date();
+      actualTimeUnix = Math.floor(actualTime.getTime() / 1000);
+    }
 
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-        });
+    let fullListArray = [];
+
+    // végigmegyünk az összes csatornán és elkészítjük a csatorna objectet
+    data.channels.forEach((channel) => {
+      const channelObject = {
+        id: channel.id,
+        logo: channel.logo,
+        name: channel.name,
+        url: channel.url,
+        programs: [],
+      };
+      // végigmegyünk az összes programon és elkészítjük a program objectet
+      channel.programs.forEach((program) => {
+        const dateStart = new Date(program.start_datetime);
+        const unixTimestampStart = Math.floor(dateStart.getTime() / 1000);
+        const dateEnd = new Date(program.end_datetime);
+        const unixTimestampEnd = Math.floor(dateEnd.getTime() / 1000);
+        const programObject = {
+          start_unixtime: unixTimestampStart,
+          start_time: program.start_time,
+          end_unixtime: unixTimestampEnd,
+          end_time: program.end_time,
+          notificId: program.id,
+          reminderId: program.film_id,
+          film_url: program.film_url,
+          title: program.title,
+          restriction: program.restriction
+        };
+        channelObject.programs.push(programObject);
+      });
+      fullListArray.push(channelObject);
+    });
+
+    switch (type) {
+      case "channelsAll":
+        setListToShow((prev) => ({
+          ...prev,
+          actualTime: actualTimeUnix,
+          lastKeyword: type,
+          channelsAll: [...prev.channelsAll, fullListArray],
+        }));
+        break;
+      case "channelFilter":
+        setListToShow((prev) => ({
+          ...prev,
+          actualTime: actualTimeUnix,
+          lastKeyword: type,
+          channelFilter: [fullListArray],
+        }));
+        break;
+      default:
+        break;
     }
   };
 
-  // 30perc = 1800 second
-  // 30perc = 1800000 milisecond
-  // 1800000 milisecond = 150px
-  const timelineTimesHandler = () => {
+  const createTimelineTimes = (stateId) => {
     let startTime = [];
     let endTime = [];
-    programsState.listToShow.forEach((item) => {
-      item.channels.forEach((channel) => {
+    listToShow[stateId].forEach((group) => {
+      group.forEach((channel) => {
         if (channel !== "Virtual") {
-          startTime.push(channel.programs[0].start_ts);
-          endTime.push(
-            Math.floor(
-              new Date(
-                channel.programs[channel.programs.length - 1].end_datetime
-              ).getTime() / 1000
-            )
-          );
+          startTime.push(channel.programs[0].start_unixtime);
+          endTime.push(channel.programs[channel.programs.length - 1].end_unixtime);
         }
       });
     });
@@ -138,6 +175,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
 
     const newEndDate = endDateObject.setMinutes(endDateFormatMinuteFinal);
 
+    console.log("startTime: ", startTime);
     setTimelineTimes({
       startTimestamp: newStartDate,
       endTimestamp: newEndDate,
@@ -148,33 +186,108 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       firstProgramsStartTime: startTime,
     });
   };
-  useEffect(() => {
-    //TODO : csekkolni ha az új starttime vagy endtime nagyobb mint az előző és mindig a legkisebbet kell megtartani
-    timelineTimesHandler();
-  }, [programsState.listToShow]);
-
-  const createLazyPrograms = (data) => {
-    let newData = [];
-    setProgramsState((prev) => ({
-      ...prev,
-      lazyPrograms: [...prev.lazyPrograms, newData],
-    }));
-  };
 
   useEffect(() => {
-    if (!programsState.isFiltered) {
+    if (listToShow.channelsAll.length !== 0) {
+      createTimelineTimes("channelsAll");
+      setListToShow((prev) => ({
+        ...prev,
+        channelsShow: listToShow.channelsAll,
+      }));
+    }
+  }, [listToShow.channelsAll]);
+
+  useEffect(() => {
+    if (listToShow.channelFilter.length !== 0) {
+      createTimelineTimes("channelFilter");
+      setListToShow((prev) => ({
+        ...prev,
+        channelsShow: listToShow.channelFilter,
+      }));
+    }
+  }, [listToShow.channelFilter]);
+
+  useEffect(() => {
+    console.log("filterValues: ", filterValues);
+    if (
+      filterValues.dateFilter !== undefined &&
+      filterValues.dateFilter !== 0 &&
+      filterValues.dateFilter !== listToShow.dateFilter
+    ) {
+      const filterDate = new Date(filterValues.dateFilter * 1000);
+      const year = filterDate.getFullYear();
+      const yearUpdate = filterDate.getFullYear();
+      const month = filterDate.toLocaleString("hu-HU", { month: "2-digit" });
+      const monthUpdate = filterDate.getMonth();
+      const day = filterDate.toLocaleString("hu-HU", { day: "2-digit" });
+      const dayUpdate = filterDate.getDate();
+      const finalDate = `${year}-${month}-${day}`;
+
+      const actualDate = new Date();
+      actualDate.setFullYear(yearUpdate);
+      actualDate.setMonth(monthUpdate);
+      actualDate.setDate(dayUpdate);
+      const actualDateUnix = Math.floor(actualDate.getTime() / 1000);
+
+      setListToShow((prev) => ({
+        ...prev,
+        actualTime: actualDateUnix,
+        dateFilter: finalDate,
+        activeFilters: { ...prev.activeFilters, date: true },
+      }));
+    }
+  }, [filterValues]);
+
+  // filterdate url fetch
+  useEffect(() => {
+    if (listToShow.activeFilters.date) {
+      let lastUrl = listToShow.lastUrl;
+      let lastUrlSplit = lastUrl.split("date=")[0];
+      let newUrl = "";
+      if (listToShow.dateFilter === null) {
+        const actualDate = new Date();
+        const year = actualDate.getFullYear();
+        const month = actualDate.toLocaleString("hu-HU", { month: "2-digit" });
+        const day = actualDate.toLocaleString("hu-HU", { day: "2-digit" });
+        const finalDate = `${year}-${month}-${day}`;
+        newUrl = `${lastUrlSplit}date=${finalDate}`;
+      } else {
+        newUrl = `${lastUrlSplit}date=${listToShow.dateFilter}`;
+      }
       setIsLoading(true);
-      fetch(`${url[programsState.urlIndex]}`)
+      fetch(`${newUrl}`)
         .then((res) => {
           return res.json();
         })
         .then((data) => {
-          createLazyPrograms(data);
-          setProgramsState((prev) => ({
+          setListToShow((prev) => ({
             ...prev,
-            programListUnfiltered: [...prev.programListUnfiltered, data],
-            listToShow: [...prev.listToShow, data],
+            lastUrl: newUrl,
           }));
+          createFullList(data, "channelFilter");
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          //setError(error.message);
+        });
+    }
+  }, [listToShow.dateFilter]);
+
+  // filterdate nélküli url fetch
+  useEffect(() => {
+    if (!listToShow.activeFilters.date) {
+      setIsLoading(true);
+      fetch(`${url[listToShow.urlIndex]}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setListToShow((prev) => ({
+            ...prev,
+            lastUrl: url[listToShow.urlIndex],
+            dateFilter: url[listToShow.urlIndex].split("date=")[1]
+          }));
+          createFullList(data, "channelsAll");
 
           setIsLoading(false);
         })
@@ -182,34 +295,92 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           setError(error.message);
         });
     }
-  }, [programsState.urlIndex]);
+  }, [listToShow.urlIndex]);
+
+  const urlIndexHandler = () => {
+    setListToShow((prevData) => ({
+      ...prevData,
+      urlIndex: prevData.urlIndex + 1,
+    }));
+  };
+
+  const filterChannelsHandler = (value) => {
+    let filterUrl;
+    if (listToShow.activeFilters.date && value !== "0") {
+      let originalUrl =
+        channelFilterUrl[value].split("date=")[0];
+        filterUrl = `${originalUrl}date=${listToShow.dateFilter}`;
+    } else {
+      filterUrl = channelFilterUrl[value];
+    }
+    if (value === "0") {
+      if (listToShow.activeFilters.date) {
+        let defaultUrl = url[0].split("date=")[0];
+        filterUrl = `${defaultUrl}date=${listToShow.dateFilter}`;
+      }else {
+        filterUrl = url[0];
+      }
+    }
+
+    setIsLoading(true);
+    fetch(`${filterUrl}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setListToShow((prev) => ({
+          ...prev,
+          lastUrl: filterUrl,
+        }));
+        createFullList(data, "channelFilter");
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        //setError(error.message);
+      });
+    setListToShow((prev) => ({
+      ...prev,
+      activeFilters: { ...prev.activeFilters, channel: true },
+    }));
+  };
 
   //TODO: 192.sorban hiba lehet gyorsabb gépeken
-  useEffect(() => {
-    if (virtualIsActive) {
+  /* useEffect(() => {
+    if (virtualIsActive && listToShow.channelsShow !== undefined) {
       const zone = window.virtualChannelSponsoration;
-      let tempState = { ...programsState };
-      let element = [...tempState.listToShow[0].channels];
+      let tempState = { ...listToShow.channelsShow };
+      let element = [...tempState[0]];
       element.splice(zone.position, 0, "Virtual");
-      tempState.listToShow[0].channels = element;
-      setProgramsState((prev) => ({
+      tempState = element;
+      setListToShow((prev) => ({
         ...prev,
-        listToShow: tempState.listToShow,
+        channelsShow: [tempState],
       }));
     }
-  }, [virtualIsActive]);
+  }, [virtualIsActive]); */
 
   useEffect(() => {
-    if (zones.tv_virtual_sponsoration !== undefined) {
-      window.addEventListener(
+    if (zones.tv_virtual_sponsoration !== undefined && listToShow.channelsShow.length !== 0) {
+      console.log("event useffect");
+      const eventHandler = window.addEventListener(
         `AD.SHOW.${zones.tv_virtual_sponsoration.id}`,
         (event) => {
-          setVirtualIsActive(true);
-          //console.log("event.detail: ", event.detail);
+          console.log("event eleje");
+          const zone = window.virtualChannelSponsoration;
+          let tempState = { ...listToShow.channelsShow };
+          let element = [...tempState[0]];
+          element.splice(zone.position, 0, "Virtual");
+          tempState = element;
+          setListToShow((prev) => ({
+            ...prev,
+            channelsShow: [tempState],
+          }));
+          console.log("event.detail: ", event.detail);
+          window.removeEventListener(`AD.SHOW.${zones.tv_virtual_sponsoration.id}`, eventHandler, true);
         }
       );
     }
-  }, []);
+  }, [listToShow.channelsShow, zones.tv_virtual_sponsoration]);
 
   useEffect(() => {
     if (typeof window.pp_gemius_hit === 'function' && typeof window.gemius_identifier === 'string') {
@@ -222,16 +393,16 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     }
   }, [initData]);
 
-  console.log("programsToShow: ", programsState.listToShow);
-  console.log("programsState: ", programsState);
+  console.log("listToShow: ", listToShow);
 
   return (
     <>
-      {programsState.listToShow.length > 0 && (
+      {listToShow.channelsShow.length > 0 && (
         <MarginContext.Provider value={value}>
           <Timeline
             onFilterChannels={filterChannelsHandler}
             initData={initData}
+            actualTime={listToShow.actualTime}
             timelineTimes={timelineTimes}
           />
         </MarginContext.Provider>
@@ -241,12 +412,12 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
         {isLoading && <Spinner />}
         <div ref={programsContainer} className={classes.programsContainer}>
           <Marker time={initData} timelineTimes={timelineTimes} />
-          {programsState.listToShow.length > 0 &&
-            programsState.listToShow.map((program, index) => (
+          {listToShow.channelsShow.length > 0 &&
+            listToShow.channelsShow.map((channels, index) => (
               <MarginContext.Provider value={value}>
                 <AllChannelPrograms
-                  programs={program}
-                  initData={initData}
+                  channels={channels}
+                  actualTime={listToShow.actualTime}
                   timelineTimes={timelineTimes}
                   index={index}
                 />
@@ -254,7 +425,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
             ))}
         </div>
       </div>
-      {programsState.listToShow.length > 0 && (
+      {listToShow.channelsShow.length > 0 && (
         <button onClick={urlIndexHandler}>Increse</button>
       )}
     </>

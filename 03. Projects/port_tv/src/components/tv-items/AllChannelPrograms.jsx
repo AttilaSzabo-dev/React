@@ -12,7 +12,7 @@ import SlickSlider from "./SlickSlider";
 const AllChannelPrograms = (props) => {
   let zones = window.zonesToLoad;
 
-  return props.programs.channels.map((channel, index) => (
+  return props.channels.map((channel, index) => (
     <>
       {/* <AdFejlecCsik/> */}
       
@@ -28,15 +28,15 @@ const AllChannelPrograms = (props) => {
         {channel.programs.map((item) => (
           <ProgramItem
             key={item.id}
-            notificId={item.id}
-            reminderId={item.film_id}
-            actualTime={props.initData.date}
-            startTime={item.start_time}
-            endTime={item.end_time}
+            notificId={item.notificId}
+            reminderId={item.reminderId}
+            actualTime={props.actualTime}
+            start_time={item.start_time}
+            start_unixtime={item.start_unixtime}
+            end_time={item.end_time}
+            end_unixtime={item.end_unixtime}
             title={item.title}
             filmUrl={item.film_url}
-            start_ts={item.start_ts}
-            end_datetime={item.end_datetime}
             restriction={item.restriction}
             short_description={item.short_description}
           />

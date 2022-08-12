@@ -11,6 +11,7 @@ import classes from "./Timeline.module.css";
 const Timeline = ({
   onFilterChannels,
   initData,
+  actualTime,
   timelineTimes,
 }) => {
   const container = useRef(null);
@@ -47,29 +48,18 @@ const Timeline = ({
 
   useEffect(() => {
     if (timelineTimes.startTimestamp > 0) {
-      const newPos = -(
-        (Math.floor(new Date(initData.date).getTime()) -
-          timelineTimes.startTimestamp) /
-        12000
-      );
+      const newPos = -((actualTime - timelineTimes.startTimestamp / 1000) / 12);
 
       setMarginLeftValue({
         marginLeft: newPos + 300 + "px",
       });
-
-      //TODO: lassab gépeken vagy neten nem jelenik meg a konténer időben ezért nem tud scrollozódni (egyenlőre timeout a megoldás)
-      /* setTimeout(() => {
-        container.current.scrollTo({
-          top: 0,
-          left: newPos - 300,
-          behavior: "smooth",
-        });
-      }, 10); */
-
-      let groups = Object.values(initData.channelGroups);
-      setCategories(groups);
     }
-  }, [initData, timelineTimes]);
+  }, [timelineTimes, actualTime]);
+
+  useEffect(() => {
+    let groups = Object.values(initData.channelGroups);
+    setCategories(groups);
+  }, [initData.channelGroups]);
 
   useEffect(() => {
     /* container.current.addEventListener("wheel", mouseWheelHandler, {
@@ -111,7 +101,10 @@ const Timeline = ({
   return (
     <div className={classes.timelineWrapper}>
       <div className={classes.timelineFilter}>
-        <ChannelFilter categories={categories} onSelectChange={onSelectChange}/>
+        <ChannelFilter
+          categories={categories}
+          onSelectChange={onSelectChange}
+        />
       </div>
       <button onClick={goLeft} className={classes.buttons}>
         <MdKeyboardArrowLeft className={classes.arrows} />

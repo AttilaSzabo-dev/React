@@ -12,12 +12,12 @@ const ProgramItem = ({
   notificId,
   reminderId,
   actualTime,
-  startTime,
-  endTime,
+  start_time,
+  start_unixtime,
+  end_time,
+  end_unixtime,
   title,
   filmUrl,
-  start_ts,
-  end_datetime,
   short_description,
   restriction
 }) => {
@@ -29,11 +29,11 @@ const ProgramItem = ({
   const [popUp, setPopUp] = useState(false);
   const [activeProgram, setActiveProgram] = useState(false);
   const background =
-    start_ts > Math.floor(new Date(actualTime).getTime() / 1000)
+  start_unixtime > actualTime
       ? "#fff"
       : "#f3f3f3";
   const widthCalc =
-    (Math.floor(new Date(end_datetime).getTime() / 1000) - start_ts) / 12 +
+  (end_unixtime - start_unixtime) / 12 +
     "px";
 
   const addCss = {
@@ -160,7 +160,7 @@ const ProgramItem = ({
       className={classes.programHoverContainer}
     >
       <div className={`${classes.hoverInfoContainer} ${popUp ? classes.show : ""}`} style={popUpCss}>
-        <span className={classes.title}>{title} <span className={classes.time}>{`(${startTime} - ${endTime})`}</span></span>
+        <span className={classes.title}>{title} <span className={classes.time}>{`(${start_time} - ${end_time})`}</span></span>
         
         <span className={classes.desc}>{short_description}</span>
       </div>
@@ -171,7 +171,7 @@ const ProgramItem = ({
         style={addCss}
       >
         <div className={classes.time}>
-          {`${startTime} - ${endTime}`}
+          {`${start_time} - ${end_time}`}
           <div className={classes.noti}>
             <BsEnvelope
               onClick={setNotiHandler}
