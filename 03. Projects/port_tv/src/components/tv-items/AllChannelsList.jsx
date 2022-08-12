@@ -38,6 +38,8 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     channelsShow: [],
   });
 
+  const [virtualInterval, setVirtualInterval] = useState(true);
+
   const { filterValues } = useContext(FilterContext);
 
   /* const [programsState, setProgramsState] = useState({
@@ -344,28 +346,13 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
     }));
   };
 
-  //TODO: 192.sorban hiba lehet gyorsabb gépeken
-  /* useEffect(() => {
-    if (virtualIsActive && listToShow.channelsShow !== undefined) {
-      const zone = window.virtualChannelSponsoration;
-      let tempState = { ...listToShow.channelsShow };
-      let element = [...tempState[0]];
-      element.splice(zone.position, 0, "Virtual");
-      tempState = element;
-      setListToShow((prev) => ({
-        ...prev,
-        channelsShow: [tempState],
-      }));
-    }
-  }, [virtualIsActive]); */
-
-  useEffect(() => {
-    if (zones.tv_virtual_sponsoration !== undefined && listToShow.channelsShow.length !== 0) {
-      console.log("event useffect");
-      const eventHandler = window.addEventListener(
-        `AD.SHOW.${zones.tv_virtual_sponsoration.id}`,
-        (event) => {
-          console.log("event eleje");
+  //TODO: itervalt kezelni, szűrők esetén is alkalmazni kell
+  useEffect(()=> {
+    if (virtualInterval) {
+      const virtualIntervalTimer = setInterval(() => {
+        if (window.virtualIsLoaded === true && listToShow.channelsShow.length !== 0) {
+          clearInterval(virtualIntervalTimer);
+          setVirtualInterval(false);
           const zone = window.virtualChannelSponsoration;
           let tempState = { ...listToShow.channelsShow };
           let element = [...tempState[0]];
@@ -375,12 +362,10 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
             ...prev,
             channelsShow: [tempState],
           }));
-          console.log("event.detail: ", event.detail);
-          window.removeEventListener(`AD.SHOW.${zones.tv_virtual_sponsoration.id}`, eventHandler, true);
         }
-      );
+      }, 1000);
     }
-  }, [listToShow.channelsShow, zones.tv_virtual_sponsoration]);
+  }, [virtualInterval, listToShow.channelsShow]);
 
   useEffect(() => {
     if (typeof window.pp_gemius_hit === 'function' && typeof window.gemius_identifier === 'string') {
