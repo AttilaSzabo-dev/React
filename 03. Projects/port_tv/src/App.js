@@ -90,13 +90,14 @@ function App() {
         poz: 5,
         element: ".introjsTimelineButtonLeft",
         title: "Korábbi műsorok",
-        intro: "Korábbi műsorokat erre találod.",
+        intro: "Erre a nyílra kattintva megnézheted, hogy mi ment korábban.",
       },
       {
         poz: 6,
         element: ".introjsTimelineButtonRight",
         title: "Következő műsorok",
-        intro: "Erre a nyílra kattintva megnézheted, hogy mi ment korábban.",
+        intro:
+          "Itt pedig meg tudod nézni, hogy mi megy majd a későbbiekben a tévében.",
       },
       {
         poz: 9,
@@ -109,14 +110,14 @@ function App() {
     allChannelLogo: [
       {
         poz: 7,
-        title: "Kedvencek tévécsatornák kiválasztása",
+        title: "Kedvenc tévécsatornák kiválasztása",
         element: `.${allChannelLogoClasses.likeButton}:first-of-type`,
         intro:
-          "A kiválasztott tévécsatornákat egyből a lista tetejére kerülnek, hogy azonnal lásd, mi megy épp a kedvenc tévécsatornádon.",
+          "A kiválasztott tévécsatornák egyből a lista tetejére kerülnek, hogy azonnal lásd, mi megy épp a kedvenc tévécsatornádon.",
       },
       {
         poz: 8,
-        title: "Ha csak egy catorna érdekel...",
+        title: "Ha csak egy csatorna érdekel...",
         element: `.${allChannelLogoClasses.imgWrapper}:first-of-type`,
         intro:
           "Kattints a megfelelő csatorna logójára, és máris csak annak a tévének a műsorkínálatát látod az éppen aktuális valamint a soron következő pár napra vonatkozóan.",
@@ -151,17 +152,18 @@ function App() {
         poz: 5,
         element: ".introjsTimelineButtonLeft",
         title: "Korábbi műsorok",
-        intro: "Korábbi műsorokat erre találod.",
+        intro: "Erre a nyílra kattintva megnézheted, hogy mi ment korábban.",
       },
       {
         poz: 6,
         element: ".introjsTimelineButtonRight",
         title: "Következő műsorok",
-        intro: "Erre a nyílra kattintva megnézheted, hogy mi ment korábban.",
+        intro:
+          "Itt pedig meg tudod nézni, hogy mi megy majd a későbbiekben a tévében.",
       },
       {
         poz: 8,
-        title: "Ha csak egy catorna érdekel...",
+        title: "Ha csak egy csatorna érdekel...",
         element: `.${allChannelMobileClasses.logoWrapper}:first-of-type`,
         intro:
           "Kattints a megfelelő csatorna logójára, és máris csak annak a tévének a műsorkínálatát látod az éppen aktuális valamint a soron következő pár napra vonatkozóan.",
@@ -176,6 +178,7 @@ function App() {
       },
     ],
   };
+
   // const stepDefsCnt = Object.values(stepDefs).reduce((acc, val) => {return acc + val.length}, 0);
   const stepDefsCnt = 8; // drotozas, de igy mobilon es desktopon is az utolso lepesek hozzaadasa utan indul el
   const stepOptions = {
@@ -203,6 +206,9 @@ function App() {
   };
 
   const onStepExit = () => {
+    if (typeof window.setCookie === "function") {
+      window.setCookie("introjs-delayed", "1");
+    }
     setSteps([]);
   };
 
@@ -215,7 +221,12 @@ function App() {
     //   'arg:', arg,
     //   'stepdefs:', Object.assign({}, stepDefs[arg])
     // );
-    setSteps((prev) => [...prev, ...stepDefs[arg]]);
+    if (
+      typeof window.getCookie === "function" &&
+      window.getCookie("introjs-delayed") !== "1"
+    ) {
+      setSteps((prev) => [...prev, ...stepDefs[arg]]);
+    }
   };
 
   //************************************** */

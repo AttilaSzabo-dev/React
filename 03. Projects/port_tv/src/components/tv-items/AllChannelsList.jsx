@@ -50,26 +50,29 @@ const AllChannelsList = ({
 
   //**************************************** */
   const calculateMarkerX = () => {
-    let today = new Date();
+    let today = new Date(); // meghagytam, ha nem lenne valamiert valamikor erteke az initdata.time -nak akkor ezt hasznaljuk
+    let staticOffset = 186; // pontos pozicionalashoz
     let markerX = 0;
 
     if (
       typeof marginLeftValue !== "undefined" &&
       marginLeftValue.hasOwnProperty("marginLeft")
     ) {
-      let timeHours = parseInt(today.getHours());
-      let timeMins = today.getMinutes();
-      let staticOffset = 784;
+      let widthCalc =
+        (Math.floor(new Date(initData.date).getTime()) -
+          timelineTimes.startTimestamp) /
+        12000;
 
-      // fel ora = 150px, 1 ora 300px;
-      let minuteOffset = timeMins;
-
-      let offset = parseInt(marginLeftValue.marginLeft.replace("px", ""), 10);
-      markerX = offset + staticOffset + timeHours * 300 + timeMins * 5 + "px";
+      markerX =
+        parseInt(widthCalc) +
+        parseInt(marginLeftValue.marginLeft) +
+        staticOffset +
+        "px";
     }
 
     return markerX;
   };
+  
   // timer marker leptetese 1 percenkent 5 pixellel, egy ora = 300px, egy perc 5 pixel
   useEffect(() => {
     const interval = setInterval(() => {

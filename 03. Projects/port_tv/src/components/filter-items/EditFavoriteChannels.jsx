@@ -77,7 +77,7 @@ const EditFavoriteChannels = ({ initData }) => {
   return (
     <>
       <header className={classes.header}>
-        <h2>Kedvencek szerkeztése</h2>
+        <h2>Kedvencek szerkesztése</h2>
         <button className={classes.modalConfirm} onClick={(e) => ctx.setModal(false)}>
           X
         </button>
