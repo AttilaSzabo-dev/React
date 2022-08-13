@@ -167,14 +167,13 @@ const SingleChannelList = ({ initData }) => {
           onClick={goLeft}
           className={`${classes.leftButton} ${classes.buttons}`}
         >
-          {/* <MdKeyboardArrowLeft className={classes.arrows} /> */}
-          <IoIosArrowBack className={classes.arrows} />
+          <img src="/img/svg/leftArrowBlack.svg" alt="" style={{maxWidth: "unset"}} />
         </button>
         <button
           onClick={goRight}
           className={`${classes.rightButton} ${classes.buttons}`}
         >
-          <MdKeyboardArrowRight className={classes.arrows} />
+          <img src="/img/svg/rightArrowBlack.svg" alt="" style={{maxWidth: "unset"}} />
         </button>
       </div>
       <div ref={container} className={classes.singleChannelWrapper}>

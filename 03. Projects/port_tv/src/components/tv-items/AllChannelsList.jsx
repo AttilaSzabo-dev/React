@@ -72,7 +72,7 @@ const AllChannelsList = ({
 
     return markerX;
   };
-  
+
   // timer marker leptetese 1 percenkent 5 pixellel, egy ora = 300px, egy perc 5 pixel
   useEffect(() => {
     const interval = setInterval(() => {
@@ -470,8 +470,16 @@ const AllChannelsList = ({
         </div>
       </div>
       {listToShow.channelsShow.length > 0 && (
-        <button className={classes.moreChannels} onClick={urlIndexHandler}>
-          Több csatorna
+        <button
+          disabled={
+            listToShow.activeFilters.channel || listToShow.urlIndex === 3
+          }
+          className={classes.moreChannels}
+          onClick={urlIndexHandler}
+        >
+          {listToShow.activeFilters.channel || listToShow.urlIndex === 3
+            ? "Nincs több csatorna"
+            : "Több csatorna"}
         </button>
       )}
     </>

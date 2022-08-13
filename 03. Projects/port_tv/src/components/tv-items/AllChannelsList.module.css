@@ -28,6 +28,10 @@
   transition: opacity 0.25s ease-in-out;
 }
 
+.moreChannels:disabled {
+  opacity: .3;
+}
+
 .moreChannels:hover {
   background-color: #d63632;
 }

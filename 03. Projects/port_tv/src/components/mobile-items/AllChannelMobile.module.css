@@ -58,6 +58,9 @@
   height: 3px;
   margin: 3px 0;
 }
+.progressBarContainer.progressHidden {
+  display: none;
+}
 
 .progressBarBackground {
   position: absolute;

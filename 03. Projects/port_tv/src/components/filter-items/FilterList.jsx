@@ -184,13 +184,13 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
     setExpandSearchField(false);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     if (searchModal) {
-      document.body.classList.add('modal-open');
+      document.body.classList.add("modal-open");
     } else {
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove("modal-open");
     }
-  },[searchModal]);
+  }, [searchModal]);
 
   useEffect(() => {
     if (inputRef !== null) {
@@ -250,26 +250,45 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
             X
           </div>
         </div>
-        {search !== null && search.map((group) => (
-          <>
-            <div className={classes.groupHeader}>
-              <span>{group[0].day}</span>
-            </div>
-            {group.map((item) => 
-              <div className={classes.groupItemContainer}>
-                <div className={classes.imageWrapper}>
-                  {item.img.length === 0 ? <a href={item.url} target="_blank" rel="noreferrer"><span></span></a> : <a href={item.url} target="_blank" rel="noreferrer"><img src={item.img} alt={item.title} /></a>}
-                </div>
-                <div className={classes.contentWrapper}>
-                  <span className={classes.time}>{`${item.start} - ${item.channel}`}</span>
-                  <a href={item.url} target="_blank" rel="noreferrer" className={classes.title} title="Műsor megtekintése">{item.title}</a>
-                  <span className={classes.info}>{item.summary}</span>
-                  <p className={classes.desc}>{item.descr}</p>
-                </div>
+        {search !== null &&
+          search.map((group) => (
+            <>
+              <div className={classes.groupHeader}>
+                <span>{group[0].day}</span>
               </div>
-            )}
-          </>
-        ))}
+              {group.map((item) => (
+                <div className={classes.groupItemContainer}>
+                  <div className={classes.imageWrapper}>
+                    {item.img.length === 0 ? (
+                      <a href={item.url} target="_blank" rel="noreferrer">
+                        <span></span>
+                      </a>
+                    ) : (
+                      <a href={item.url} target="_blank" rel="noreferrer">
+                        <img src={item.img} alt={item.title} />
+                      </a>
+                    )}
+                  </div>
+                  <div className={classes.contentWrapper}>
+                    <span
+                      className={classes.time}
+                    >{`${item.start} - ${item.channel}`}</span>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={classes.title}
+                      title="Műsor megtekintése"
+                    >
+                      {item.title}
+                    </a>
+                    <span className={classes.info}>{item.summary}</span>
+                    <p className={classes.desc}>{item.descr}</p>
+                  </div>
+                </div>
+              ))}
+            </>
+          ))}
       </div>
       <div className={classes.filterWrapper}>
         <div id="introjsWelcomeMobile"></div>
@@ -297,8 +316,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
               className={classes.openDates}
               onClick={(e) => setDaysSelectorDropdown(!daysSelectorDropdown)}
             >
-              {/* <MdKeyboardArrowDown className={classes.downIcon} /> */}
-              <BsChevronDown className={classes.downIcon} />
+              <img src="/img/svg/downArrow.svg" alt="" style={{maxWidth: "unset"}} />
             </button>
             <div
               className={`${classes.daysSelector} ${
@@ -330,33 +348,36 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
               />
             </div>
           )}
-          {isMobile && <div
-          className={`${classes.searchFilterContainer} ${
-            expandSearchField ? classes.expand : ""
-          }`}
-        >
-          <div className={classes.inputFieldWrapper}>
-            <input
-              className={`${classes.inputField} ${
-                expandSearchField ? "" : classes.hide
+          {isMobile && (
+            <div
+              className={`${classes.searchFilterContainer} ${
+                expandSearchField ? classes.expand : ""
               }`}
-              ref={inputRef}
-              type="text"
-              placeholder="Műsor keresése"
-              name=""
-              id=""
-            />
-          </div>
-          <button
-            className={classes.searchButton}
-            onClick={(e) => setExpandSearchField(!expandSearchField)}
-          >
-            <BsSearch className={classes.searchIcon} />
-          </button>
-        </div>}
+            >
+              <div className={classes.inputFieldWrapper}>
+                <input
+                  className={`${classes.inputField} ${
+                    expandSearchField ? "" : classes.hide
+                  }`}
+                  ref={inputRef}
+                  type="text"
+                  placeholder="Műsor keresése"
+                  name=""
+                  id=""
+                />
+              </div>
+              <button
+                className={classes.searchButton}
+                onClick={(e) => setExpandSearchField(!expandSearchField)}
+              >
+                <BsSearch className={classes.searchIcon} />
+              </button>
+            </div>
+          )}
           <button className={classes.modalButton} onClick={onModalOpen}>
+          <img src="/img/svg/favoriteChannel.svg" alt="" style={{maxWidth: "unset"}} />
             {/* <RiHeartAddFill className={classes.editFavIcon} /> */}
-            <BsFillHeartFill className={classes.editFavIcon} />
+           {/*  <BsFillHeartFill className={classes.editFavIcon} /> */}
           </button>
         </div>
         <div className={classes.programFilterContainer}>
@@ -385,14 +406,14 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
           >
             Sport
           </button>
-          <button
+          {/* <button
             className={`${classes.programFilterButtons} ${
               classes.programFilterSportLive
             } ${programFilter.sportLive ? classes.isOn : ""}`}
             onClick={(e) => programFilterHandler("sportLive")}
           >
             Sport (élő)
-          </button>
+          </button> */}
           <button
             className={`${classes.programFilterButtons} ${
               classes.programFilterReality
@@ -410,30 +431,32 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
             Gasztró
           </button>
         </div>
-        {isDesktop && <div
-          className={`${classes.searchFilterContainer} ${
-            expandSearchField ? classes.expand : ""
-          }`}
-        >
-          <div className={classes.inputFieldWrapper}>
-            <input
-              className={`${classes.inputField} ${
-                expandSearchField ? "" : classes.hide
-              }`}
-              ref={inputRef}
-              type="text"
-              placeholder="Műsor keresése"
-              name=""
-              id=""
-            />
-          </div>
-          <button
-            className={classes.searchButton}
-            onClick={(e) => setExpandSearchField(!expandSearchField)}
+        {isDesktop && (
+          <div
+            className={`${classes.searchFilterContainer} ${
+              expandSearchField ? classes.expand : ""
+            }`}
           >
-            <BsSearch className={classes.searchIcon} />
-          </button>
-        </div>}
+            <div className={classes.inputFieldWrapper}>
+              <input
+                className={`${classes.inputField} ${
+                  expandSearchField ? "" : classes.hide
+                }`}
+                ref={inputRef}
+                type="text"
+                placeholder="Műsor keresése"
+                name=""
+                id=""
+              />
+            </div>
+            <button
+              className={classes.searchButton}
+              onClick={(e) => setExpandSearchField(!expandSearchField)}
+            >
+              <BsSearch className={classes.searchIcon} />
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

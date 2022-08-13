@@ -171,7 +171,7 @@ function App() {
       },
       {
         poz: 9,
-        element: `.${filterListClasses.channelFilterEditContainer} button`,
+        element: `.${filterListClasses.modalButton}`,
         title: "Kedvencek szerkesztése",
         intro:
           "Itt is be tudod állítani a kedvenc csatornáidat, sőt, sorrendbe is tudod tenni őket, hogy a neked tetsző sorrendbe jelenjenek meg a TV oldalon.",

@@ -29,7 +29,7 @@ const AllChannelMobile = ({
     lastKeyword: "",
     lastUrl: "",
     dateFilter: null,
-    programFilter: [],
+    programFilter: null,
     activeFilters: {
       date: false,
       channel: false,
@@ -45,7 +45,7 @@ const AllChannelMobile = ({
     film: ["documentary", "dokumentumfilm", "film"],
     sorozat: ["filmsorozat", "series"],
     sport: ["sportmusor", "sports"],
-    sportLive: [],
+    sportLive: ["live"],
     reality: ["reality-musor", "reality-show"],
     gastro: ["cooking", "gasztronomiai-musor"],
   };
@@ -71,6 +71,7 @@ const AllChannelMobile = ({
   //mi kell a mobileData-ból: date(hogy tudjuk az aktuális időt) / channelsből: id, logo, name, url / programsból: end_datetime, end_time, film_url, start_datetime, start_time, title
 
   const createFullList = (data, type) => {
+    console.log("data: ", data);
     let actualTime;
     let actualTimeUnix;
     let timelineActualTime;
@@ -194,7 +195,7 @@ const AllChannelMobile = ({
     }));
   };
 
-  const createPartialPrograms = (taskId) => {
+  const createPartialPrograms = () => {
     let taskArray = [...listToShow[listToShow.lastKeyword]];
     let arrayToShow = [];
 
@@ -211,6 +212,7 @@ const AllChannelMobile = ({
           url: channel.url,
           programs: [],
           programFilters: [],
+          canShow: true
         };
         channel.programs.forEach((program, index) => {
           if (
@@ -219,7 +221,6 @@ const AllChannelMobile = ({
             (program.start_unixtime === listToShow.timelineActualTime &&
               program.end_unixtime > listToShow.timelineActualTime)
           ) {
-
             let width =
               100 -
               ((program.end_unixtime - listToShow.actualTime) /
@@ -238,22 +239,53 @@ const AllChannelMobile = ({
               end_time: program.end_time,
               film_url: program.film_url,
               title: program.title,
+              restriction: program.restriction,
               width: width + "%",
             };
 
             if (
               listToShow.timelineActualTime < listToShow.actualTime &&
-              listToShow.timelineActualTime + 3600 > listToShow.actualTime
-            ) {
+              listToShow.timelineActualTime + 3600 > listToShow.actualTime) 
+            {
               if (width < 100) {
+                if (listToShow.activeFilters.program) {
+                  let checkNormal = listToShow.programFilter.includes(
+                    program.restriction.category
+                  );
+                  let live = program.is_live === undefined ? "" : "live";
+                  let checkLive = listToShow.programFilter.includes(live);
+                  if (checkNormal || checkLive) {
+                    programIndex = index;
+                    useIndex = true;
+                    channelObject.programs.push(programObject);
+                  }else {
+                    channelObject.canShow = false;
+                  }
+                } else {
+                  programIndex = index;
+                  useIndex = true;
+                  channelObject.programs.push(programObject);
+                }
+              }
+            } else {
+              if (listToShow.activeFilters.program) {
+                let checkNormal = listToShow.programFilter.includes(
+                  program.restriction.category
+                );
+                let live = program.is_live === undefined ? "" : "live";
+                let checkLive = listToShow.programFilter.includes(live);
+                if (checkNormal || checkLive) {
+                  programIndex = index;
+                  useIndex = true;
+                  channelObject.programs.push(programObject);
+                }else {
+                  channelObject.canShow = false;
+                }
+              } else {
                 programIndex = index;
                 useIndex = true;
                 channelObject.programs.push(programObject);
               }
-            } else {
-              programIndex = index;
-              useIndex = true;
-              channelObject.programs.push(programObject);
             }
 
             if (
@@ -273,18 +305,21 @@ const AllChannelMobile = ({
               end_time: program.end_time,
               film_url: program.film_url,
               title: program.title,
+              restriction: program.restriction,
             };
             channelObject.programs.push(programObject);
-            if (
+            /* if (
               !channelObject.programFilters.includes(
                 program.restriction.category
               )
             ) {
               channelObject.programFilters.push(program.restriction.category);
-            }
+            } */
           }
         });
-        groupArray.push(channelObject);
+        if (channelObject.canShow) {
+          groupArray.push(channelObject);
+        }
       });
       arrayToShow.push(groupArray);
     });
@@ -314,6 +349,12 @@ const AllChannelMobile = ({
       createPartialPrograms("mobileChannelFilter");
     }
   }, [listToShow.mobileChannelFilter]);
+
+  useEffect(() => {
+    if (listToShow.mobileChannelsShow.length !== 0) {
+      createPartialPrograms();
+    }
+  }, [listToShow.programFilter]);
 
   useEffect(() => {
     console.log("filterValues: ", filterValues);
@@ -410,7 +451,7 @@ const AllChannelMobile = ({
       } else {
         setListToShow((prev) => ({
           ...prev,
-          programFilter: allFilters,
+          programFilter: "empty",
           activeFilters: { ...prev.activeFilters, program: false },
         }));
       }
@@ -543,6 +584,19 @@ const AllChannelMobile = ({
     }
   };
 
+  const toShowChannel = (data) => {
+    if (listToShow.activeFilters.program) {
+      let check = listToShow.programFilter.includes(data);
+      if (check) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  };
+
   return (
     <div>
       {isLoading && <Spinner />}
@@ -551,13 +605,15 @@ const AllChannelMobile = ({
           onClick={timeHandlerLeft}
           className={`${classes.timelineButton} introjsTimelineButtonLeft`}
         >
+          <img src="/img/svg/leftArrow.svg" alt="" style={{maxWidth: "unset"}} />
           <MdKeyboardArrowLeft className={classes.timelineArrow} />
         </button>
         <button
           onClick={timeHandlerRight}
           className={`${classes.timelineButton} introjsTimelineButtonRight`}
         >
-          <MdKeyboardArrowRight className={classes.timelineArrow} />
+          <img src="/img/svg/rightArrow.svg" alt="" style={{maxWidth: "unset"}} />
+          {/* <MdKeyboardArrowRight className={classes.timelineArrow} /> */}
         </button>
         <div className={classes.sectionWrapper}>
           {listToShow.timelineTimes.map((item) => (
@@ -586,16 +642,11 @@ const AllChannelMobile = ({
         listToShow.mobileChannelsShow.map((group, outerIndex) =>
           group.map((channel, innerIndex) => (
             <>
-              {outerIndex === 0 && innerIndex === 2 && <AdLB />}
-              {outerIndex === 0 && innerIndex === 6 && <AdRich />}
-              {outerIndex === 0 && innerIndex === 10 && <AdRB />}
+              {outerIndex === 0 && innerIndex === 2 && <AdLB key={"AdLB"} />}
+              {outerIndex === 0 && innerIndex === 8 && group.length > 20 && <AdRich key={"AdRich"} />}
+              {outerIndex === 0 && innerIndex === 20 && <AdRB key={"AdRB"} />}
               {channel.programs[0] !== undefined && (
-                <div
-                  key={channel.id}
-                  className={`${classes.channelWrapper} ${
-                    toShow(channel.programFilters) ? "" : classes.disableChannel
-                  }`}
-                >
+                <div key={channel.id} className={`${classes.channelWrapper} `}>
                   <div className={classes.logoWrapper}>
                     <Link
                       to={`/csatorna/tv/${channel.name
@@ -612,7 +663,13 @@ const AllChannelMobile = ({
                     <span
                       className={`${classes.text} ${classes.firstProgram}`}
                     >{`${channel.programs[0].start_time} ${channel.programs[0].title}`}</span>
-                    <div className={classes.progressBarContainer}>
+                    <div
+                      className={`${classes.progressBarContainer} ${
+                        channel.programs[0].width === "0%"
+                          ? classes.progressHidden
+                          : ""
+                      }`}
+                    >
                       <div className={classes.progressBarBackground}></div>
                       <div
                         className={classes.progressBarProgress}

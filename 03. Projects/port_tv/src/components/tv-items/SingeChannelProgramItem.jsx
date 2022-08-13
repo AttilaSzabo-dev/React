@@ -153,7 +153,7 @@ const SingeChannelProgramItem = ({
           />
         </div>
       </div>
-      <a href={filmUrl} className={classes.title}>
+      <a href={filmUrl} target="_blank" rel="noreferrer" className={classes.title}>
         {title}
       </a>
       <div className={classes.description}>{description}</div>

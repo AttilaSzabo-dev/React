@@ -395,11 +395,11 @@
   display: flex;
   flex-direction: row;
   width: 190px;
+  padding-left: 3px;
 }
 
 .inputFieldWrapper {
   display: inline;
-  padding-left: 3px;
   width: 80%;
 }
 
