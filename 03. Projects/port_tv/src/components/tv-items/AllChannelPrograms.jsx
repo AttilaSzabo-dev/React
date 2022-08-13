@@ -24,7 +24,7 @@ const AllChannelPrograms = (props) => {
       {props.index === 0 && index === 13 ? <SlickSlider/> : ""}
 
       {channel !== "Virtual" && <ProgramsWrapper timelineTimes={props.timelineTimes} index={index}>
-        <AllChannelLogo channel={channel} key={channel.id} id={channel.id} actualDate={props.date} />
+        <AllChannelLogo channel={channel} key={channel.id} id={channel.id} actualDate={props.date} introCb={index === 0 ? props.introCb : null} introKey={props.introKey} />
         {channel.programs.map((item) => (
           <ProgramItem
             key={item.id}

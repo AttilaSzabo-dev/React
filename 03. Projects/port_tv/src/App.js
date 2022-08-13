@@ -7,9 +7,20 @@ import { useMediaQuery } from "react-responsive";
 import FilterList from "./components/filter-items/FilterList";
 import AllChannelsList from "./components/tv-items/AllChannelsList";
 import SingleChannelList from "./components/tv-items/SingleChannelList";
+import AllChannelMobile from "./components/mobile-items/AllChannelMobile";
+
+//********************************************** */
+
+import { Steps } from "intro.js-react";
+import "intro.js/introjs.css";
+import filterListClasses from "./components/filter-items/FilterList.module.css";
+import timelineClasses from "./components/timeline-items/Timeline.module.css";
+import allChannelLogoClasses from "./components/tv-items/AllChannelLogo.module.css";
+import allChannelMobileClasses from "./components/mobile-items/AllChannelMobile.module.css";
+
+//********************************************** */
 
 import "./App.css";
-import AllChannelMobile from "./components/mobile-items/AllChannelMobile";
 
 function App() {
   const [tvData, setTvData] = useState({});
@@ -22,6 +33,192 @@ function App() {
 
   const isDesktop = useMediaQuery({ query: "(min-width: 500px)" });
   const isMobile = useMediaQuery({ query: "(max-width: 499px)" });
+
+  //************************************** */
+  const [steps, setSteps] = useState([]);
+  const [initialStep, setInitialStep] = useState(0);
+
+  const introKey = {
+    FilterList: "filterList",
+    Timeline: "timeline",
+    AllChannelLogo: "allChannelLogo",
+    AllChannelMobile: "allChannelMobile",
+  };
+
+  const stepDefs = {
+    filterList: [
+      {
+        poz: 1,
+        element: `.${filterListClasses.dateContainer}`,
+        title: "Melyik nap van ma?",
+        intro:
+          "Alapból az aktuális nap tévéműsorát látod, de, ha érdekel, hogy mi megy holnap, holnapután, azt itt tudod beállítani.",
+      },
+      {
+        poz: 2,
+        element: `.${filterListClasses.programFilterContainer}`,
+        title: "Szűkítsd a kínálatot kategóriák szerint!",
+        intro:
+          "Ha a filmek érdekelnek, akkor csak a filmeket mutatjuk, ha gasztro műsorra fáj a fogad, máris kiemeljük a kínálatból az összes gasztro műsort.",
+      },
+    ],
+    timeline: [
+      {
+        poz: 0,
+        element: `#introjsWelcome`,
+        title: "Hello",
+        intro:
+          "Üdv az új TV oldalon, amit egy kicsit felturbóztunk, hogy könnyen és gyorsan kiigazódj a tévéműsoron.",
+        highlightClass: "introjs-welcome",
+        position: "bottom",
+      },
+      {
+        poz: 3,
+        element: `.${timelineClasses.timelineFilter}`,
+        title: "A tematikus csatornákat itt találod",
+        intro:
+          "Ha csak a sportcsatornák érdekelnek, azt itt tudod beállítani. De a helyi tévékre, sőt a mesecsatornákra is itt tudsz szűrni.",
+      },
+      {
+        poz: 4,
+        element: `.${timelineClasses.sectionWrapper}`,
+        title: "Mennyi az idő?",
+        intro:
+          "Itt láthatod, hogy melyik idősávban megy az adott műsor a tévében.",
+      },
+      {
+        poz: 5,
+        element: ".introjsTimelineButtonLeft",
+        title: "Korábbi műsorok",
+        intro: "Korábbi műsorokat erre találod.",
+      },
+      {
+        poz: 6,
+        element: ".introjsTimelineButtonRight",
+        title: "Következő műsorok",
+        intro: "Erre a nyílra kattintva megnézheted, hogy mi ment korábban.",
+      },
+      {
+        poz: 9,
+        element: `.${filterListClasses.channelFilterEditContainer}`,
+        title: "Kedvencek szerkesztése",
+        intro:
+          "Itt is be tudod állítani a kedvenc csatornáidat, sőt, sorrendbe is tudod tenni őket, hogy a neked tetsző sorrendbe jelenjenek meg a TV oldalon.",
+      },
+    ],
+    allChannelLogo: [
+      {
+        poz: 7,
+        title: "Kedvencek tévécsatornák kiválasztása",
+        element: `.${allChannelLogoClasses.likeButton}:first-of-type`,
+        intro:
+          "A kiválasztott tévécsatornákat egyből a lista tetejére kerülnek, hogy azonnal lásd, mi megy épp a kedvenc tévécsatornádon.",
+      },
+      {
+        poz: 8,
+        title: "Ha csak egy catorna érdekel...",
+        element: `.${allChannelLogoClasses.imgWrapper}:first-of-type`,
+        intro:
+          "Kattints a megfelelő csatorna logójára, és máris csak annak a tévének a műsorkínálatát látod az éppen aktuális valamint a soron következő pár napra vonatkozóan.",
+        position: "bottom",
+      },
+    ],
+    allChannelMobile: [
+      {
+        poz: 0,
+        element: `#introjsWelcomeMobile`,
+        title: "Hello",
+        intro:
+          "Üdv az új TV oldalon, amit egy kicsit felturbóztunk, hogy könnyen és gyorsan kiigazódj a tévéműsoron.",
+        highlightClass: "introjs-welcome",
+        position: "bottom",
+      },
+      {
+        poz: 3,
+        element: `.${filterListClasses.channelFilterEditContainer} #selectList`,
+        title: "A tematikus csatornákat itt találod",
+        intro:
+          "Ha csak a sportcsatornák érdekelnek, azt itt tudod beállítani. De a helyi tévékre, sőt a mesecsatornákra is itt tudsz szűrni.",
+      },
+      {
+        poz: 4,
+        element: `.introjsTimelineWrapper`,
+        title: "Mennyi az idő?",
+        intro:
+          "Itt láthatod, hogy melyik idősávban megy az adott műsor a tévében.",
+      },
+      {
+        poz: 5,
+        element: ".introjsTimelineButtonLeft",
+        title: "Korábbi műsorok",
+        intro: "Korábbi műsorokat erre találod.",
+      },
+      {
+        poz: 6,
+        element: ".introjsTimelineButtonRight",
+        title: "Következő műsorok",
+        intro: "Erre a nyílra kattintva megnézheted, hogy mi ment korábban.",
+      },
+      {
+        poz: 8,
+        title: "Ha csak egy catorna érdekel...",
+        element: `.${allChannelMobileClasses.logoWrapper}:first-of-type`,
+        intro:
+          "Kattints a megfelelő csatorna logójára, és máris csak annak a tévének a műsorkínálatát látod az éppen aktuális valamint a soron következő pár napra vonatkozóan.",
+        position: "bottom",
+      },
+      {
+        poz: 9,
+        element: `.${filterListClasses.channelFilterEditContainer} button`,
+        title: "Kedvencek szerkesztése",
+        intro:
+          "Itt is be tudod állítani a kedvenc csatornáidat, sőt, sorrendbe is tudod tenni őket, hogy a neked tetsző sorrendbe jelenjenek meg a TV oldalon.",
+      },
+    ],
+  };
+  // const stepDefsCnt = Object.values(stepDefs).reduce((acc, val) => {return acc + val.length}, 0);
+  const stepDefsCnt = 8; // drotozas, de igy mobilon es desktopon is az utolso lepesek hozzaadasa utan indul el
+  const stepOptions = {
+    nextLabel: "Következő",
+    prevLabel: "Előző",
+    doneLabel: "Kész",
+    dontShowAgain: true,
+    dontShowAgainLabel: "Ne mutasd újra!",
+    exitOnOverlayClick: false,
+  };
+
+  const stepsReSort = () => {
+    let back = [],
+      tmp;
+    steps.forEach((el) => {
+      tmp = Object.assign({}, el);
+      delete tmp.poz;
+      if (typeof el.poz !== "number" || typeof back[el.poz] !== "undefined") {
+        back.push(tmp);
+      } else {
+        back[el.poz] = tmp;
+      }
+    });
+    return back.filter(Boolean);
+  };
+
+  const onStepExit = () => {
+    setSteps([]);
+  };
+
+  const addStep = function (arg) {
+    // arg atalakitasa megfelelo formatumra
+    // megcsinalod az uj elemet az arg alapjan, az lesz az arg
+
+    // console.log(
+    //   'addStep - stepDefs:',
+    //   'arg:', arg,
+    //   'stepdefs:', Object.assign({}, stepDefs[arg])
+    // );
+    setSteps((prev) => [...prev, ...stepDefs[arg]]);
+  };
+
+  //************************************** */
 
   let url;
   let channelFilterUrl;
@@ -104,7 +301,7 @@ function App() {
   }
 
   console.log("initData: ", initData);
-  
+
   return (
     <>
       <TvDataContext.Provider value={tvValue}>
@@ -112,6 +309,8 @@ function App() {
           {initData !== null && Object.keys(tvData).length !== 0 && (
             <FilterList
               initData={initData}
+              introCb={addStep}
+              introKey={introKey}
             />
           )}
           <Switch>
@@ -123,6 +322,8 @@ function App() {
                     initData={initData}
                     url={url}
                     channelFilterUrl={channelFilterUrl}
+                    introCb={addStep}
+                    introKey={introKey}
                   />
                 )}
               {initData !== null &&
@@ -132,6 +333,8 @@ function App() {
                     initData={initData}
                     url={url}
                     channelFilterUrl={channelFilterUrl}
+                    introCb={addStep}
+                    introKey={introKey}
                   />
                 )}
             </Route>
@@ -143,6 +346,13 @@ function App() {
           </Switch>
         </FilterContext.Provider>
       </TvDataContext.Provider>
+      <Steps
+        enabled={steps.length > stepDefsCnt - 1}
+        steps={stepsReSort()}
+        initialStep={initialStep}
+        onExit={onStepExit}
+        options={stepOptions}
+      />
     </>
   );
 }

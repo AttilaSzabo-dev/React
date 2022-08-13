@@ -8,9 +8,32 @@ import { AiOutlineHeart } from "react-icons/ai";
 
 import classes from "./AllChannelLogo.module.css";
 
-const AllChannelLogo = ({ channel, id, actualDate }) => {
+const AllChannelLogo = ({
+  channel,
+  id,
+  actualDate,
+  introCb = () => {},
+  introKey = {},
+}) => {
   const [addToFavorites, setAddToFavorites] = useState(false);
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
+
+  //************************************** */
+  const functionSelfName = "AllChannelLogo";
+  const [introCalled, setIntroCalled] = useState(false);
+  useEffect(() => {
+    if (
+      !introCalled &&
+      typeof functionSelfName == "string" &&
+      typeof introCb === "function" &&
+      typeof introKey[functionSelfName] === "string"
+    ) {
+      setIntroCalled(true);
+      introCb(introKey[functionSelfName]);
+    }
+  });
+
+  //************************************** */
 
   // TODO tvData favorite törlését megoldani
   const onAddFavoritesHandler = () => {
@@ -71,9 +94,12 @@ const AllChannelLogo = ({ channel, id, actualDate }) => {
             <AiOutlineHeart className={classes.buttonInactive} />
           )}
         </div>
-        <Link className={classes.imgWrapper} to={`/csatorna/tv/${channel.name
-                        .replace(" ", "-")
-                        .toLowerCase()}/${channel.id}?date=${actualDate}`}>
+        <Link
+          className={classes.imgWrapper}
+          to={`/csatorna/tv/${channel.name.replace(" ", "-").toLowerCase()}/${
+            channel.id
+          }?date=${actualDate}`}
+        >
           <img src={channel.logo} alt="logo" />
         </Link>
       </div>

@@ -13,7 +13,7 @@ import { BsSearch } from "react-icons/bs";
 import classes from "./FilterList.module.css";
 import ChannelFilter from "./ChannelFilter";
 
-const FilterList = ({ initData }) => {
+const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
   const { filterValues, setFilterValues } = useContext(FilterContext);
   const [modal, setModal] = useState(false);
   const value = { modal, setModal };
@@ -39,6 +39,24 @@ const FilterList = ({ initData }) => {
   const [expandSearchField, setExpandSearchField] = useState(false);
 
   const isMobile = useMediaQuery({ query: "(max-width: 499px)" });
+
+  //********************************************* */
+  const functionSelfName = "FilterList";
+
+  const [introCalled, setIntroCalled] = useState(false);
+  useEffect(() => {
+    if (
+      !introCalled &&
+      typeof functionSelfName == "string" &&
+      typeof introCb === "function" &&
+      typeof introKey[functionSelfName] === "string"
+    ) {
+      setIntroCalled(true);
+      introCb(introKey[functionSelfName]);
+    }
+  });
+
+  //********************************************* */
 
   const onModalOpen = () => {
     setModal(!modal);
@@ -151,17 +169,17 @@ const FilterList = ({ initData }) => {
           // Trigger the button element with a click
           let searchValue = inputRef.current.value;
           fetch("https://port.hu/tvapi/search?q=" + searchValue)
-          .then((res) => {
-            return res.json();
-          })
-          .then((data) => {
-            setSearchModal(true);
-            setSearch(data);
-            /* setIsLoading(false); */
-          })
-          .catch((error) => {
-            //setError(error.message);
-          });
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              setSearchModal(true);
+              setSearch(data);
+              /* setIsLoading(false); */
+            })
+            .catch((error) => {
+              //setError(error.message);
+            });
         }
       });
     }
@@ -176,10 +194,15 @@ const FilterList = ({ initData }) => {
           <EditFavoriteChannels initData={initData} />
         </Modal>
       </ModalContext.Provider>
-      <div className={`${classes.searchModal} ${searchModal ? "" : classes.modalHide}`}>
+      <div
+        className={`${classes.searchModal} ${
+          searchModal ? "" : classes.modalHide
+        }`}
+      >
         <div className={classes.header}></div>
       </div>
       <div className={classes.filterWrapper}>
+        <div id="introjsWelcomeMobile"></div>
         {days.length > 0 && (
           <div className={classes.dateContainer}>
             <button
@@ -241,6 +264,7 @@ const FilterList = ({ initData }) => {
           </button>
         </div>
         <div className={classes.programFilterContainer}>
+          <div id="introjsWelcome"></div>
           <button
             className={`${classes.programFilterButtons} ${
               classes.programFilterFilm

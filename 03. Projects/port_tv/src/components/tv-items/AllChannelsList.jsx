@@ -10,7 +10,13 @@ import Spinner from "../../UI/Spinner";
 
 import classes from "./AllChannelsList.module.css";
 
-const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
+const AllChannelsList = ({
+  initData,
+  url,
+  channelFilterUrl,
+  introCb = () => {},
+  introKey = {},
+}) => {
   const [timelineTimes, setTimelineTimes] = useState({
     startTimestamp: 0,
     endTimestamp: 0,
@@ -41,6 +47,44 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   const [virtualInterval, setVirtualInterval] = useState(true);
 
   const { filterValues } = useContext(FilterContext);
+
+  //**************************************** */
+  const calculateMarkerX = () => {
+    let today = new Date();
+    let markerX = 0;
+
+    if (
+      typeof marginLeftValue !== "undefined" &&
+      marginLeftValue.hasOwnProperty("marginLeft")
+    ) {
+      let timeHours = parseInt(today.getHours());
+      let timeMins = today.getMinutes();
+      let staticOffset = 784;
+
+      // fel ora = 150px, 1 ora 300px;
+      let minuteOffset = timeMins;
+
+      let offset = parseInt(marginLeftValue.marginLeft.replace("px", ""), 10);
+      markerX = offset + staticOffset + timeHours * 300 + timeMins * 5 + "px";
+    }
+
+    return markerX;
+  };
+  // timer marker leptetese 1 percenkent 5 pixellel, egy ora = 300px, egy perc 5 pixel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      var el = document.getElementById("timedMarker");
+      if (el) {
+        var offsetLeft = el.offsetLeft;
+        var newXcord = parseInt(offsetLeft) + 5 + "px";
+
+        el.style.left = newXcord;
+      }
+    }, 1000 * 60);
+    return () => clearInterval(interval);
+  }, []);
+
+  //**************************************** */
 
   /* const [programsState, setProgramsState] = useState({
     
@@ -98,7 +142,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           reminderId: program.film_id,
           film_url: program.film_url,
           title: program.title,
-          restriction: program.restriction
+          restriction: program.restriction,
         };
         channelObject.programs.push(programObject);
       });
@@ -134,7 +178,9 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       group.forEach((channel) => {
         if (channel !== "Virtual") {
           startTime.push(channel.programs[0].start_unixtime);
-          endTime.push(channel.programs[channel.programs.length - 1].end_unixtime);
+          endTime.push(
+            channel.programs[channel.programs.length - 1].end_unixtime
+          );
         }
       });
     });
@@ -287,7 +333,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
           setListToShow((prev) => ({
             ...prev,
             lastUrl: url[listToShow.urlIndex],
-            dateFilter: url[listToShow.urlIndex].split("date=")[1]
+            dateFilter: url[listToShow.urlIndex].split("date=")[1],
           }));
           createFullList(data, "channelsAll");
 
@@ -309,9 +355,8 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   const filterChannelsHandler = (value) => {
     let filterUrl;
     if (listToShow.activeFilters.date && value !== "0") {
-      let originalUrl =
-        channelFilterUrl[value].split("date=")[0];
-        filterUrl = `${originalUrl}date=${listToShow.dateFilter}`;
+      let originalUrl = channelFilterUrl[value].split("date=")[0];
+      filterUrl = `${originalUrl}date=${listToShow.dateFilter}`;
     } else {
       filterUrl = channelFilterUrl[value];
     }
@@ -319,7 +364,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       if (listToShow.activeFilters.date) {
         let defaultUrl = url[0].split("date=")[0];
         filterUrl = `${defaultUrl}date=${listToShow.dateFilter}`;
-      }else {
+      } else {
         filterUrl = url[0];
       }
     }
@@ -347,10 +392,13 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   };
 
   //TODO: itervalt kezelni, szűrők esetén is alkalmazni kell
-  useEffect(()=> {
+  useEffect(() => {
     if (virtualInterval) {
       const virtualIntervalTimer = setInterval(() => {
-        if (window.virtualIsLoaded === true && listToShow.channelsShow.length !== 0) {
+        if (
+          window.virtualIsLoaded === true &&
+          listToShow.channelsShow.length !== 0
+        ) {
           clearInterval(virtualIntervalTimer);
           setVirtualInterval(false);
           const zone = window.virtualChannelSponsoration;
@@ -368,12 +416,15 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
   }, [virtualInterval, listToShow.channelsShow]);
 
   useEffect(() => {
-    if (typeof window.pp_gemius_hit === 'function' && typeof window.gemius_identifier === 'string') {
+    if (
+      typeof window.pp_gemius_hit === "function" &&
+      typeof window.gemius_identifier === "string"
+    ) {
       //nyito gemius kod
-      let code = '.cebkuN07HnYk6HbokIXZaRv38OGw.sbhU.kKB3eEiP.Y7';
+      let code = ".cebkuN07HnYk6HbokIXZaRv38OGw.sbhU.kKB3eEiP.Y7";
       if (window.gemius_identifier !== code) {
         window.pp_gemius_hit(code);
-        window.gemius_identifier = '';
+        window.gemius_identifier = "";
       }
     }
   }, [initData]);
@@ -389,6 +440,8 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
             initData={initData}
             actualTime={listToShow.actualTime}
             timelineTimes={timelineTimes}
+            introCb={introCb}
+            introKey={introKey}
           />
         </MarginContext.Provider>
       )}
@@ -396,7 +449,7 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
       <div className={classes.channelsWrapper}>
         {isLoading && <Spinner />}
         <div ref={programsContainer} className={classes.programsContainer}>
-          <Marker time={initData} timelineTimes={timelineTimes} />
+          <Marker time={calculateMarkerX()} />
           {listToShow.channelsShow.length > 0 &&
             listToShow.channelsShow.map((channels, index) => (
               <MarginContext.Provider value={value}>
@@ -406,13 +459,17 @@ const AllChannelsList = ({ initData, url, channelFilterUrl }) => {
                   timelineTimes={timelineTimes}
                   index={index}
                   date={listToShow.dateFilter}
+                  introCb={introCb}
+                  introKey={introKey}
                 />
               </MarginContext.Provider>
             ))}
         </div>
       </div>
       {listToShow.channelsShow.length > 0 && (
-        <button className={classes.moreChannels} onClick={urlIndexHandler}>Több csatorna</button>
+        <button className={classes.moreChannels} onClick={urlIndexHandler}>
+          Több csatorna
+        </button>
       )}
     </>
   );

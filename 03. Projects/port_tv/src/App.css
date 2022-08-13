@@ -1,1 +1,34 @@
+.introjs-tooltipReferenceLayer .introjs-tooltip-header {
+  background: #ef3b39;
+  color: white;
+  padding-bottom: 10px;
+}
 
+.introjs-tooltipReferenceLayer .introjs-tooltip-header .introjs-tooltip-title {
+  font-family: "ProximaNova Light", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 0.8125rem;
+}
+
+.introjs-tooltipReferenceLayer .introjs-tooltip-header .introjs-skipbutton {
+  color: white;
+  line-height: 32px;
+}
+
+.introjs-tooltipReferenceLayer .introjs-tooltiptext {
+  font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+  color: #414141;
+  font-weight: 500;
+  font-size: 1.1em;
+  margin: 4px !important;
+  text-align: center;
+}
+
+.introjs-tooltipReferenceLayer .introjs-button {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.introjs-welcome {
+  top: 175px !important;
+}

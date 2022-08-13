@@ -96,13 +96,13 @@ const SlickSlider = () => {
         additionalTransfrom={0}
         centerMode={false}
         focusOnSelect={false}
-        infinite
+        infinite={false}
         swipeable
         draggable
         minimumTouchDrag={80}
         showDots={false}
         responsive={responsive}
-        removeArrowOnDeviceType={["tablet", "mobile", "desktop"]}
+        removeArrowOnDeviceType={["tablet", "mobile"]}
       >
         {sliderData.length > 0 &&
           sliderData.map((item, index) => (

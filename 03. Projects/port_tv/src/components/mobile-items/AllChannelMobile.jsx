@@ -13,7 +13,13 @@ import AdRich from "../ad-items/AdRich";
 
 import classes from "./AllChannelMobile.module.css";
 
-const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
+const AllChannelMobile = ({
+  initData,
+  url,
+  channelFilterUrl,
+  introCb = () => {},
+  introKey = {},
+}) => {
   const [timeline, setTimeline] = useState([]);
   const [listToShow, setListToShow] = useState({
     actualTime: 0,
@@ -36,13 +42,31 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [programFilterArray, setProgramFilterArray] = useState([]);
   const programFilterDict = {
-    film: ['documentary','dokumentumfilm','film'],
-    sorozat: ['filmsorozat','series'],
-    sport: ['sportmusor','sports'],
+    film: ["documentary", "dokumentumfilm", "film"],
+    sorozat: ["filmsorozat", "series"],
+    sport: ["sportmusor", "sports"],
     sportLive: [],
-    reality: ['reality-musor','reality-show'],
-    gastro: ['cooking','gasztronomiai-musor']
+    reality: ["reality-musor", "reality-show"],
+    gastro: ["cooking", "gasztronomiai-musor"],
   };
+
+  //************************************************ */
+  const functionSelfName = "AllChannelMobile";
+  const [introCalled, setIntroCalled] = useState(false);
+  useEffect(() => {
+    if (
+      listToShow.mobileChannelsShow.length !== 0 &&
+      !introCalled &&
+      typeof functionSelfName == "string" &&
+      typeof introCb === "function" &&
+      typeof introKey[functionSelfName] === "string"
+    ) {
+      setIntroCalled(true);
+      introCb(introKey[functionSelfName]);
+    }
+  });
+
+  //************************************************ */
   // lekérni az aktuális időt: const manualDate = new Date(); - const unixTimestamp = Math.floor(manualDate.getTime() / 1000);
   //mi kell a mobileData-ból: date(hogy tudjuk az aktuális időt) / channelsből: id, logo, name, url / programsból: end_datetime, end_time, film_url, start_datetime, start_time, title
 
@@ -90,7 +114,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
           end_time: program.end_time,
           film_url: program.film_url,
           title: program.title,
-          restriction: program.restriction
+          restriction: program.restriction,
         };
         channelObject.programs.push(programObject);
       });
@@ -186,7 +210,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
           name: channel.name,
           url: channel.url,
           programs: [],
-          programFilters: []
+          programFilters: [],
         };
         channel.programs.forEach((program, index) => {
           if (
@@ -233,8 +257,10 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
             };
             channelObject.programs.push(programObject);
           }
-          if (!channelObject.programFilters.includes(program.restriction.category)) {
-            channelObject.programFilters.push(program.restriction.category)
+          if (
+            !channelObject.programFilters.includes(program.restriction.category)
+          ) {
+            channelObject.programFilters.push(program.restriction.category);
           }
         });
         groupArray.push(channelObject);
@@ -307,7 +333,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
       if (listToShow.activeFilters.date && filterValues.channelFilter !== "0") {
         let originalUrl =
           channelFilterUrl[filterValues.channelFilter].split("date=")[0];
-          filterUrl = `${originalUrl}date=${listToShow.dateFilter}`;
+        filterUrl = `${originalUrl}date=${listToShow.dateFilter}`;
       } else {
         filterUrl = channelFilterUrl[filterValues.channelFilter];
       }
@@ -315,7 +341,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
         if (listToShow.activeFilters.date) {
           let defaultUrl = url[0].split("date=")[0];
           filterUrl = `${defaultUrl}date=${listToShow.dateFilter}`;
-        }else {
+        } else {
           filterUrl = url[0];
         }
       }
@@ -344,7 +370,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
 
     if (filterValues.programFilter !== undefined) {
       let allFilters = [];
-      filterValues.programFilter.forEach((filter)=> {
+      filterValues.programFilter.forEach((filter) => {
         allFilters.push(...programFilterDict[filter]);
       });
       setProgramFilterArray(allFilters);
@@ -361,12 +387,14 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
       let noChannelFilterSplit = noChannelFilter.split("date=")[0];
       if (!listToShow.activeFilters.channel && listToShow.activeFilters.date) {
         newUrl = `${noChannelFilterSplit}date=${listToShow.dateFilter}`;
-      } 
+      }
       if (listToShow.activeFilters.channel && listToShow.activeFilters.date) {
         if (listToShow.dateFilter === null) {
           const actualDate = new Date();
           const year = actualDate.getFullYear();
-          const month = actualDate.toLocaleString("hu-HU", { month: "2-digit" });
+          const month = actualDate.toLocaleString("hu-HU", {
+            month: "2-digit",
+          });
           const day = actualDate.toLocaleString("hu-HU", { day: "2-digit" });
           const finalDate = `${year}-${month}-${day}`;
           newUrl = `${lastUrlSplit}date=${finalDate}`;
@@ -407,7 +435,7 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
           setListToShow((prev) => ({
             ...prev,
             lastUrl: url[listToShow.urlIndex],
-            dateFilter: url[listToShow.urlIndex].split("date=")[1]
+            dateFilter: url[listToShow.urlIndex].split("date=")[1],
           }));
           createFullList(data, "mobileChannelsAll");
           setIsLoading(false);
@@ -419,12 +447,15 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
   }, [listToShow.urlIndex]);
 
   useEffect(() => {
-    if (typeof window.pp_gemius_hit === 'function' && typeof window.gemius_identifier === 'string') {
+    if (
+      typeof window.pp_gemius_hit === "function" &&
+      typeof window.gemius_identifier === "string"
+    ) {
       //nyito gemius kod
-      let code = '.cebkuN07HnYk6HbokIXZaRv38OGw.sbhU.kKB3eEiP.Y7';
+      let code = ".cebkuN07HnYk6HbokIXZaRv38OGw.sbhU.kKB3eEiP.Y7";
       if (window.gemius_identifier !== code) {
         window.pp_gemius_hit(code);
-        window.gemius_identifier = '';
+        window.gemius_identifier = "";
       }
     }
   }, [initData]);
@@ -462,11 +493,11 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
   return (
     <div>
       {isLoading && <Spinner />}
-      <div className={classes.timelineWrapper}>
-        <button onClick={timeHandlerLeft} className={classes.timelineButton}>
+      <div className={`${classes.timelineWrapper} introjsTimelineWrapper`}>
+        <button onClick={timeHandlerLeft} className={`${classes.timelineButton} introjsTimelineButtonLeft`}>
           <MdKeyboardArrowLeft className={classes.timelineArrow} />
         </button>
-        <button onClick={timeHandlerRight} className={classes.timelineButton}>
+        <button onClick={timeHandlerRight} className={`${classes.timelineButton} introjsTimelineButtonRight`}>
           <MdKeyboardArrowRight className={classes.timelineArrow} />
         </button>
         <div className={classes.sectionWrapper}>
@@ -500,12 +531,23 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
               {outerIndex === 0 && innerIndex === 6 && <AdRich />}
               {outerIndex === 0 && innerIndex === 10 && <AdRB />}
               {channel.programs[0] !== undefined && (
-                <div key={channel.id} className={`${classes.channelWrapper} ${channel.programFilters.some(r=> programFilterArray.includes(r)) ? classes.highlight : ""}`}>
+                <div
+                  key={channel.id}
+                  className={`${classes.channelWrapper} ${
+                    channel.programFilters.some((r) =>
+                      programFilterArray.includes(r)
+                    )
+                      ? classes.highlight
+                      : ""
+                  }`}
+                >
                   <div className={classes.logoWrapper}>
                     <Link
                       to={`/csatorna/tv/${channel.name
                         .replace(" ", "-")
-                        .toLowerCase()}/${channel.id}?date=${listToShow.dateFilter}`}
+                        .toLowerCase()}/${channel.id}?date=${
+                        listToShow.dateFilter
+                      }`}
                     >
                       <img src={channel.logo} alt={channel.id} />
                     </Link>
@@ -539,7 +581,9 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
                     className={classes.toSingleChannelButton}
                     to={`/csatorna/tv/${channel.name
                       .replace(" ", "-")
-                      .toLowerCase()}/${channel.id}?date=${listToShow.dateFilter}`}
+                      .toLowerCase()}/${channel.id}?date=${
+                      listToShow.dateFilter
+                    }`}
                   >
                     <MdKeyboardArrowRight className={classes.channelArrow} />
                   </Link>
@@ -548,9 +592,11 @@ const AllChannelMobile = ({ initData, url, channelFilterUrl }) => {
             </>
           ))
         )}
-        {listToShow.mobileChannelsShow.length > 0 && (
-          <button className={classes.moreChannels} onClick={urlIndexHandler}>Több csatorna</button>
-      ) }
+      {listToShow.mobileChannelsShow.length > 0 && (
+        <button className={classes.moreChannels} onClick={urlIndexHandler}>
+          Több csatorna
+        </button>
+      )}
     </div>
   );
 };

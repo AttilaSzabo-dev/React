@@ -13,11 +13,32 @@ const Timeline = ({
   initData,
   actualTime,
   timelineTimes,
+  introCb = () => {},
+  introKey = {},
 }) => {
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);
   const [categories, setCategories] = useState([]);
   const { marginLeftValue, setMarginLeftValue } = useContext(MarginContext);
+
+  //******************************************** */
+  const functionSelfName = "Timeline";
+  const [introCalled, setIntroCalled] = useState(false);
+
+  useEffect(() => {
+    if (
+      !introCalled &&
+      typeof functionSelfName == "string" &&
+      typeof introCb === "function" &&
+      typeof introKey[functionSelfName] === "string"
+    ) {
+      setIntroCalled(true);
+      introCb(introKey[functionSelfName]);
+    }
+  });
+
+
+  //******************************************** */
 
   const mouseWheelHandler = (e) => {
     /* e.preventDefault();
@@ -106,7 +127,7 @@ const Timeline = ({
           onSelectChange={onSelectChange}
         />
       </div>
-      <button onClick={goLeft} className={classes.buttons}>
+      <button onClick={goLeft} className={`${classes.buttons} introjsTimelineButtonLeft`}>
         <MdKeyboardArrowLeft className={classes.arrows} />
       </button>
       <div ref={container} className={classes.sectionWrapper}>
@@ -115,7 +136,7 @@ const Timeline = ({
             timeline.map((item) => <TimelineSection time={item} />)}
         </div>
       </div>
-      <button onClick={goRight} className={classes.buttons}>
+      <button onClick={goRight} className={`${classes.buttons} introjsTimelineButtonRight`}>
         <MdKeyboardArrowRight className={classes.arrows} />
       </button>
     </div>
