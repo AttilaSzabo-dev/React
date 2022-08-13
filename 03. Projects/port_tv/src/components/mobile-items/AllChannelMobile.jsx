@@ -29,6 +29,7 @@ const AllChannelMobile = ({
     lastKeyword: "",
     lastUrl: "",
     dateFilter: null,
+    programFilter: [],
     activeFilters: {
       date: false,
       channel: false,
@@ -40,7 +41,6 @@ const AllChannelMobile = ({
   });
   const { filterValues } = useContext(FilterContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [programFilterArray, setProgramFilterArray] = useState([]);
   const programFilterDict = {
     film: ["documentary", "dokumentumfilm", "film"],
     sorozat: ["filmsorozat", "series"],
@@ -219,8 +219,6 @@ const AllChannelMobile = ({
             (program.start_unixtime === listToShow.timelineActualTime &&
               program.end_unixtime > listToShow.timelineActualTime)
           ) {
-            programIndex = index;
-            useIndex = true;
 
             let width =
               100 -
@@ -243,7 +241,28 @@ const AllChannelMobile = ({
               width: width + "%",
             };
 
-            channelObject.programs.push(programObject);
+            if (
+              listToShow.timelineActualTime < listToShow.actualTime &&
+              listToShow.timelineActualTime + 3600 > listToShow.actualTime
+            ) {
+              if (width < 100) {
+                programIndex = index;
+                useIndex = true;
+                channelObject.programs.push(programObject);
+              }
+            } else {
+              programIndex = index;
+              useIndex = true;
+              channelObject.programs.push(programObject);
+            }
+
+            if (
+              !channelObject.programFilters.includes(
+                program.restriction.category
+              )
+            ) {
+              channelObject.programFilters.push(program.restriction.category);
+            }
           }
 
           if (useIndex && index <= programIndex + 2 && index !== programIndex) {
@@ -256,11 +275,13 @@ const AllChannelMobile = ({
               title: program.title,
             };
             channelObject.programs.push(programObject);
-          }
-          if (
-            !channelObject.programFilters.includes(program.restriction.category)
-          ) {
-            channelObject.programFilters.push(program.restriction.category);
+            if (
+              !channelObject.programFilters.includes(
+                program.restriction.category
+              )
+            ) {
+              channelObject.programFilters.push(program.restriction.category);
+            }
           }
         });
         groupArray.push(channelObject);
@@ -362,10 +383,17 @@ const AllChannelMobile = ({
         .catch((error) => {
           //setError(error.message);
         });
-      setListToShow((prev) => ({
-        ...prev,
-        activeFilters: { ...prev.activeFilters, channel: true },
-      }));
+      if (filterValues.channelFilter !== "0") {
+        setListToShow((prev) => ({
+          ...prev,
+          activeFilters: { ...prev.activeFilters, channel: true },
+        }));
+      } else {
+        setListToShow((prev) => ({
+          ...prev,
+          activeFilters: { ...prev.activeFilters, channel: false },
+        }));
+      }
     }
 
     if (filterValues.programFilter !== undefined) {
@@ -373,7 +401,19 @@ const AllChannelMobile = ({
       filterValues.programFilter.forEach((filter) => {
         allFilters.push(...programFilterDict[filter]);
       });
-      setProgramFilterArray(allFilters);
+      if (filterValues.programFilter.length !== 0) {
+        setListToShow((prev) => ({
+          ...prev,
+          programFilter: allFilters,
+          activeFilters: { ...prev.activeFilters, program: true },
+        }));
+      } else {
+        setListToShow((prev) => ({
+          ...prev,
+          programFilter: allFilters,
+          activeFilters: { ...prev.activeFilters, program: false },
+        }));
+      }
     }
   }, [filterValues]);
 
@@ -490,14 +530,33 @@ const AllChannelMobile = ({
     }));
   };
 
+  const toShow = (data) => {
+    if (listToShow.activeFilters.program) {
+      let check = data.some((r) => listToShow.programFilter.includes(r));
+      if (check) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  };
+
   return (
     <div>
       {isLoading && <Spinner />}
       <div className={`${classes.timelineWrapper} introjsTimelineWrapper`}>
-        <button onClick={timeHandlerLeft} className={`${classes.timelineButton} introjsTimelineButtonLeft`}>
+        <button
+          onClick={timeHandlerLeft}
+          className={`${classes.timelineButton} introjsTimelineButtonLeft`}
+        >
           <MdKeyboardArrowLeft className={classes.timelineArrow} />
         </button>
-        <button onClick={timeHandlerRight} className={`${classes.timelineButton} introjsTimelineButtonRight`}>
+        <button
+          onClick={timeHandlerRight}
+          className={`${classes.timelineButton} introjsTimelineButtonRight`}
+        >
           <MdKeyboardArrowRight className={classes.timelineArrow} />
         </button>
         <div className={classes.sectionWrapper}>
@@ -534,11 +593,7 @@ const AllChannelMobile = ({
                 <div
                   key={channel.id}
                   className={`${classes.channelWrapper} ${
-                    channel.programFilters.some((r) =>
-                      programFilterArray.includes(r)
-                    )
-                      ? classes.highlight
-                      : ""
+                    toShow(channel.programFilters) ? "" : classes.disableChannel
                   }`}
                 >
                   <div className={classes.logoWrapper}>
@@ -593,8 +648,16 @@ const AllChannelMobile = ({
           ))
         )}
       {listToShow.mobileChannelsShow.length > 0 && (
-        <button className={classes.moreChannels} onClick={urlIndexHandler}>
-          Több csatorna
+        <button
+          disabled={
+            listToShow.activeFilters.channel || listToShow.urlIndex === 3
+          }
+          className={classes.moreChannels}
+          onClick={urlIndexHandler}
+        >
+          {listToShow.activeFilters.channel || listToShow.urlIndex === 3
+            ? "Nincs több csatorna"
+            : "Több csatorna"}
         </button>
       )}
     </div>

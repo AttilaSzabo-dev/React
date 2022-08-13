@@ -8,8 +8,8 @@
   background-color: #fff;
 }
 
-.highlight {
-  border: 1px solid red;
+.disableChannel {
+  display: none;
 }
 
 .logoWrapper {
@@ -173,6 +173,10 @@
   font-weight: 600;
   font-size: 0.875rem;
   transition: opacity 0.25s ease-in-out;
+}
+
+.moreChannels:disabled {
+  opacity: .3;
 }
 
 .moreChannels:hover {

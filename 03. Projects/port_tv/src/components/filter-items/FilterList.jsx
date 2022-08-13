@@ -8,7 +8,10 @@ import EditFavoriteChannels from "./EditFavoriteChannels";
 
 import { RiHeartAddFill } from "react-icons/ri";
 import { MdKeyboardArrowDown } from "react-icons/md";
+
 import { BsSearch } from "react-icons/bs";
+import { BsFillHeartFill } from "react-icons/bs";
+import { BsChevronDown } from "react-icons/bs";
 
 import classes from "./FilterList.module.css";
 import ChannelFilter from "./ChannelFilter";
@@ -19,8 +22,9 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
   const value = { modal, setModal };
   const inputRef = useRef(null);
 
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState(null);
   const [searchModal, setSearchModal] = useState(false);
+  const [expandSearchField, setExpandSearchField] = useState(false);
 
   const [categories, setCategories] = useState([]);
   const [days, setDays] = useState([]);
@@ -36,8 +40,8 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
     gastro: false,
     activeFilters: [],
   });
-  const [expandSearchField, setExpandSearchField] = useState(false);
 
+  const isDesktop = useMediaQuery({ query: "(min-width: 500px)" });
   const isMobile = useMediaQuery({ query: "(max-width: 499px)" });
 
   //********************************************* */
@@ -159,6 +163,35 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
     setCategories(groups);
   }, [initData]);
 
+  const createSearchGroups = (data) => {
+    let groupArray = [];
+    let tempGroup = [];
+    let lastKeyword = null;
+    let newKeyword = null;
+
+    data.forEach((item) => {
+      newKeyword = item.day;
+      if (newKeyword === lastKeyword || lastKeyword === null) {
+        tempGroup.push(item);
+      } else if (newKeyword !== lastKeyword && lastKeyword !== null) {
+        groupArray.push(tempGroup);
+        tempGroup = [];
+      }
+      lastKeyword = item.day;
+    });
+    setSearchModal(true);
+    setSearch(groupArray);
+    setExpandSearchField(false);
+  };
+
+  useEffect(()=>{
+    if (searchModal) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+  },[searchModal]);
+
   useEffect(() => {
     if (inputRef !== null) {
       inputRef.current.addEventListener("keyup", function (event) {
@@ -173,8 +206,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
               return res.json();
             })
             .then((data) => {
-              setSearchModal(true);
-              setSearch(data);
+              createSearchGroups(data);
               /* setIsLoading(false); */
             })
             .catch((error) => {
@@ -195,11 +227,49 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
         </Modal>
       </ModalContext.Provider>
       <div
+        className={`${classes.searchModalOverlay} ${
+          searchModal ? "" : classes.modalHide
+        }`}
+        onClick={(e) => {
+          setSearchModal(false);
+        }}
+      ></div>
+      <div
         className={`${classes.searchModal} ${
           searchModal ? "" : classes.modalHide
         }`}
       >
-        <div className={classes.header}></div>
+        <div className={classes.header}>
+          <span>Keresés</span>
+          <div
+            className={classes.searchModalClose}
+            onClick={(e) => {
+              setSearchModal(false);
+            }}
+          >
+            X
+          </div>
+        </div>
+        {search !== null && search.map((group) => (
+          <>
+            <div className={classes.groupHeader}>
+              <span>{group[0].day}</span>
+            </div>
+            {group.map((item) => 
+              <div className={classes.groupItemContainer}>
+                <div className={classes.imageWrapper}>
+                  {item.img.length === 0 ? <a href={item.url} target="_blank" rel="noreferrer"><span></span></a> : <a href={item.url} target="_blank" rel="noreferrer"><img src={item.img} alt={item.title} /></a>}
+                </div>
+                <div className={classes.contentWrapper}>
+                  <span className={classes.time}>{`${item.start} - ${item.channel}`}</span>
+                  <a href={item.url} target="_blank" rel="noreferrer" className={classes.title} title="Műsor megtekintése">{item.title}</a>
+                  <span className={classes.info}>{item.summary}</span>
+                  <p className={classes.desc}>{item.descr}</p>
+                </div>
+              </div>
+            )}
+          </>
+        ))}
       </div>
       <div className={classes.filterWrapper}>
         <div id="introjsWelcomeMobile"></div>
@@ -227,7 +297,8 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
               className={classes.openDates}
               onClick={(e) => setDaysSelectorDropdown(!daysSelectorDropdown)}
             >
-              <MdKeyboardArrowDown className={classes.downIcon} />
+              {/* <MdKeyboardArrowDown className={classes.downIcon} /> */}
+              <BsChevronDown className={classes.downIcon} />
             </button>
             <div
               className={`${classes.daysSelector} ${
@@ -259,8 +330,33 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
               />
             </div>
           )}
+          {isMobile && <div
+          className={`${classes.searchFilterContainer} ${
+            expandSearchField ? classes.expand : ""
+          }`}
+        >
+          <div className={classes.inputFieldWrapper}>
+            <input
+              className={`${classes.inputField} ${
+                expandSearchField ? "" : classes.hide
+              }`}
+              ref={inputRef}
+              type="text"
+              placeholder="Műsor keresése"
+              name=""
+              id=""
+            />
+          </div>
+          <button
+            className={classes.searchButton}
+            onClick={(e) => setExpandSearchField(!expandSearchField)}
+          >
+            <BsSearch className={classes.searchIcon} />
+          </button>
+        </div>}
           <button className={classes.modalButton} onClick={onModalOpen}>
-            <RiHeartAddFill className={classes.editFavIcon} />
+            {/* <RiHeartAddFill className={classes.editFavIcon} /> */}
+            <BsFillHeartFill className={classes.editFavIcon} />
           </button>
         </div>
         <div className={classes.programFilterContainer}>
@@ -314,7 +410,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
             Gasztró
           </button>
         </div>
-        <div
+        {isDesktop && <div
           className={`${classes.searchFilterContainer} ${
             expandSearchField ? classes.expand : ""
           }`}
@@ -337,7 +433,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
           >
             <BsSearch className={classes.searchIcon} />
           </button>
-        </div>
+        </div>}
       </div>
     </>
   );
