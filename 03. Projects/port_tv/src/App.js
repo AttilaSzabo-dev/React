@@ -212,6 +212,16 @@ function App() {
     setSteps([]);
   };
 
+  const onStepStart = () => {
+    if (document.getElementById('noti-disabled-modal') !== null) {
+      document.getElementById('noti-disabled-modal').remove();
+    }
+    if (document.querySelector('.modal-backdrop') !== null) {
+      document.querySelector('.modal-backdrop').remove();
+    }
+    document.body.classList.remove('modal-open');
+  };
+
   const addStep = function (arg) {
     // arg atalakitasa megfelelo formatumra
     // megcsinalod az uj elemet az arg alapjan, az lesz az arg
@@ -362,6 +372,7 @@ function App() {
         steps={stepsReSort()}
         initialStep={initialStep}
         onExit={onStepExit}
+        onStart={onStepStart}
         options={stepOptions}
       />
     </>
