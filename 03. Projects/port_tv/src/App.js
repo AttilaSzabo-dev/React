@@ -297,9 +297,9 @@ function App() {
         console.log(error.message);
       });
   }, []);
-  //TODO: élesítés előtt ezt átállítani https://port.hu/ -ra
+  
   useEffect(() => {
-    fetch("https://szaboa-3.dev.port.hu/dashboard/get-tv-data")
+    fetch(`${window.location.protocol}//${window.location.host}/dashboard/get-tv-data`)
       .then((res) => {
         return res.json();
       })
