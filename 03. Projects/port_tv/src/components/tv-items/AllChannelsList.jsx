@@ -234,7 +234,7 @@ const AllChannelsList = ({
   useEffect(() => {
     if (listToShow.channelsAll.length !== 0) {
       createTimelineTimes("channelsAll");
-      let tempState;
+      let tempState = [];
       if (window.virtualIsLoaded === true && !virtualInterval) {
         const zone = window.virtualChannelSponsoration;
         tempState = [...listToShow.channelsAll];
@@ -244,7 +244,7 @@ const AllChannelsList = ({
       }
       setListToShow((prev) => ({
         ...prev,
-        channelsShow: window.virtualIsLoaded ? tempState : listToShow.channelsAll,
+        channelsShow: (window.virtualIsLoaded === true && !virtualInterval) ? tempState : listToShow.channelsAll,
       }));
     }
   }, [listToShow.channelsAll]);
@@ -252,7 +252,7 @@ const AllChannelsList = ({
   useEffect(() => {
     if (listToShow.channelFilter.length !== 0) {
       createTimelineTimes("channelFilter");
-      let tempState;
+      let tempState = [];
       if (window.virtualIsLoaded === true && !virtualInterval) {
         const zone = window.virtualChannelSponsoration;
         tempState = [...listToShow.channelFilter];
@@ -262,7 +262,7 @@ const AllChannelsList = ({
       }
       setListToShow((prev) => ({
         ...prev,
-        channelsShow: window.virtualIsLoaded ? tempState : listToShow.channelFilter,
+        channelsShow: (window.virtualIsLoaded === true && !virtualInterval) ? tempState : listToShow.channelFilter,
       }));
     }
   }, [listToShow.channelFilter]);
