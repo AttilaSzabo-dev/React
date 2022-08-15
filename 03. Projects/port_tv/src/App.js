@@ -52,7 +52,7 @@ function App() {
         element: `.${filterListClasses.dateContainer}`,
         title: "Melyik nap van ma?",
         intro:
-          "Alapból az aktuális nap tévéműsorát látod, de, ha érdekel, hogy mi megy holnap, holnapután, azt itt tudod beállítani.",
+          "Alapból az aktuális nap tévéműsorát látod, de, ha az érdekel, hogy mi megy holnap, holnapután, azt itt tudod beállítani.",
       },
       {
         poz: 2,
@@ -68,7 +68,7 @@ function App() {
         element: `#introjsWelcome`,
         title: "Hello",
         intro:
-          "Üdv az új TV oldalon, amit egy kicsit felturbóztunk, hogy könnyen és gyorsan kiigazódj a tévéműsoron.",
+          "Üdv az új TV oldalon, amit egy kicsit felturbóztunk, hogy könnyen és gyorsan kiigazodj a tévéműsoron.",
         highlightClass: "introjs-welcome",
         position: "bottom",
       },
@@ -104,7 +104,7 @@ function App() {
         element: `.${filterListClasses.channelFilterEditContainer}`,
         title: "Kedvencek szerkesztése",
         intro:
-          "Itt is be tudod állítani a kedvenc csatornáidat, sőt, sorrendbe is tudod tenni őket, hogy a neked tetsző sorrendbe jelenjenek meg a TV oldalon.",
+          "Itt is be tudod állítani a kedvenc csatornáidat, sőt, sorrendbe is tudod tenni őket, hogy a neked tetsző sorrendben jelenjenek meg a TV oldalon.",
       },
     ],
     allChannelLogo: [
@@ -120,7 +120,7 @@ function App() {
         title: "Ha csak egy csatorna érdekel...",
         element: `.${allChannelLogoClasses.imgWrapper}:first-of-type`,
         intro:
-          "Kattints a megfelelő csatorna logójára, és máris csak annak a tévének a műsorkínálatát látod az éppen aktuális valamint a soron következő pár napra vonatkozóan.",
+          "Kattints a megfelelő csatorna logójára, és máris csak annak a tévének a műsorkínálatát látod az éppen aktuális és a soron következő pár napra vonatkozóan.",
         position: "bottom",
       },
     ],
@@ -130,7 +130,7 @@ function App() {
         element: `#introjsWelcomeMobile`,
         title: "Hello",
         intro:
-          "Üdv az új TV oldalon, amit egy kicsit felturbóztunk, hogy könnyen és gyorsan kiigazódj a tévéműsoron.",
+          "Üdv az új TV oldalon, amit egy kicsit felturbóztunk, hogy könnyen és gyorsan kiigazodj a tévéműsoron.",
         highlightClass: "introjs-welcome",
         position: "bottom",
       },
@@ -166,7 +166,7 @@ function App() {
         title: "Ha csak egy csatorna érdekel...",
         element: `.${allChannelMobileClasses.logoWrapper}:first-of-type`,
         intro:
-          "Kattints a megfelelő csatorna logójára, és máris csak annak a tévének a műsorkínálatát látod az éppen aktuális valamint a soron következő pár napra vonatkozóan.",
+          "Kattints a megfelelő csatorna logójára, és máris csak annak a tévének a műsorkínálatát látod az éppen aktuális és a soron következő pár napra vonatkozóan.",
         position: "bottom",
       },
       {
@@ -174,7 +174,7 @@ function App() {
         element: `.${filterListClasses.modalButton}`,
         title: "Kedvencek szerkesztése",
         intro:
-          "Itt is be tudod állítani a kedvenc csatornáidat, sőt, sorrendbe is tudod tenni őket, hogy a neked tetsző sorrendbe jelenjenek meg a TV oldalon.",
+          "Itt is be tudod állítani a kedvenc csatornáidat, sőt, sorrendbe is tudod tenni őket, hogy a neked tetsző sorrendben jelenjenek meg a TV oldalon.",
       },
     ],
   };
@@ -213,13 +213,13 @@ function App() {
   };
 
   const onStepStart = () => {
-    if (document.getElementById('noti-disabled-modal') !== null) {
-      document.getElementById('noti-disabled-modal').remove();
+    if (document.getElementById("noti-disabled-modal") !== null) {
+      document.getElementById("noti-disabled-modal").remove();
     }
-    if (document.querySelector('.modal-backdrop') !== null) {
-      document.querySelector('.modal-backdrop').remove();
+    if (document.querySelector(".modal-backdrop") !== null) {
+      document.querySelector(".modal-backdrop").remove();
     }
-    document.body.classList.remove('modal-open');
+    document.body.classList.remove("modal-open");
   };
 
   const addStep = function (arg) {
@@ -297,9 +297,11 @@ function App() {
         console.log(error.message);
       });
   }, []);
-  
+
   useEffect(() => {
-    fetch(`${window.location.protocol}//${window.location.host}/dashboard/get-tv-data`)
+    fetch(
+      `${window.location.protocol}//${window.location.host}/dashboard/get-tv-data`
+    )
       .then((res) => {
         return res.json();
       })

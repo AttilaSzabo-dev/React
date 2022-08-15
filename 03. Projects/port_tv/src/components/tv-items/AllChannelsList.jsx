@@ -89,14 +89,6 @@ const AllChannelsList = ({
 
   //**************************************** */
 
-  /* const [programsState, setProgramsState] = useState({
-    
-    isFiltered: false,
-    programListUnfiltered: [],
-    programListFiltered: [],
-    listToShow: [],
-    lazyPrograms: [],
-  }); */
   const [virtualIsActive, setVirtualIsActive] = useState(false);
   const [marginLeftValue, setMarginLeftValue] = useState();
   const value = { marginLeftValue, setMarginLeftValue };
@@ -146,6 +138,7 @@ const AllChannelsList = ({
           film_url: program.film_url,
           title: program.title,
           restriction: program.restriction,
+          short_description: program.short_description,
         };
         channelObject.programs.push(programObject);
       });
@@ -241,9 +234,17 @@ const AllChannelsList = ({
   useEffect(() => {
     if (listToShow.channelsAll.length !== 0) {
       createTimelineTimes("channelsAll");
+      let tempState;
+      if (window.virtualIsLoaded === true && !virtualInterval) {
+        const zone = window.virtualChannelSponsoration;
+        tempState = [...listToShow.channelsAll];
+        let element = [...tempState[0]];
+        element.splice(zone.position, 0, "Virtual");
+        tempState[0] = element;
+      }
       setListToShow((prev) => ({
         ...prev,
-        channelsShow: listToShow.channelsAll,
+        channelsShow: window.virtualIsLoaded ? tempState : listToShow.channelsAll,
       }));
     }
   }, [listToShow.channelsAll]);
@@ -251,9 +252,17 @@ const AllChannelsList = ({
   useEffect(() => {
     if (listToShow.channelFilter.length !== 0) {
       createTimelineTimes("channelFilter");
+      let tempState;
+      if (window.virtualIsLoaded === true && !virtualInterval) {
+        const zone = window.virtualChannelSponsoration;
+        tempState = [...listToShow.channelFilter];
+        let element = [...tempState[0]];
+        element.splice(zone.position, 0, "Virtual");
+        tempState[0] = element;
+      }
       setListToShow((prev) => ({
         ...prev,
-        channelsShow: listToShow.channelFilter,
+        channelsShow: window.virtualIsLoaded ? tempState : listToShow.channelFilter,
       }));
     }
   }, [listToShow.channelFilter]);
