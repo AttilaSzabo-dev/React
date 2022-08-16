@@ -60,6 +60,46 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
     }
   });
 
+  const isSingleChannel = () => window.location.pathname.match('/csatorna\/tv/') !== null;
+
+  const gemiusHit = (checkGemiusId) => {
+    if (
+      typeof window.pp_gemius_hit === "function" &&
+      typeof window.gemius_identifier === "string" &&
+      typeof window.port_gemius_identifiers === "object"
+    ) {
+      //nyito gemius kod
+      let sectionType = isSingleChannel() ? 'tv-csatorna' : 'tv-nyito';
+      let code = window.port_gemius_identifiers[sectionType];
+      if (checkGemiusId) {
+        if (window.gemius_identifier !== code) {
+          console.log('pp_gemius_hit', sectionType, code);
+          window.pp_gemius_hit(code);
+          window.gemius_identifier = "";
+        }
+      } else {
+        console.log('pp_gemius_hit', sectionType, code);
+        window.pp_gemius_hit(code);
+      }
+    }
+  }
+
+  const adoRefresh = () => {
+    // csak TV_Nyito
+    let masterTvNyito = 'N7CmXSrA8sU6C2.k69bI6CsovYAjH4cgo.eSqOHkpJn.V7';
+    if (
+      !isSingleChannel() &&
+      window.ado &&
+      window.ADOLoader &&
+      window.ADOLoader.options &&
+      window.ADOLoader.options.master &&
+      window.ADOLoader.options.master === masterTvNyito
+    ) {
+      console.log('refresh', masterTvNyito);
+      window.ado.refresh(masterTvNyito);
+    }
+  }
+
   //********************************************* */
 
   const onModalOpen = () => {
@@ -83,6 +123,8 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
       }));
     }
     setDaysSelectorDropdown(false);
+    gemiusHit(false);
+    adoRefresh();
   };
 
   const programFilterHandler = (e) => {
@@ -109,6 +151,8 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
       ...prev,
       channelFilter: e.target.value,
     }));
+    gemiusHit(false);
+    adoRefresh();
   };
 
   useEffect(() => {

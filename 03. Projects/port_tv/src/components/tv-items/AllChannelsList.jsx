@@ -87,6 +87,43 @@ const AllChannelsList = ({
     return () => clearInterval(interval);
   }, []);
 
+  const gemiusHit = (checkGemiusId) => {
+    if (
+      typeof window.pp_gemius_hit === "function" &&
+      typeof window.gemius_identifier === "string" &&
+      typeof window.port_gemius_identifiers === "object"
+    ) {
+      //nyito gemius kod
+      let sectionType = 'tv-nyito';
+      let code = window.port_gemius_identifiers[sectionType];
+      if (checkGemiusId) {
+        if (window.gemius_identifier !== code) {
+          console.log('pp_gemius_hit', sectionType, code);
+          window.pp_gemius_hit(code);
+          window.gemius_identifier = "";
+        }
+      } else {
+        console.log('pp_gemius_hit', sectionType, code);
+        window.pp_gemius_hit(code);
+      }
+    }
+  }
+
+  const adoRefresh = () => {
+    // csak TV_Nyito
+    let masterTvNyito = 'N7CmXSrA8sU6C2.k69bI6CsovYAjH4cgo.eSqOHkpJn.V7';
+    if (
+      window.ado &&
+      window.ADOLoader &&
+      window.ADOLoader.options &&
+      window.ADOLoader.options.master &&
+      window.ADOLoader.options.master === masterTvNyito
+    ) {
+      console.log('refresh', masterTvNyito);
+      window.ado.refresh(masterTvNyito);
+    }
+  }
+
   //**************************************** */
 
   const [virtualIsActive, setVirtualIsActive] = useState(false);
@@ -362,6 +399,8 @@ const AllChannelsList = ({
       ...prevData,
       urlIndex: prevData.urlIndex + 1,
     }));
+    gemiusHit(false);
+    adoRefresh();
   };
 
   const filterChannelsHandler = (value) => {
@@ -401,6 +440,8 @@ const AllChannelsList = ({
       ...prev,
       activeFilters: { ...prev.activeFilters, channel: true },
     }));
+    gemiusHit(false);
+    adoRefresh();
   };
 
   //TODO: itervalt kezelni, szűrők esetén is alkalmazni kell
@@ -428,17 +469,7 @@ const AllChannelsList = ({
   }, [virtualInterval, listToShow.channelsShow]);
 
   useEffect(() => {
-    if (
-      typeof window.pp_gemius_hit === "function" &&
-      typeof window.gemius_identifier === "string"
-    ) {
-      //nyito gemius kod
-      let code = ".cebkuN07HnYk6HbokIXZaRv38OGw.sbhU.kKB3eEiP.Y7";
-      if (window.gemius_identifier !== code) {
-        window.pp_gemius_hit(code);
-        window.gemius_identifier = "";
-      }
-    }
+    gemiusHit(true);
   }, [initData]);
 
   console.log("listToShow: ", listToShow);

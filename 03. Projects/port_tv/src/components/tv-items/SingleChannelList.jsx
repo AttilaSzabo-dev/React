@@ -26,6 +26,28 @@ const SingleChannelList = ({ initData }) => {
   const isDesktop = useMediaQuery({ query: "(min-width: 500px)" });
   const isMobile = useMediaQuery({ query: "(max-width: 499px)" });
 
+  const gemiusHit = (checkGemiusId) => {
+    if (
+      typeof window.pp_gemius_hit === "function" &&
+      typeof window.gemius_identifier === "string" &&
+      typeof window.port_gemius_identifiers === "object"
+    ) {
+      //nyito gemius kod
+      let sectionType = 'tv-csatorna';
+      let code = window.port_gemius_identifiers[sectionType];
+      if (checkGemiusId) {
+        if (window.gemius_identifier !== code) {
+          console.log('pp_gemius_hit', sectionType, code);
+          window.pp_gemius_hit(code);
+          window.gemius_identifier = "";
+        }
+      } else {
+        console.log('pp_gemius_hit', sectionType, code);
+        window.pp_gemius_hit(code);
+      }
+    }
+  }
+
   useEffect(() => {
     console.log("window.location.href: ", window.location.href);
     console.log(window.location.href.split("date=")[1]);
@@ -64,17 +86,8 @@ const SingleChannelList = ({ initData }) => {
         console.log(error.message);
         //setError(error.message);
       });
-    if (
-      typeof window.pp_gemius_hit === "function" &&
-      typeof window.gemius_identifier === "string"
-    ) {
-      //aloldal gemius kod
-      let code = "nS01l.MEgV5oZImyqtlj0JaE33kpsPtPCr5ONH2P1RD.D7";
-      if (window.gemius_identifier !== code) {
-        window.pp_gemius_hit(code);
-        window.gemius_identifier = "";
-      }
-    }
+
+    gemiusHit(true);
   }, [initData, params.channelId]);
 
   const goLeft = () => {
@@ -83,6 +96,7 @@ const SingleChannelList = ({ initData }) => {
     } else {
       container.current.scrollLeft -= 300;
     }
+    gemiusHit(false);
   };
 
   const goRight = () => {
@@ -91,6 +105,7 @@ const SingleChannelList = ({ initData }) => {
     } else {
       container.current.scrollLeft += 300;
     }
+    gemiusHit(false);
   };
 
   const initScroll = (value) => {
