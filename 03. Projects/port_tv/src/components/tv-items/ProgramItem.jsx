@@ -174,7 +174,7 @@ const ProgramItem = ({
           {`${start_time} - ${end_time}`}
           <div className={classes.noti}>
             <BsEnvelope
-              onClick={setNotiHandler}
+              onClick={setRemindHandler}
               className={`${classes.envelope} ${
                 notiStatus ? classes.active : ""
               }`}
@@ -182,7 +182,7 @@ const ProgramItem = ({
               title="Kérek értesítőt"
             />
             <BsClock
-              onClick={setRemindHandler}
+              onClick={setNotiHandler}
               className={`${classes.clock} ${
                 remindStatus ? classes.active : ""
               }`}
@@ -191,7 +191,7 @@ const ProgramItem = ({
             />
           </div>
         </div>
-        <a href={filmUrl} className={classes.title}>
+        <a href={filmUrl} target="_blank" rel="noreferrer" className={classes.title}>
           {title}
         </a>
       </div>

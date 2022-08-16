@@ -138,7 +138,7 @@ const SingeChannelProgramItem = ({
         {startTime}
         <div className={classes.noti}>
           <BsEnvelope
-            onClick={setNotiHandler}
+            onClick={setRemindHandler}
             className={`${classes.envelope} ${
               notiStatus ? classes.active : ""
             }`}
@@ -146,7 +146,7 @@ const SingeChannelProgramItem = ({
             title="Kérek értesítőt"
           />
           <BsClock
-            onClick={setRemindHandler}
+            onClick={setNotiHandler}
             className={`${classes.clock} ${remindStatus ? classes.active : ""}`}
             style={hover ? visible : notVisible}
             title="Emlékeztető beállítása"

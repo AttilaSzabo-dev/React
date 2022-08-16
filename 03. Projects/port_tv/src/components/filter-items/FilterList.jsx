@@ -209,24 +209,26 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
 
   const createSearchGroups = (data) => {
     let groupArray = [];
-    let tempGroup = [];
-    let lastKeyword = null;
-    let newKeyword = null;
+    let keywordArray = [];
 
-    data.forEach((item) => {
-      newKeyword = item.day;
-      if (newKeyword === lastKeyword || lastKeyword === null) {
-        tempGroup.push(item);
-      } else if (newKeyword !== lastKeyword && lastKeyword !== null) {
-        groupArray.push(tempGroup);
-        tempGroup = [];
+    data.forEach((item)=>{
+      const filterDate = new Date(item.timestamp * 1000);
+      const year = filterDate.getFullYear();
+      const month = filterDate.toLocaleString("hu-HU", { month: "2-digit" });
+      const day = filterDate.toLocaleString("hu-HU", { day: "2-digit" });
+      const finalDate = `${year}-${month}-${day}`;
+      item.newUrl = `${item.channelURl}?date=${finalDate}`;
+
+      if (!keywordArray.includes(item.day)) {
+        keywordArray.push(item.day)
+        groupArray.push(data.filter(filterItem => filterItem.day === item.day ))
       }
-      lastKeyword = item.day;
     });
     setSearchModal(true);
     setSearch(groupArray);
     setExpandSearchField(false);
-  };
+    console.log("groupArray: ", groupArray);
+  }
 
   useEffect(() => {
     if (searchModal) {
@@ -245,11 +247,13 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
           event.preventDefault();
           // Trigger the button element with a click
           let searchValue = inputRef.current.value;
-          fetch("https://port.hu/tvapi/search?q=" + searchValue)
+          /* fetch(`${window.location.protocol}//${window.location.host}/tvapi/search?q=${searchValue}`) */
+          fetch("https://szaboa-3.dev.port.hu/tvapi/search?q=" + searchValue)
             .then((res) => {
               return res.json();
             })
             .then((data) => {
+              console.log("search data: ", data);
               createSearchGroups(data);
               /* setIsLoading(false); */
             })
@@ -294,6 +298,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
             X
           </div>
         </div>
+        {search !== null && search.length === 0 && <span>Jelenleg a keresési feltételnek megfelelő műsor nincs adatbázisunkban.</span> }
         {search !== null &&
           search.map((group) => (
             <>
@@ -314,9 +319,11 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
                     )}
                   </div>
                   <div className={classes.contentWrapper}>
-                    <span
+                    <a href={item.newUrl}
+                      target="_blank"
+                      rel="noreferrer"
                       className={classes.time}
-                    >{`${item.start} - ${item.channel}`}</span>
+                    >{`${item.start} - ${item.channel}`}</a>
                     <a
                       href={item.url}
                       target="_blank"
