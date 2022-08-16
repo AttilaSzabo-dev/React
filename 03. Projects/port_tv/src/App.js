@@ -4,9 +4,9 @@ import TvDataContext from "./context/TvDataContext";
 import FilterContext from "./context/FilterContext";
 import { useMediaQuery } from "react-responsive";
 
-import FilterList from "./components/filter-items/FilterList2";
-import AllChannelsList from "./components/tv-items/AllChannelsList2";
-import SingleChannelList from "./components/tv-items/SingleChannelList2";
+import FilterList from "./components/filter-items/FilterList";
+import AllChannelsList from "./components/tv-items/AllChannelsList";
+import SingleChannelList from "./components/tv-items/SingleChannelList";
 import AllChannelMobile from "./components/mobile-items/AllChannelMobile";
 
 //********************************************** */
