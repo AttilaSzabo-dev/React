@@ -176,7 +176,7 @@ const ProgramItem = ({
             <BsEnvelope
               onClick={setRemindHandler}
               className={`${classes.envelope} ${
-                notiStatus ? classes.active : ""
+                remindStatus ? classes.active : ""
               }`}
               style={hover ? visible : notVisible}
               title="Kérek értesítőt"
@@ -184,7 +184,7 @@ const ProgramItem = ({
             <BsClock
               onClick={setNotiHandler}
               className={`${classes.clock} ${
-                remindStatus ? classes.active : ""
+                notiStatus ? classes.active : ""
               }`}
               style={hover ? visible : notVisible}
               title="Emlékeztető beállítása"

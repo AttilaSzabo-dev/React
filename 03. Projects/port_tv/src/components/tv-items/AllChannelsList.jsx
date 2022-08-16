@@ -137,6 +137,39 @@ const AllChannelsList = ({
 
   const programsContainer = useRef(null);
 
+  //********************************************* */
+
+  // INIT
+  // lekérdezzük a programokat (fetch) mai date - url[0]
+  // figyelni kell hogy van-e filter (date, channel)
+  // elindítjuk a setIntervalt hogy csekkoljuk a virtual channel zone betöltődött-e
+  // elkészítjük a lekért adatokból a showListet
+  /* useEffect(()=>{
+    console.log("init");
+    if (virtualInterval) {
+      const virtualIntervalTimer = setInterval(() => {
+        if (
+          window.virtualIsLoaded === true &&
+          listToShow.channelsShow.length !== 0
+        ) {
+          clearInterval(virtualIntervalTimer);
+          setVirtualInterval(false);
+          const zone = window.virtualChannelSponsoration;
+          let tempState = { ...listToShow.channelsShow };
+          let element = [...tempState[0]];
+          element.splice(zone.position, 0, "Virtual");
+          tempState = element;
+          setListToShow((prev) => ({
+            ...prev,
+            channelsShow: [tempState],
+          }));
+        }
+      }, 1000);
+    }
+  },[initData]); */
+
+  //********************************************* */
+
   const createFullList = (data, type) => {
     let actualTime;
     let actualTimeUnix;
@@ -176,6 +209,7 @@ const AllChannelsList = ({
           title: program.title,
           restriction: program.restriction,
           short_description: program.short_description,
+          episode_title: program.episode_title
         };
         channelObject.programs.push(programObject);
       });
@@ -363,6 +397,7 @@ const AllChannelsList = ({
           }));
           createFullList(data, "channelFilter");
           setIsLoading(false);
+          console.log("filterdate filter: ", data);
         })
         .catch((error) => {
           //setError(error.message);
@@ -385,6 +420,7 @@ const AllChannelsList = ({
             dateFilter: url[listToShow.urlIndex].split("date=")[1],
           }));
           createFullList(data, "channelsAll");
+          console.log("filterdate: ", data);
 
           setIsLoading(false);
         })

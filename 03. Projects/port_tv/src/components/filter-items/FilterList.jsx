@@ -85,8 +85,8 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
   }
 
   const adoRefresh = () => {
-    // csak TV_Nyito
-    let masterTvNyito = 'N7CmXSrA8sU6C2.k69bI6CsovYAjH4cgo.eSqOHkpJn.V7';
+    // Mobil_Aloldalak vagy TV_Nyito master
+    let masterTvNyito = isMobile ? 'QPKXR19zN3ZVIXy.KrdRq5JsLZSveObYtBYIevuJ.DX.y7' : 'N7CmXSrA8sU6C2.k69bI6CsovYAjH4cgo.eSqOHkpJn.V7';
     if (
       !isSingleChannel() &&
       window.ado &&
@@ -143,6 +143,10 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
         activeFilters: filtered,
         [e]: false,
       }));
+    }
+    if (isMobile) {
+      gemiusHit(false);
+      adoRefresh();
     }
   };
 
@@ -247,8 +251,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
           event.preventDefault();
           // Trigger the button element with a click
           let searchValue = inputRef.current.value;
-          /* fetch(`${window.location.protocol}//${window.location.host}/tvapi/search?q=${searchValue}`) */
-          fetch("https://szaboa-3.dev.port.hu/tvapi/search?q=" + searchValue)
+          fetch(`${window.location.protocol}//${window.location.host}/tvapi/search?q=${searchValue}`)
             .then((res) => {
               return res.json();
             })
