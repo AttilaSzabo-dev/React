@@ -30,6 +30,7 @@
 
 .moreChannels:disabled {
   opacity: .3;
+  pointer-events: none;
 }
 
 .moreChannels:hover {

@@ -13,6 +13,7 @@ const Timeline = ({
   initData,
   actualTime,
   timelineTimes,
+  endTimestamp,
   introCb = () => {},
   introKey = {},
 }) => {
@@ -36,7 +37,6 @@ const Timeline = ({
       introCb(introKey[functionSelfName]);
     }
   });
-
 
   //******************************************** */
 
@@ -68,8 +68,12 @@ const Timeline = ({
   };
 
   useEffect(() => {
-    if (timelineTimes.startTimestamp > 0) {
-      const newPos = -((actualTime - timelineTimes.startTimestamp / 1000) / 12);
+    if (timelineTimes > 0) {
+      console.log("actualTime: ", actualTime);
+      console.log("actualTime new date: ", new Date(actualTime * 1000));
+      console.log("timelineTimes.startTimestamp: ", timelineTimes / 1000);
+      console.log("timelineTimes.startTimestamp new date: ", new Date(timelineTimes));
+      const newPos = -((actualTime - timelineTimes / 1000) / 12);
 
       setMarginLeftValue({
         marginLeft: newPos + 300 + "px",
@@ -93,7 +97,7 @@ const Timeline = ({
   // 1800000 milisecond = 150px
 
   useEffect(() => {
-    let incrementValue = timelineTimes.startTimestamp;
+    let incrementValue = timelineTimes;
     setTimeline([]);
 
     do {
@@ -116,7 +120,7 @@ const Timeline = ({
       }
 
       incrementValue += 1800000;
-    } while (incrementValue <= timelineTimes.endTimestamp - 1800000);
+    } while (incrementValue <= endTimestamp - 1800000);
   }, [timelineTimes]);
 
   return (

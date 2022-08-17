@@ -9,28 +9,28 @@ import SlickSlider from "./SlickSlider";
 
 /* import classes from "./AllChannelPrograms.module.css"; */
 
-const AllChannelPrograms = (props) => {
+const AllChannelPrograms = ({ channel, actualTime, timelineTimes, index, date, introCb, introKey }) => {
   let zones = window.zonesToLoad;
 
-  return props.channels.map((channel, index) => (
+  return (
     <>
       {/* <AdFejlecCsik/> */}
       
-      {props.index === 0 && channel === "Virtual"  ? <AdVirtual/> : ""}
-      {props.index === 0 && index === 4 && zones.superleaderboard !== undefined && zones.superleaderboard.device === "desktop"  ? <AdLB/> : ""}{/* mobilon is */}
+      {channel === "Virtual"  ? <AdVirtual/> : ""}
+      {index === 4 && zones.superleaderboard !== undefined && zones.superleaderboard.device === "desktop"  ? <AdLB/> : ""}{/* mobilon is */}
       {/* props.index === 0 && index === 5 && zones.medium_rectangle_b !== undefined ? <AdMR/> : "" */} {/* carousel ad */}
-      {props.index === 0 && index === 18 && zones.roadblock_a !== undefined && zones.roadblock_a.device === "desktop" ? <AdRB/> : ""}{/* mobilon is */}
-      {props.index === 0 && index === 20 && zones.roadblock_b !== undefined ? <AdRBB/> : ""}
-      {props.index === 0 && index === 13 ? <SlickSlider/> : ""}
+      {index === 18 && zones.roadblock_a !== undefined && zones.roadblock_a.device === "desktop" ? <AdRB/> : ""}{/* mobilon is */}
+      {index === 20 && zones.roadblock_b !== undefined ? <AdRBB/> : ""}
+      {index === 13 ? <SlickSlider/> : ""}
 
-      {channel !== "Virtual" && <ProgramsWrapper timelineTimes={props.timelineTimes} index={index}>
-        <AllChannelLogo channel={channel} key={channel.id} id={channel.id} actualDate={props.date} introCb={index === 0 ? props.introCb : null} introKey={props.introKey} />
+      {channel !== "Virtual" && <ProgramsWrapper timelineTimes={timelineTimes} index={index} channelStartTs={channel.channelStartTs}>
+        <AllChannelLogo channel={channel} key={channel.id} id={channel.id} actualDate={date} introCb={index === 0 ? introCb : null} introKey={introKey} />
         {channel.programs.map((item) => (
           <ProgramItem
             key={item.id}
             notificId={item.notificId}
             reminderId={item.reminderId}
-            actualTime={props.actualTime}
+            actualTime={actualTime}
             start_time={item.start_time}
             start_unixtime={item.start_unixtime}
             end_time={item.end_time}
@@ -43,7 +43,7 @@ const AllChannelPrograms = (props) => {
         ))}
       </ProgramsWrapper>}
     </>
-  ));
+  )
 };
 
 export default AllChannelPrograms;
