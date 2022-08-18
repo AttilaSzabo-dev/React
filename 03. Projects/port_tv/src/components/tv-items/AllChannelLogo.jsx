@@ -96,9 +96,7 @@ const AllChannelLogo = ({
         </div>
         <Link
           className={classes.imgWrapper}
-          to={`/csatorna/tv/${channel.name.replace(" ", "-").toLowerCase()}/${
-            channel.id
-          }?date=${actualDate}`}
+          to={`${channel.url}?date=${actualDate}`}
         >
           <img src={channel.logo} alt="logo" />
         </Link>

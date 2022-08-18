@@ -394,7 +394,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
           </div>
         )}
         <div className={classes.channelFilterEditContainer}>
-          {isMobile && (
+          {isMobile && !isSingleChannel() && (
             <div className={classes.channelFilterMobile}>
               <ChannelFilter
                 categories={categories}

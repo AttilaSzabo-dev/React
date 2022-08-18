@@ -26,15 +26,17 @@ const AllChannelsList = ({
     endHour: 0,
     firstProgramsStartTime: [],
   });
+
   const [listToShow, setListToShow] = useState({
-    actualTime: 0,
+    actualTime: Math.floor(new Date(initData.date).getTime() / 1000),
     timelineActualTime: 0,
     timelineTimes: [],
     timelineTime: 0,
+    init: true,
     lastKeyword: "",
     lastUrl: "",
     urlIndex: 0,
-    dateFilter: null,
+    dateFilter: initData.date.split("T")[0],
     activeFilters: {
       date: false,
       channel: false,
@@ -250,11 +252,10 @@ const AllChannelsList = ({
       endMinute: endDateFormatMinuteFinal,
       endHour: +endDateFormatHour,
       firstProgramsStartTime: startTime,
+      actualTime: listToShow.actualTime
     });
     setListToShow((prev) => ({
       ...prev,
-      /* actualTime: actualTimeUnix, */
-      timelineTime: newStartDate,
       channelsShow: fullListArray,
     }));
 
@@ -288,18 +289,12 @@ const AllChannelsList = ({
   //ide csak akkor lépünk be ha nincs csatorna vagy dátum filter beállítva
   useEffect(() => {
     if (!listToShow.activeFilters.date || !listToShow.activeFilters.channel) {
-      const filterDate = new Date();
-      const year = filterDate.getFullYear();
-      const month = filterDate.toLocaleString("hu-HU", { month: "2-digit" });
-      const day = filterDate.toLocaleString("hu-HU", { day: "2-digit" });
-      const finalDate = `${year}-${month}-${day}`;
-      const basicUrl = `${url[listToShow.urlIndex]}${finalDate}`;
+      const basicUrl = `${url[listToShow.urlIndex].split("date=")[0]}date=${listToShow.dateFilter}`;
       fetchUrl(basicUrl);
       setListToShow((prev) => ({
         ...prev,
         lastUrl: basicUrl,
-        dateFilter: finalDate,
-        actualTime: filterDate.getTime() / 1000
+        init: false
       }));
     }
   }, [listToShow.urlIndex]);
@@ -333,7 +328,7 @@ const AllChannelsList = ({
   // SZŰRÉSEK
   const filterChannelsHandler = (value) => {
     if (value !== "0") {
-      let filterUrl = `${channelFilterUrl[value]}${listToShow.dateFilter}`;
+      const filterUrl = `${channelFilterUrl[value].split("date=")[0]}date=${listToShow.dateFilter}`;
       fetchUrl(filterUrl);
       setListToShow((prev) => ({
         ...prev,
@@ -341,7 +336,7 @@ const AllChannelsList = ({
         activeFilters: { ...prev.activeFilters, channel: true } 
       }));
     }else {
-      let filterUrl = `${url[listToShow.urlIndex]}${listToShow.dateFilter}`;
+      const filterUrl = `${url[listToShow.urlIndex].split("date=")[0]}date=${listToShow.dateFilter}`;
       fetchUrl(filterUrl);
       setListToShow((prev) => ({
         ...prev,
@@ -367,14 +362,11 @@ const AllChannelsList = ({
       const day = filterDate.toLocaleString("hu-HU", { day: "2-digit" });
       const dayUpdate = filterDate.getDate();
       const finalDate = `${year}-${month}-${day}`;
-      console.log("filterDate: ", filterDate);
 
-      
       const actualDate = new Date();
       actualDate.setFullYear(yearUpdate);
       actualDate.setMonth(monthUpdate);
       actualDate.setDate(dayUpdate);
-      console.log("actualDate: ", actualDate);
       const actualDateUnix = Math.floor(actualDate.getTime() / 1000);
 
       const compareDate = new Date();
@@ -382,10 +374,7 @@ const AllChannelsList = ({
       const compareMonth = compareDate.toLocaleString("hu-HU", { month: "2-digit" });
       const compareDay = compareDate.toLocaleString("hu-HU", { day: "2-digit" });
       const finalCompareDate = `${compareYear}-${compareMonth}-${compareDay}`;
-
-      let dateUrl = listToShow.lastUrl.split("date=")[0];
-      fetchUrl(`${dateUrl}date=${finalDate}`);
-      console.log("actualTime all channel: ", actualDateUnix);
+      
       if (finalCompareDate !== finalDate) {
         setListToShow((prev) => ({
           ...prev,
@@ -398,245 +387,21 @@ const AllChannelsList = ({
           ...prev,
           actualTime: actualDateUnix,
           dateFilter: finalDate,
-          activeFilters: { ...prev.activeFilters, date: false },
+          activeFilters: { ...prev.activeFilters, date: false }
         }));
       }
     }
   }, [filterValues.dateFilter]);
+
+  useEffect(()=>{
+    if (!listToShow.init) {
+      fetchUrl(`${listToShow.lastUrl.split("date=")[0]}date=${listToShow.dateFilter}`);
+    }
+  },[listToShow.dateFilter]);
   
 
   //********************************************* */
 
-  /* const createFullList = (data, type) => {
-    let actualTime;
-    let actualTimeUnix;
-
-    if (listToShow.activeFilters.date) {
-      actualTimeUnix = listToShow.actualTime;
-    } else {
-      actualTime = new Date();
-      actualTimeUnix = Math.floor(actualTime.getTime() / 1000);
-    }
-
-    let fullListArray = [];
-
-    // végigmegyünk az összes csatornán és elkészítjük a csatorna objectet
-    data.channels.forEach((channel) => {
-      const channelObject = {
-        id: channel.id,
-        logo: channel.logo,
-        name: channel.name,
-        url: channel.url,
-        programs: [],
-      };
-      // végigmegyünk az összes programon és elkészítjük a program objectet
-      channel.programs.forEach((program) => {
-        const dateStart = new Date(program.start_datetime);
-        const unixTimestampStart = Math.floor(dateStart.getTime() / 1000);
-        const dateEnd = new Date(program.end_datetime);
-        const unixTimestampEnd = Math.floor(dateEnd.getTime() / 1000);
-        const programObject = {
-          start_unixtime: unixTimestampStart,
-          start_time: program.start_time,
-          end_unixtime: unixTimestampEnd,
-          end_time: program.end_time,
-          notificId: program.id,
-          reminderId: program.film_id,
-          film_url: program.film_url,
-          title: program.title,
-          restriction: program.restriction,
-          short_description: program.short_description,
-          episode_title: program.episode_title,
-        };
-        channelObject.programs.push(programObject);
-      });
-      fullListArray.push(channelObject);
-    });
-
-    switch (type) {
-      case "channelsAll":
-        setListToShow((prev) => ({
-          ...prev,
-          actualTime: actualTimeUnix,
-          lastKeyword: type,
-          channelsAll: [...prev.channelsAll, fullListArray],
-        }));
-        break;
-      case "channelFilter":
-        setListToShow((prev) => ({
-          ...prev,
-          actualTime: actualTimeUnix,
-          lastKeyword: type,
-          channelFilter: [fullListArray],
-        }));
-        break;
-      default:
-        break;
-    }
-  }; */
-
-  /* const createTimelineTimes = (stateId) => {
-    let startTime = [];
-    let endTime = [];
-    listToShow[stateId].forEach((group) => {
-      group.forEach((channel) => {
-        if (channel !== "Virtual") {
-          startTime.push(channel.programs[0].start_unixtime);
-          endTime.push(
-            channel.programs[channel.programs.length - 1].end_unixtime
-          );
-        }
-      });
-    });
-
-    const minStart = Math.min(...startTime);
-    const minStartMiliseconds = minStart * 1000;
-    const startDateObject = new Date(minStartMiliseconds);
-    const startDateFormatHour = startDateObject.toLocaleString("hu-HU", {
-      hour: "numeric",
-    });
-    const startDateFormatMinute = startDateObject.toLocaleString("hu-HU", {
-      minute: "numeric",
-    });
-
-    const startDateFormatMinuteModulo = startDateFormatMinute % 30;
-    const startDateFormatMinuteFinal =
-      startDateFormatMinute - startDateFormatMinuteModulo;
-
-    const newStartDate = startDateObject.setMinutes(startDateFormatMinuteFinal);
-
-    // ------------------------------------------------------------------------
-
-    const maxEnd = Math.max(...endTime);
-    const maxEndMiliseconds = maxEnd * 1000;
-    const endDateObject = new Date(maxEndMiliseconds);
-    const endDateFormatHour = endDateObject.toLocaleString("hu-HU", {
-      hour: "numeric",
-    });
-    const endDateFormatMinute = endDateObject.toLocaleString("hu-HU", {
-      minute: "numeric",
-    });
-
-    const endDateFormatMinuteModulo = endDateFormatMinute % 30;
-    const endDateFormatMinuteFinal =
-      endDateFormatMinute + endDateFormatMinuteModulo;
-
-    const newEndDate = endDateObject.setMinutes(endDateFormatMinuteFinal);
-
-    setTimelineTimes({
-      startTimestamp: newStartDate,
-      endTimestamp: newEndDate,
-      startMinute: startDateFormatMinuteFinal,
-      startHour: +startDateFormatHour,
-      endMinute: endDateFormatMinuteFinal,
-      endHour: +endDateFormatHour,
-      firstProgramsStartTime: startTime,
-    });
-  }; */
-
-  /* useEffect(() => {
-    if (listToShow.channelsAll.length !== 0) {
-      createTimelineTimes("channelsAll");
-      let tempState = [];
-      if (window.virtualIsLoaded === true && !virtualInterval) {
-        const zone = window.virtualChannelSponsoration;
-        tempState = [...listToShow.channelsAll];
-        let element = [...tempState[0]];
-        element.splice(zone.position, 0, "Virtual");
-        tempState[0] = element;
-      }
-      setListToShow((prev) => ({
-        ...prev,
-        channelsShow:
-          window.virtualIsLoaded === true && !virtualInterval
-            ? tempState
-            : listToShow.channelsAll,
-      }));
-    }
-  }, [listToShow.channelsAll]); */
-
-  /* useEffect(() => {
-    if (listToShow.channelFilter.length !== 0) {
-      createTimelineTimes("channelFilter");
-      let tempState = [];
-      if (window.virtualIsLoaded === true && !virtualInterval) {
-        const zone = window.virtualChannelSponsoration;
-        tempState = [...listToShow.channelFilter];
-        let element = [...tempState[0]];
-        element.splice(zone.position, 0, "Virtual");
-        tempState[0] = element;
-      }
-      setListToShow((prev) => ({
-        ...prev,
-        channelsShow:
-          window.virtualIsLoaded === true && !virtualInterval
-            ? tempState
-            : listToShow.channelFilter,
-      }));
-    }
-  }, [listToShow.channelFilter]); */
-
-  // filterdate url fetch
-  /* useEffect(() => {
-    if (listToShow.activeFilters.date) {
-      let lastUrl = listToShow.lastUrl;
-      let lastUrlSplit = lastUrl.split("date=")[0];
-      let newUrl = "";
-      if (listToShow.dateFilter === null) {
-        const actualDate = new Date();
-        const year = actualDate.getFullYear();
-        const month = actualDate.toLocaleString("hu-HU", { month: "2-digit" });
-        const day = actualDate.toLocaleString("hu-HU", { day: "2-digit" });
-        const finalDate = `${year}-${month}-${day}`;
-        newUrl = `${lastUrlSplit}date=${finalDate}`;
-      } else {
-        newUrl = `${lastUrlSplit}date=${listToShow.dateFilter}`;
-      }
-      setIsLoading(true);
-      fetch(`${newUrl}`)
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          setListToShow((prev) => ({
-            ...prev,
-            lastUrl: newUrl,
-          }));
-          createFullList(data, "channelFilter");
-          setIsLoading(false);
-          console.log("filterdate filter: ", data);
-        })
-        .catch((error) => {
-          //setError(error.message);
-        });
-    }
-  }, [listToShow.dateFilter]); */
-
-  // filterdate nélküli url fetch
-  /* useEffect(() => {
-    if (!listToShow.activeFilters.date) {
-      setIsLoading(true);
-      fetch(`${url[listToShow.urlIndex]}`)
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          setListToShow((prev) => ({
-            ...prev,
-            lastUrl: url[listToShow.urlIndex],
-            dateFilter: url[listToShow.urlIndex].split("date=")[1],
-          }));
-          createFullList(data, "channelsAll");
-          console.log("filterdate: ", data);
-
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-        });
-    }
-  }, [listToShow.urlIndex]);
- */
   const urlIndexHandlerIncrease = () => {
     fetchUrl(url[listToShow.urlIndex + 1]);
     setListToShow((prevData) => ({
@@ -657,30 +422,6 @@ const AllChannelsList = ({
     adoRefresh();
   };
 
-  //TODO: itervalt kezelni, szűrők esetén is alkalmazni kell
-  /* useEffect(() => {
-    if (virtualInterval) {
-      const virtualIntervalTimer = setInterval(() => {
-        if (
-          window.virtualIsLoaded === true &&
-          listToShow.channelsShow.length !== 0
-        ) {
-          clearInterval(virtualIntervalTimer);
-          setVirtualInterval(false);
-          const zone = window.virtualChannelSponsoration;
-          let tempState = { ...listToShow.channelsShow };
-          let element = [...tempState[0]];
-          element.splice(zone.position, 0, "Virtual");
-          tempState = element;
-          setListToShow((prev) => ({
-            ...prev,
-            channelsShow: [tempState],
-          }));
-        }
-      }, 1000);
-    }
-  }, [virtualInterval, listToShow.channelsShow]); */
-
   useEffect(() => {
     gemiusHit(true);
   }, [initData]);
@@ -694,9 +435,7 @@ const AllChannelsList = ({
           <Timeline
             onFilterChannels={filterChannelsHandler}
             initData={initData}
-            actualTime={listToShow.actualTime}
-            timelineTimes={listToShow.timelineTime}
-            endTimestamp={timelineTimes.endTimestamp}
+            timelineTimes={timelineTimes}
             introCb={introCb}
             introKey={introKey}
           />

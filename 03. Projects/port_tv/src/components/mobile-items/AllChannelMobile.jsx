@@ -649,11 +649,7 @@ const AllChannelMobile = ({
                 <div key={channel.id} className={`${classes.channelWrapper} `}>
                   <div className={classes.logoWrapper}>
                     <Link
-                      to={`/csatorna/tv/${channel.name
-                        .replace(" ", "-")
-                        .toLowerCase()}/${channel.id}?date=${
-                        listToShow.dateFilter
-                      }`}
+                      to={`${channel.url}?date=${listToShow.dateFilter}`}
                     >
                       <img src={channel.logo} alt={channel.id} />
                     </Link>
@@ -691,11 +687,7 @@ const AllChannelMobile = ({
                   </div>
                   <Link
                     className={classes.toSingleChannelButton}
-                    to={`/csatorna/tv/${channel.name
-                      .replace(" ", "-")
-                      .toLowerCase()}/${channel.id}?date=${
-                      listToShow.dateFilter
-                    }`}
+                    to={`${channel.url}?date=${listToShow.dateFilter}`}
                   >
                     <MdKeyboardArrowRight className={classes.channelArrow} />
                   </Link>

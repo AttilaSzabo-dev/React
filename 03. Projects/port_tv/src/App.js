@@ -260,12 +260,12 @@ function App() {
     }
   }
   const createInitUrls = () => {
-    let date = "&date=";
+    let date = `date=${initData.date.split("T")[0]}`;
     let ids = pluck(tvData.favorite, initData.channels, "id");
     let chunks = [...chunk(ids, 40)];
     let urls = chunks.map((chunk) => {
       let channels = chunk.map((id) => `channel_id%5B%5D=${id}`).join("&");
-      return `tv-event/api?${channels}${date}`;
+      return `tv-event/api?${channels}&${date}`;
     });
 
     url = urls;
@@ -278,7 +278,8 @@ function App() {
           .filter((item) => item.groupId === initData.channelGroups[key].id)
           .map((x) => `channel_id%5B%5D=${x.id}`)
           .join("&") +
-          date;
+          "&" +
+          date.toString();
       filterUrl[key] = filteredUrls;
     }
     channelFilterUrl = filterUrl;

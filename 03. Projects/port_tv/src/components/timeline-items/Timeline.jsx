@@ -11,15 +11,14 @@ import classes from "./Timeline.module.css";
 const Timeline = ({
   onFilterChannels,
   initData,
-  actualTime,
   timelineTimes,
-  endTimestamp,
   introCb = () => {},
   introKey = {},
 }) => {
   const container = useRef(null);
   const [timeline, setTimeline] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [timelineLength, setTimelineLength] = useState(0);
   const { marginLeftValue, setMarginLeftValue } = useContext(MarginContext);
 
   //******************************************** */
@@ -49,7 +48,11 @@ const Timeline = ({
 
   const goLeft = () => {
     let goLeft = parseInt(marginLeftValue.marginLeft.replace("px", ""), 10);
-    goLeft += 300;
+    if (goLeft + 300 >= 0) {
+      goLeft = 0;
+    } else {
+      goLeft += 300;
+    }
     setMarginLeftValue({
       marginLeft: goLeft + "px",
     });
@@ -57,7 +60,12 @@ const Timeline = ({
 
   const goRight = () => {
     let goRight = parseInt(marginLeftValue.marginLeft.replace("px", ""), 10);
+   /*  if (condition) {
+      
+    } */
     goRight -= 300;
+    /* console.log("timelineLength: ", timelineLength * 150);
+    console.log("goRight: ", goRight); */
     setMarginLeftValue({
       marginLeft: goRight + "px",
     });
@@ -68,18 +76,16 @@ const Timeline = ({
   };
 
   useEffect(() => {
-    if (timelineTimes > 0) {
-      console.log("actualTime: ", actualTime);
+      /* console.log("actualTime: ", actualTime);
       console.log("actualTime new date: ", new Date(actualTime * 1000));
       console.log("timelineTimes.startTimestamp: ", timelineTimes / 1000);
-      console.log("timelineTimes.startTimestamp new date: ", new Date(timelineTimes));
-      const newPos = -((actualTime - timelineTimes / 1000) / 12);
+      console.log("timelineTimes.startTimestamp new date: ", new Date(timelineTimes)); */
+      const newPos = -((timelineTimes.actualTime - timelineTimes.startTimestamp / 1000) / 12);
 
       setMarginLeftValue({
         marginLeft: newPos + 300 + "px",
       });
-    }
-  }, [timelineTimes, actualTime]);
+  }, [timelineTimes]);
 
   useEffect(() => {
     let groups = Object.values(initData.channelGroups);
@@ -97,7 +103,8 @@ const Timeline = ({
   // 1800000 milisecond = 150px
 
   useEffect(() => {
-    let incrementValue = timelineTimes;
+    let incrementValue = timelineTimes.startTimestamp;
+    let allIncrementValue = 0;
     setTimeline([]);
 
     do {
@@ -120,7 +127,9 @@ const Timeline = ({
       }
 
       incrementValue += 1800000;
-    } while (incrementValue <= endTimestamp - 1800000);
+      allIncrementValue += 1
+    } while (incrementValue <= timelineTimes.endTimestamp - 1800000);
+    setTimelineLength(allIncrementValue);
   }, [timelineTimes]);
 
   return (
