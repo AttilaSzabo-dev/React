@@ -173,10 +173,12 @@ const SingleChannelList = ({ initData }) => {
       {isLoading && <Spinner />}
       <div className={classes.singleChannelLogoWrapper}>
         {singleProgramArray !== null && (
-          <img
-            src={Object.values(singleProgramArray[0])[0].channels[0].logo}
-            alt="Logo"
-          />
+          <div className={classes.logoWrapper}>
+            <img
+              src={Object.values(singleProgramArray[0])[0].channels[0].logo}
+              alt="Logo"
+            />
+          </div>
         )}
         <button
           onClick={goLeft}

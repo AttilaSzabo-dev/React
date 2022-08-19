@@ -39,6 +39,7 @@ const AllChannelPrograms = ({ channel, actualTime, timelineTimes, index, date, i
             filmUrl={item.film_url}
             restriction={item.restriction}
             short_description={item.short_description}
+            episode_title={item.episode_title}
           />
         ))}
       </ProgramsWrapper>}

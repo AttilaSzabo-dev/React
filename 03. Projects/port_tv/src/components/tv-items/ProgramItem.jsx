@@ -19,7 +19,8 @@ const ProgramItem = ({
   title,
   filmUrl,
   short_description,
-  restriction
+  restriction,
+  episode_title
 }) => {
   const { tvData, setTvData, csrf } = useContext(TvDataContext);
   const { filterValues } = useContext(FilterContext);
@@ -161,8 +162,8 @@ const ProgramItem = ({
     >
       <div className={`${classes.hoverInfoContainer} ${popUp ? classes.show : ""}`} style={popUpCss}>
         <span className={classes.title}>{title} <span className={classes.time}>{`(${start_time} - ${end_time})`}</span></span>
-        
         <span className={classes.desc}>{short_description}</span>
+        <span className={classes.episode}>{episode_title}</span>
       </div>
       <div
         onMouseLeave={toggleHover}
@@ -192,7 +193,7 @@ const ProgramItem = ({
           </div>
         </div>
         <a href={filmUrl} target="_blank" rel="noreferrer" className={classes.title}>
-          {title}
+          <span>{title}</span>{restriction.ageLimitName !== null && <img className={classes.ageLimit} src={restriction.ageLimitImage} title={restriction.ageLimitName} alt={restriction.ageLimitName}/>}
         </a>
       </div>
     </div>

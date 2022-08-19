@@ -273,18 +273,13 @@ const AllChannelsList = ({
           lastUrl: url,
         }));
         createFullList(data);
+        console.log("data: ", data);
         setIsLoading(false);
       })
       .catch((error) => {
         //setError(error.message);
       });
   };
-
-  // INIT
-  // lekérdezzük a programokat (fetch) mai date - url[0]
-  // figyelni kell hogy van-e filter (date, channel)
-  // elindítjuk a setIntervalt hogy csekkoljuk a virtual channel zone betöltődött-e
-  // elkészítjük a lekért adatokból a showListet
 
   //ide csak akkor lépünk be ha nincs csatorna vagy dátum filter beállítva
   useEffect(() => {
@@ -408,6 +403,7 @@ const AllChannelsList = ({
       ...prevData,
       urlIndex: prevData.urlIndex + 1 <= 3 ? prevData.urlIndex + 1 : 3,
     }));
+    window.scrollTo({top: 0, behavior: 'smooth'})
     gemiusHit(false);
     adoRefresh();
   };
