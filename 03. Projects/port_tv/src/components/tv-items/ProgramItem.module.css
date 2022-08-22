@@ -81,6 +81,11 @@
   font-size: .8rem;
 }
 
+.hoverInfoContainer .episode {
+  font-weight: 500;
+  font-size: .8rem;
+}
+
 .programItem .time {
   display: flex;
   flex-direction: row;
@@ -95,12 +100,12 @@
 }
 
 .programItem .title {
-  display: inline-block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   max-width: 100%;
-  color: #414141;
-  font-family: "Source Sans Pro", sans-serif;
-  font-size: 16px;
   padding-left: 5px;
+  padding-top: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -113,6 +118,26 @@
 
 .programItem .title:hover {
   color: #d63632;
+}
+
+.programItem .title span {
+  color: #414141;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 16px;
+}
+
+.programItem .title .ageLimit {
+  display: block;
+  width: 20px;
+  height: 20px !important;
+  padding-right: 4px;
+  max-width: unset !important;
+  transition: all .3s;
+}
+
+.programItem .title .ageLimit:hover {
+  width: 24px;
+  height: 24px !important;
 }
 
 .noti {

@@ -19,6 +19,7 @@ const Timeline = ({
   const [timeline, setTimeline] = useState([]);
   const [categories, setCategories] = useState([]);
   const [timelineLength, setTimelineLength] = useState(0);
+  const [init, setInit] = useState(true);
   const { marginLeftValue, setMarginLeftValue } = useContext(MarginContext);
 
   //******************************************** */
@@ -100,15 +101,14 @@ const Timeline = ({
   };
 
   useEffect(() => {
-      /* console.log("actualTime: ", actualTime);
-      console.log("actualTime new date: ", new Date(actualTime * 1000));
-      console.log("timelineTimes.startTimestamp: ", timelineTimes / 1000);
-      console.log("timelineTimes.startTimestamp new date: ", new Date(timelineTimes)); */
+    if (init) {
       const newPos = -((timelineTimes.actualTime - timelineTimes.startTimestamp / 1000) / 12);
 
       setMarginLeftValue({
         marginLeft: newPos + 300 + "px",
       });
+      setInit(false);
+    }
   }, [timelineTimes]);
 
   useEffect(() => {

@@ -11,6 +11,18 @@
   background-color: #fff;
 }
 
+.singleChannelLogoWrapper .logoWrapper {
+  width: 100px;
+  height: 50px;
+  text-align: center;
+}
+
+.singleChannelLogoWrapper .logoWrapper img {
+  width: auto !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
 .singleChannelWrapper {
   display: flex;
   flex-direction: row;
