@@ -39,6 +39,28 @@ const Timeline = ({
 
   //******************************************** */
 
+  const gemiusHit = (checkGemiusId) => {
+    if (
+      typeof window.pp_gemius_hit === "function" &&
+      typeof window.gemius_identifier === "string" &&
+      typeof window.port_gemius_identifiers === "object"
+    ) {
+      //nyito gemius kod
+      let sectionType = "tv-nyito";
+      let code = window.port_gemius_identifiers[sectionType];
+      if (checkGemiusId) {
+        if (window.gemius_identifier !== code) {
+          console.log("pp_gemius_hit", sectionType, code);
+          window.pp_gemius_hit(code);
+          window.gemius_identifier = "";
+        }
+      } else {
+        console.log("pp_gemius_hit", sectionType, code);
+        window.pp_gemius_hit(code);
+      }
+    }
+  };
+
   const mouseWheelHandler = (e) => {
     /* e.preventDefault();
     e.stopPropagation();
@@ -53,6 +75,7 @@ const Timeline = ({
     } else {
       goLeft += 300;
     }
+    gemiusHit(false);
     setMarginLeftValue({
       marginLeft: goLeft + "px",
     });
@@ -66,6 +89,7 @@ const Timeline = ({
     goRight -= 300;
     /* console.log("timelineLength: ", timelineLength * 150);
     console.log("goRight: ", goRight); */
+    gemiusHit(false);
     setMarginLeftValue({
       marginLeft: goRight + "px",
     });
