@@ -7,6 +7,10 @@ import AdFejlecCsik from "../ad-items/AdFejlecCsik";
 import AllChannelPrograms from "./AllChannelPrograms";
 import Marker from "../timeline-items/Marker";
 import Spinner from "../../UI/Spinner";
+import AdLB from "../ad-items/AdLB";
+import AdRB from "../ad-items/AdRB";
+import AdRBB from "../ad-items/AdRBB";
+import AdVirtual from "../ad-items/AdVirtual";
 
 import classes from "./AllChannelsList.module.css";
 
@@ -112,21 +116,6 @@ const AllChannelsList = ({
     }
   };
 
-  const adoRefresh = () => {
-    // csak TV_Nyito
-    let masterTvNyito = "N7CmXSrA8sU6C2.k69bI6CsovYAjH4cgo.eSqOHkpJn.V7";
-    if (
-      window.ado &&
-      window.ADOLoader &&
-      window.ADOLoader.options &&
-      window.ADOLoader.options.master &&
-      window.ADOLoader.options.master === masterTvNyito
-    ) {
-      console.log("refresh", masterTvNyito);
-      window.ado.refresh(masterTvNyito);
-    }
-  };
-
   //**************************************** */
 
   const [marginLeftValue, setMarginLeftValue] = useState();
@@ -159,6 +148,7 @@ const AllChannelsList = ({
     // végigmegyünk az összes csatornán és elkészítjük a csatorna objectet
     data.channels.forEach((channel, index) => {
       const channelObject = {
+        ad: false,
         id: channel.id,
         logo: channel.logo,
         name: channel.name,
@@ -166,7 +156,23 @@ const AllChannelsList = ({
         programs: [],
         channelStartTs: channel.programs[0].start_ts
       };
-      let virtual = "Virtual";
+      const virtual = {
+        ad: true,
+        content: <AdVirtual/>
+      };
+      const adLB = {
+        ad: true,
+        content: <AdLB/>
+      };
+      const adRb = {
+        ad: true,
+        content: <AdRB/>
+      };
+      const adRbb = {
+        ad: true,
+        content: <AdRBB/>
+      };
+
       startTime.push(channel.programs[0].start_ts);
       endTime.push(
         Math.floor(
@@ -206,6 +212,15 @@ const AllChannelsList = ({
             fullListArray.push(virtual);
           }
         }
+      }
+      if (index === 4 && zones.superleaderboard !== undefined && zones.superleaderboard.device === "desktop") {
+        fullListArray.push({...adLB});
+      }
+      if (index === 18 && zones.roadblock_a !== undefined && zones.roadblock_a.device === "desktop") {
+        fullListArray.push({...adRb});
+      }
+      if (index === 20 && zones.roadblock_b !== undefined) {
+        fullListArray.push({...adRbb});
       }
       fullListArray.push(channelObject);
     });
@@ -303,12 +318,16 @@ const AllChannelsList = ({
           window.virtualIsLoaded === true &&
           listToShow.channelsShow.length !== 0
         ) {
+          const virtual = {
+            ad: true,
+            content: <AdVirtual/>
+          };
           clearInterval(virtualIntervalTimer);
           setVirtualInterval(false);
           const zone = window.virtualChannelSponsoration;
           let tempState = [ ...listToShow.channelsShow ];
           let element = [...tempState];
-          element.splice(zone.position, 0, "Virtual");
+          element.splice(zone.position, 0, virtual);
           tempState = element;
           setListToShow((prev) => ({
             ...prev,
@@ -340,7 +359,6 @@ const AllChannelsList = ({
       }));
     }
     gemiusHit(false);
-    adoRefresh();
   };
 
   useEffect(() => {
@@ -405,7 +423,6 @@ const AllChannelsList = ({
     }));
     window.scrollTo({top: 0, behavior: 'smooth'})
     gemiusHit(false);
-    adoRefresh();
   };
 
   const urlIndexHandlerDecrese = () => {
@@ -415,7 +432,6 @@ const AllChannelsList = ({
       urlIndex: prevData.urlIndex - 1 >= 0 ? prevData.urlIndex - 1 : 0,
     }));
     gemiusHit(false);
-    adoRefresh();
   };
 
   useEffect(() => {

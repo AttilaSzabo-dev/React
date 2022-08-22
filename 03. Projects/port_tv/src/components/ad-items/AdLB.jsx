@@ -33,6 +33,7 @@ const AdLB = () => {
       const callback = () => {};
       window.ADOLoader.AdEngine.append(zone, callback)
     }
+    console.log("LB");
   }, [])
   
 
