@@ -162,15 +162,15 @@ const AllChannelsList = ({
       };
       const adLB = {
         ad: true,
-        content: <AdLB/>
+        content: <AdLB key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
       };
       const adRb = {
         ad: true,
-        content: <AdRB/>
+        content: <AdRB key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
       };
       const adRbb = {
         ad: true,
-        content: <AdRBB/>
+        content: <AdRBB key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
       };
 
       startTime.push(channel.programs[0].start_ts);
@@ -214,13 +214,13 @@ const AllChannelsList = ({
         }
       }
       if (index === 4 && zones.superleaderboard !== undefined && zones.superleaderboard.device === "desktop") {
-        fullListArray.push({...adLB});
+        fullListArray.push(adLB);
       }
       if (index === 18 && zones.roadblock_a !== undefined && zones.roadblock_a.device === "desktop") {
-        fullListArray.push({...adRb});
+        fullListArray.push(adRb);
       }
       if (index === 20 && zones.roadblock_b !== undefined) {
-        fullListArray.push({...adRbb});
+        fullListArray.push(adRbb);
       }
       fullListArray.push(channelObject);
     });
@@ -273,7 +273,9 @@ const AllChannelsList = ({
       ...prev,
       channelsShow: fullListArray,
     }));
-
+    window.ado.master({id: "N7CmXSrA8sU6C2.k69bI6CsovYAjH4cgo.eSqOHkpJn.V7", server: "indexhu.adocean.pl", vars: typeof window.customTarget !== "undefined" ? window.customTarget : '', keys: window.tagStr });
+    window.iap_zones = [];
+    //TODO: AdoLoader eventet meghívni
   };
 
   const fetchUrl = (url) => {
@@ -288,7 +290,6 @@ const AllChannelsList = ({
           lastUrl: url,
         }));
         createFullList(data);
-        console.log("data: ", data);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -312,7 +313,7 @@ const AllChannelsList = ({
   // virtual csatorna check hogy mikor áll be a zóna, ha beállt beillesztjük a tömbbe
   // init után a createFullListben nézzük mindig, hogy kell-e
   useEffect(() => {
-    if (virtualInterval) {
+    /* if (virtualInterval) {
       const virtualIntervalTimer = setInterval(() => {
         if (
           window.virtualIsLoaded === true &&
@@ -336,7 +337,7 @@ const AllChannelsList = ({
         }
       }, 1000);
       return () => clearInterval(virtualIntervalTimer);
-    }
+    } */
   }, [listToShow.channelsShow]);
 
   // SZŰRÉSEK

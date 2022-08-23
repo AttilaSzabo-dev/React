@@ -66,6 +66,43 @@ const AllChannelMobile = ({
     }
   });
 
+  const gemiusHit = (checkGemiusId) => {
+    if (
+      typeof window.pp_gemius_hit === "function" &&
+      typeof window.gemius_identifier === "string" &&
+      typeof window.port_gemius_identifiers === "object"
+    ) {
+      //nyito gemius kod
+      let sectionType = 'tv-nyito';
+      let code = window.port_gemius_identifiers[sectionType];
+      if (checkGemiusId) {
+        if (window.gemius_identifier !== code) {
+          console.log('pp_gemius_hit', sectionType, code);
+          window.pp_gemius_hit(code);
+          window.gemius_identifier = "";
+        }
+      } else {
+        console.log('pp_gemius_hit', sectionType, code);
+        window.pp_gemius_hit(code);
+      }
+    }
+  }
+
+  const adoRefresh = () => {
+    // csak Mobil_Aloldalak master
+    let masterTvNyito = 'QPKXR19zN3ZVIXy.KrdRq5JsLZSveObYtBYIevuJ.DX.y7';
+    if (
+      window.ado &&
+      window.ADOLoader &&
+      window.ADOLoader.options &&
+      window.ADOLoader.options.master &&
+      window.ADOLoader.options.master === masterTvNyito
+    ) {
+      console.log('refresh', masterTvNyito);
+      window.ado.refresh(masterTvNyito);
+    }
+  }
+
   //************************************************ */
   // lekérni az aktuális időt: const manualDate = new Date(); - const unixTimestamp = Math.floor(manualDate.getTime() / 1000);
   //mi kell a mobileData-ból: date(hogy tudjuk az aktuális időt) / channelsből: id, logo, name, url / programsból: end_datetime, end_time, film_url, start_datetime, start_time, title
@@ -245,7 +282,7 @@ const AllChannelMobile = ({
 
             if (
               listToShow.timelineActualTime < listToShow.actualTime &&
-              listToShow.timelineActualTime + 3600 > listToShow.actualTime) 
+              listToShow.timelineActualTime + 3600 > listToShow.actualTime)
             {
               if (width < 100) {
                 if (listToShow.activeFilters.program) {
@@ -528,17 +565,7 @@ const AllChannelMobile = ({
   }, [listToShow.urlIndex]);
 
   useEffect(() => {
-    if (
-      typeof window.pp_gemius_hit === "function" &&
-      typeof window.gemius_identifier === "string"
-    ) {
-      //nyito gemius kod
-      let code = ".cebkuN07HnYk6HbokIXZaRv38OGw.sbhU.kKB3eEiP.Y7";
-      if (window.gemius_identifier !== code) {
-        window.pp_gemius_hit(code);
-        window.gemius_identifier = "";
-      }
-    }
+    gemiusHit(true);
   }, [initData]);
 
   const selectTimeHandler = (e) => {
@@ -548,6 +575,10 @@ const AllChannelMobile = ({
       ...prev,
       timelineActualTime: parseInt(attr[0].value, 10),
     }));
+    if (listToShow && listToShow.timelineActualTime && listToShow.timelineActualTime !== parseInt(attr[0].value, 10)) {
+      gemiusHit(false);
+      adoRefresh();
+    }
   };
 
   const timeHandlerLeft = () => {
@@ -555,6 +586,8 @@ const AllChannelMobile = ({
       ...prev,
       timelineActualTime: listToShow.timelineActualTime - 3600,
     }));
+    gemiusHit(false);
+    adoRefresh();
   };
 
   const timeHandlerRight = () => {
@@ -562,6 +595,8 @@ const AllChannelMobile = ({
       ...prev,
       timelineActualTime: listToShow.timelineActualTime + 3600,
     }));
+    gemiusHit(false);
+    adoRefresh();
   };
 
   const urlIndexHandler = () => {
@@ -569,6 +604,8 @@ const AllChannelMobile = ({
       ...prevData,
       urlIndex: prevData.urlIndex + 1,
     }));
+    gemiusHit(false);
+    adoRefresh();
   };
 
   const toShow = (data) => {

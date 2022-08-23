@@ -28,9 +28,12 @@ const AdRB = () => {
     }
 
     if (typeof window.ADOLoader === "undefined") {
+      console.log("window.iap_zones: ", window.iap_zones);
       window.iap_zones = window.iap_zones || [];
       window.iap_zones.push(zone);
+      console.log("window.iap_zones: ", window.iap_zones);
     }else {
+      console.log("ADOLoader");
       const callback = () => {};
       window.ADOLoader.AdEngine.append(zone, callback)
     }

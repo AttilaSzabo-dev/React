@@ -84,22 +84,6 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
     }
   }
 
-  const adoRefresh = () => {
-    // Mobil_Aloldalak vagy TV_Nyito master
-    let masterTvNyito = isMobile ? 'QPKXR19zN3ZVIXy.KrdRq5JsLZSveObYtBYIevuJ.DX.y7' : 'N7CmXSrA8sU6C2.k69bI6CsovYAjH4cgo.eSqOHkpJn.V7';
-    if (
-      !isSingleChannel() &&
-      window.ado &&
-      window.ADOLoader &&
-      window.ADOLoader.options &&
-      window.ADOLoader.options.master &&
-      window.ADOLoader.options.master === masterTvNyito
-    ) {
-      console.log('refresh', masterTvNyito);
-      window.ado.refresh(masterTvNyito);
-    }
-  }
-
   //********************************************* */
 
   const onModalOpen = () => {
@@ -124,7 +108,6 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
     }
     setDaysSelectorDropdown(false);
     gemiusHit(false);
-    adoRefresh();
   };
 
   const programFilterHandler = (e) => {
@@ -146,7 +129,6 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
     }
     if (isMobile) {
       gemiusHit(false);
-      adoRefresh();
     }
   };
 
@@ -156,7 +138,6 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
       channelFilter: e.target.value,
     }));
     gemiusHit(false);
-    adoRefresh();
   };
 
   useEffect(() => {
