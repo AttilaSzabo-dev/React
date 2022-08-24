@@ -12,6 +12,8 @@ import AdRB from "../ad-items/AdRB";
 import AdRich from "../ad-items/AdRich";
 
 import classes from "./AllChannelMobile.module.css";
+import AdChannelSource from "../ad-items/AdChannelSource";
+import AdLayer from "../ad-items/AdLayer";
 
 const AllChannelMobile = ({
   initData,
@@ -20,6 +22,7 @@ const AllChannelMobile = ({
   introCb = () => {},
   introKey = {},
 }) => {
+  const zones = window.zonesToLoad;
   const [timeline, setTimeline] = useState([]);
   const [listToShow, setListToShow] = useState({
     actualTime: 0,
@@ -232,10 +235,11 @@ const AllChannelMobile = ({
     console.log("taskArray: ", taskArray);
     taskArray.forEach((group) => {
       let groupArray = [];
-      group.forEach((channel) => {
+      group.forEach((channel, index) => {
         let programIndex = 0;
         let useIndex = false;
         const channelObject = {
+          ad: false,
           id: channel.id,
           logo: channel.logo,
           name: channel.name,
@@ -243,6 +247,27 @@ const AllChannelMobile = ({
           programs: [],
           programFilters: [],
           canShow: true
+        };
+
+        const adLB = {
+          ad: true,
+          content: <AdLB key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
+        };
+        const adRich = {
+          ad: true,
+          content: <AdRich key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
+        };
+        const adRb = {
+          ad: true,
+          content: <AdRB key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
+        };
+        const adLayer = {
+          ad: true,
+          content: <AdLayer key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
+        };
+        const adChannelSource = {
+          ad: true,
+          content: <AdChannelSource key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
         };
         channel.programs.forEach((program, index) => {
           if (
@@ -347,18 +372,37 @@ const AllChannelMobile = ({
             } */
           }
         });
+        if (index === 2) {
+          groupArray.push(adLB);
+        }
+        if (index === 8) {
+          groupArray.push(adRich);
+        }
+        if (index === 16) {
+          groupArray.push(adRb);
+        }
+        if (index === 0 && zones.layer !== undefined && zones.layer.device === "mobile") {
+          groupArray.push(adLayer);
+        }
         if (channelObject.canShow) {
           groupArray.push(channelObject);
         }
       });
       arrayToShow.push(groupArray);
     });
-
+    window.iap_zones = [];
     setListToShow((prev) => ({
       ...prev,
       mobileChannelsShow: arrayToShow,
     }));
   };
+
+  useEffect(()=>{
+    if (listToShow.mobileChannelsShow.length > 0) {
+      console.log("dispatch hívás");
+      window.dispatchEvent(new Event('tv_mobile_loaded'));
+    }
+  },[listToShow.mobileChannelsShow]);
 
   useEffect(() => {
     if (listToShow.timelineActualTime !== 0) {
@@ -668,10 +712,8 @@ const AllChannelMobile = ({
         listToShow.mobileChannelsShow.map((group, outerIndex) =>
           group.map((channel, innerIndex) => (
             <>
-              {outerIndex === 0 && innerIndex === 2 && <AdLB key={"AdLB"} />}
-              {outerIndex === 0 && innerIndex === 8 && group.length > 20 && <AdRich key={"AdRich"} />}
-              {outerIndex === 0 && innerIndex === 20 && <AdRB key={"AdRB"} />}
-              {channel.programs[0] !== undefined && (
+              {channel.ad && channel.content}
+              {!channel.ad && channel.programs[0] !== undefined && (
                 <div key={channel.id} className={`${classes.channelWrapper} `}>
                   <div className={classes.logoWrapper}>
                     <Link
@@ -725,12 +767,12 @@ const AllChannelMobile = ({
       {listToShow.mobileChannelsShow.length > 0 && (
         <button
           disabled={
-            listToShow.activeFilters.channel || listToShow.urlIndex === 3
+            listToShow.activeFilters.channel || listToShow.urlIndex === 7
           }
           className={classes.moreChannels}
           onClick={urlIndexHandler}
         >
-          {listToShow.activeFilters.channel || listToShow.urlIndex === 3
+          {listToShow.activeFilters.channel || listToShow.urlIndex === 7
             ? "Nincs több csatorna"
             : "Több csatorna"}
         </button>

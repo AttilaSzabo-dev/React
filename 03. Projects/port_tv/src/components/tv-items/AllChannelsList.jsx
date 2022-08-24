@@ -141,7 +141,7 @@ const AllChannelsList = ({
   const programsContainer = useRef(null);
 
   //********************************************* */
-
+console.log("url: ", url);
   const createFullList = (data) => {
     let actualTime;
     let actualTimeUnix;
@@ -196,9 +196,6 @@ const AllChannelsList = ({
         ad: true,
         content: <AdChannelSource key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
       };
-      
-      
-      
 
       startTime.push(channel.programs[0].start_ts);
       endTime.push(
@@ -464,7 +461,7 @@ const AllChannelsList = ({
     fetchUrl(url[listToShow.urlIndex + 1]);
     setListToShow((prevData) => ({
       ...prevData,
-      urlIndex: prevData.urlIndex + 1 <= 3 ? prevData.urlIndex + 1 : 3,
+      urlIndex: prevData.urlIndex + 1 <= 7 ? prevData.urlIndex + 1 : 7,
     }));
     window.scrollTo({top: 0, behavior: 'smooth'})
     gemiusHit(false, "channel-next");
@@ -535,12 +532,12 @@ const AllChannelsList = ({
       {listToShow.channelsShow.length > 0 && (
         <button
           disabled={
-            listToShow.activeFilters.channel || listToShow.urlIndex === 3
+            listToShow.activeFilters.channel || listToShow.urlIndex === 7
           }
           className={classes.moreChannels}
           onClick={urlIndexHandlerIncrease}
         >
-          {listToShow.activeFilters.channel || listToShow.urlIndex === 3
+          {listToShow.activeFilters.channel || listToShow.urlIndex === 7
             ? "A lista végén vagy"
             : "Következő csatornák"}
         </button>

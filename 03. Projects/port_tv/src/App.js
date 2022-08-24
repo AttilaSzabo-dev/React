@@ -262,7 +262,7 @@ function App() {
   const createInitUrls = () => {
     let date = `date=${initData.date.split("T")[0]}`;
     let ids = pluck(tvData.favorite, initData.channels, "id");
-    let chunks = [...chunk(ids, 40)];
+    let chunks = [...chunk(ids, 20)];
     let urls = chunks.map((chunk) => {
       let channels = chunk.map((id) => `channel_id%5B%5D=${id}`).join("&");
       return `tv-event/api?${channels}&${date}`;
