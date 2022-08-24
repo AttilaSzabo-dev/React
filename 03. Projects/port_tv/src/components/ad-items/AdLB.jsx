@@ -1,15 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import "./ad.css";
 
 const AdLB = () => {
   const adRef = useRef();
   const zones = window.zonesToLoad;
-  const [init, setInit] = useState(true);
-
-  if (init) {
-    console.log("LB Init");
-    setInit(false)
-  }
 
   useEffect(()=> {
     const zone = {
@@ -32,16 +26,8 @@ const AdLB = () => {
       }
     }
 
-    if (typeof window.ADOLoader === "undefined") {
-      console.log("window.iap_zones: ", window.iap_zones);
-      window.iap_zones = window.iap_zones || [];
-      window.iap_zones.push(zone);
-      console.log("window.iap_zones: ", window.iap_zones);
-    }else {
-      console.log("ADOLoader");
-      const callback = () => {};
-      window.ADOLoader.AdEngine.append(zone, callback)
-    }
+    window.iap_zones = window.iap_zones || [];
+    window.iap_zones.push(zone);
     console.log("LB");
   }, [])
   

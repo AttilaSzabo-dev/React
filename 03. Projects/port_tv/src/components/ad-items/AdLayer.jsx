@@ -1,19 +1,18 @@
 import { useEffect, useRef } from "react";
 import "./ad.css";
 
-const AdRBB = () => {
+const AdLayer = () => {
   const adRef = useRef();
   const zones = window.zonesToLoad;
 
   useEffect(()=> {
-
     const zone = {
-      "id": zones.roadblock_b.id,
+      "id": zones.layer.id,
       "empty": true,
       "lazy": false,
-      "quality": zones.roadblock_b.quality,
-      "masterless": zones.roadblock_b.masterless, 
-      "area": zones.roadblock_b.area, /* Roadblock_B */
+      "quality": zones.layer.quality,
+      "masterless": zones.layer.masterless, 
+      "area": zones.layer.area, /* Layer */
       "node": adRef.current,
       "events": {
         "loaded": false, 
@@ -35,10 +34,10 @@ const AdRBB = () => {
   return (
     <div className={"adItem"}>
       <div className={"adContent"}>
-        <div ref={adRef} className="iap iap--ado empty bg--transparent" id={zones.roadblock_b.id} data-id={zones.roadblock_b.id}></div>
+        <div ref={adRef} className="iap iap--ado empty bg--transparent ad-label--hidden no-margin" id={zones.layer.id} data-id={zones.layer.id}></div>
       </div>
     </div>
   );
 };
 
-export default AdRBB;
+export default AdLayer;

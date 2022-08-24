@@ -13,6 +13,9 @@ import AdRBB from "../ad-items/AdRBB";
 import AdVirtual from "../ad-items/AdVirtual";
 
 import classes from "./AllChannelsList.module.css";
+import AdVirtualSource from "../ad-items/AdVirtualSource";
+import AdLayer from "../ad-items/AdLayer";
+import AdChannelSource from "../ad-items/AdChannelSource";
 
 const AllChannelsList = ({
   initData,
@@ -158,7 +161,7 @@ const AllChannelsList = ({
       };
       const virtual = {
         ad: true,
-        content: <AdVirtual/>
+        content: <AdVirtual key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
       };
       const adLB = {
         ad: true,
@@ -172,6 +175,21 @@ const AllChannelsList = ({
         ad: true,
         content: <AdRBB key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
       };
+      const adLayer = {
+        ad: true,
+        content: <AdLayer key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
+      };
+      const adVirtualSource = {
+        ad: true,
+        content: <AdVirtualSource key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
+      };
+      const adChannelSource = {
+        ad: true,
+        content: <AdChannelSource key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
+      };
+      
+      
+      
 
       startTime.push(channel.programs[0].start_ts);
       endTime.push(
@@ -212,6 +230,15 @@ const AllChannelsList = ({
             fullListArray.push(virtual);
           }
         }
+      }
+      if (index === 0 && zones.layer !== undefined && zones.layer.device === "desktop") {
+        fullListArray.push(adLayer);
+      }
+      if (index === 0 && zones.tv_virtual_sponsoration !== undefined) {
+        fullListArray.push(adVirtualSource);
+      }
+      if (index === 0 && zones.tv_channel_sponsoration !== undefined) {
+        fullListArray.push(adChannelSource);
       }
       if (index === 4 && zones.superleaderboard !== undefined && zones.superleaderboard.device === "desktop") {
         fullListArray.push(adLB);
@@ -269,14 +296,20 @@ const AllChannelsList = ({
       firstProgramsStartTime: startTime,
       actualTime: listToShow.actualTime
     });
+    window.iap_zones = [];
+    console.log("window.iap_zones: ", window.iap_zones);
     setListToShow((prev) => ({
       ...prev,
       channelsShow: fullListArray,
     }));
-    window.ado.master({id: "N7CmXSrA8sU6C2.k69bI6CsovYAjH4cgo.eSqOHkpJn.V7", server: "indexhu.adocean.pl", vars: typeof window.customTarget !== "undefined" ? window.customTarget : '', keys: window.tagStr });
-    window.iap_zones = [];
-    //TODO: AdoLoader eventet meghívni
   };
+
+  useEffect(()=>{
+    if (listToShow.channelsShow.length > 0) {
+      console.log("dispatch hívás");
+      window.dispatchEvent(new Event('tv_nyito_desktop_loaded'));
+    }
+  },[listToShow.channelsShow]);
 
   const fetchUrl = (url) => {
     setIsLoading(true);
@@ -312,8 +345,9 @@ const AllChannelsList = ({
 
   // virtual csatorna check hogy mikor áll be a zóna, ha beállt beillesztjük a tömbbe
   // init után a createFullListben nézzük mindig, hogy kell-e
+  // TODO: ha nem jön virtual sponz, akkor is állítsuk le 20-30s után
   useEffect(() => {
-    /* if (virtualInterval) {
+    if (virtualInterval) {
       const virtualIntervalTimer = setInterval(() => {
         if (
           window.virtualIsLoaded === true &&
@@ -321,14 +355,15 @@ const AllChannelsList = ({
         ) {
           const virtual = {
             ad: true,
-            content: <AdVirtual/>
+            content: <AdVirtual key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/>
           };
           clearInterval(virtualIntervalTimer);
           setVirtualInterval(false);
           const zone = window.virtualChannelSponsoration;
           let tempState = [ ...listToShow.channelsShow ];
           let element = [...tempState];
-          element.splice(zone.position, 0, virtual);
+          // layer + 2 sponz miatt
+          element.splice(zone.position + 3, 0, virtual);
           tempState = element;
           setListToShow((prev) => ({
             ...prev,
@@ -337,7 +372,7 @@ const AllChannelsList = ({
         }
       }, 1000);
       return () => clearInterval(virtualIntervalTimer);
-    } */
+    }
   }, [listToShow.channelsShow]);
 
   // SZŰRÉSEK

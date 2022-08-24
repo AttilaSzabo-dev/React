@@ -19,7 +19,7 @@ const AdVirtual = () => {
 
   return (
     <div className={"adItem"}>
-      <div className={"adContent"}>
+      <div className={"adContent iap iap--ado  bg-transparent ad-label ad-label--ghost"}>
         <a href={virtual.ct} target="_blank" rel="noreferrer">
           <img src={virtual.img} alt="Virtual Channel" className="virtualImage" />
         </a>

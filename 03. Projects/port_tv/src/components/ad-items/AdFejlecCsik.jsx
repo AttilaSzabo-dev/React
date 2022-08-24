@@ -26,13 +26,8 @@ const AdFejlecCsik = () => {
       },
     };
 
-    if (typeof window.ADOLoader === "undefined") {
-      window.iap_zones = window.iap_zones || [];
-      window.iap_zones.push(zone);
-    } else {
-      const callback = () => {};
-      window.ADOLoader.AdEngine.append(zone, callback);
-    }
+    window.iap_zones = window.iap_zones || [];
+    window.iap_zones.push(zone);
   }, []);
 
   return (
