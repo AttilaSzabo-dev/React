@@ -26,7 +26,7 @@ const SingleChannelList = ({ initData }) => {
   const isDesktop = useMediaQuery({ query: "(min-width: 500px)" });
   const isMobile = useMediaQuery({ query: "(max-width: 499px)" });
 
-  const gemiusHit = (checkGemiusId) => {
+  const gemiusHit = (checkGemiusId, extra) => {
     if (
       typeof window.pp_gemius_hit === "function" &&
       typeof window.gemius_identifier === "string" &&
@@ -37,13 +37,21 @@ const SingleChannelList = ({ initData }) => {
       let code = window.port_gemius_identifiers[sectionType];
       if (checkGemiusId) {
         if (window.gemius_identifier !== code) {
-          console.log('pp_gemius_hit', sectionType, code);
-          window.pp_gemius_hit(code);
+          console.log('pp_gemius_hit', sectionType, code, extra);
+          if (extra !== undefined) {
+            window.pp_gemius_hit(code, `portevent=${extra}`);
+          } else {
+            window.pp_gemius_hit(code);
+          }
           window.gemius_identifier = "";
         }
       } else {
-        console.log('pp_gemius_hit', sectionType, code);
-        window.pp_gemius_hit(code);
+        console.log('pp_gemius_hit', sectionType, code, extra);
+        if (extra !== undefined) {
+          window.pp_gemius_hit(code, `portevent=${extra}`);
+        } else {
+          window.pp_gemius_hit(code);
+        }
       }
     }
   }
@@ -96,7 +104,7 @@ const SingleChannelList = ({ initData }) => {
     } else {
       container.current.scrollLeft -= 300;
     }
-    gemiusHit(false);
+    gemiusHit(false, "singlechannel-left");
   };
 
   const goRight = () => {
@@ -105,7 +113,7 @@ const SingleChannelList = ({ initData }) => {
     } else {
       container.current.scrollLeft += 300;
     }
-    gemiusHit(false);
+    gemiusHit(false, "singlechannel-right");
   };
 
   const initScroll = (value) => {

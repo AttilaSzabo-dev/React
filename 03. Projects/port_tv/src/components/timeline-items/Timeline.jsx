@@ -40,7 +40,7 @@ const Timeline = ({
 
   //******************************************** */
 
-  const gemiusHit = (checkGemiusId) => {
+  const gemiusHit = (checkGemiusId, extra) => {
     if (
       typeof window.pp_gemius_hit === "function" &&
       typeof window.gemius_identifier === "string" &&
@@ -51,13 +51,21 @@ const Timeline = ({
       let code = window.port_gemius_identifiers[sectionType];
       if (checkGemiusId) {
         if (window.gemius_identifier !== code) {
-          console.log("pp_gemius_hit", sectionType, code);
-          window.pp_gemius_hit(code);
+          console.log('pp_gemius_hit', sectionType, code, extra);
+          if (extra !== undefined) {
+            window.pp_gemius_hit(code, `portevent=${extra}`);
+          } else {
+            window.pp_gemius_hit(code);
+          }
           window.gemius_identifier = "";
         }
       } else {
-        console.log("pp_gemius_hit", sectionType, code);
-        window.pp_gemius_hit(code);
+        console.log('pp_gemius_hit', sectionType, code, extra);
+        if (extra !== undefined) {
+          window.pp_gemius_hit(code, `portevent=${extra}`);
+        } else {
+          window.pp_gemius_hit(code);
+        }
       }
     }
   };
@@ -76,7 +84,7 @@ const Timeline = ({
     } else {
       goLeft += 300;
     }
-    gemiusHit(false);
+    gemiusHit(false, 'timeline-left');
     setMarginLeftValue({
       marginLeft: goLeft + "px",
     });
@@ -90,7 +98,7 @@ const Timeline = ({
     goRight -= 300;
     /* console.log("timelineLength: ", timelineLength * 150);
     console.log("goRight: ", goRight); */
-    gemiusHit(false);
+    gemiusHit(false, 'timeline-right');
     setMarginLeftValue({
       marginLeft: goRight + "px",
     });

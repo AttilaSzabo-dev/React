@@ -66,7 +66,7 @@ const AllChannelMobile = ({
     }
   });
 
-  const gemiusHit = (checkGemiusId) => {
+  const gemiusHit = (checkGemiusId, extra) => {
     if (
       typeof window.pp_gemius_hit === "function" &&
       typeof window.gemius_identifier === "string" &&
@@ -77,29 +77,22 @@ const AllChannelMobile = ({
       let code = window.port_gemius_identifiers[sectionType];
       if (checkGemiusId) {
         if (window.gemius_identifier !== code) {
-          console.log('pp_gemius_hit', sectionType, code);
-          window.pp_gemius_hit(code);
+          console.log('pp_gemius_hit', sectionType, code, extra);
+          if (extra !== undefined) {
+            window.pp_gemius_hit(code, `portevent=${extra}`);
+          } else {
+            window.pp_gemius_hit(code);
+          }
           window.gemius_identifier = "";
         }
       } else {
-        console.log('pp_gemius_hit', sectionType, code);
-        window.pp_gemius_hit(code);
+        console.log('pp_gemius_hit', sectionType, code, extra);
+        if (extra !== undefined) {
+          window.pp_gemius_hit(code, `portevent=${extra}`);
+        } else {
+          window.pp_gemius_hit(code);
+        }
       }
-    }
-  }
-
-  const adoRefresh = () => {
-    // csak Mobil_Aloldalak master
-    let masterTvNyito = 'QPKXR19zN3ZVIXy.KrdRq5JsLZSveObYtBYIevuJ.DX.y7';
-    if (
-      window.ado &&
-      window.ADOLoader &&
-      window.ADOLoader.options &&
-      window.ADOLoader.options.master &&
-      window.ADOLoader.options.master === masterTvNyito
-    ) {
-      console.log('refresh', masterTvNyito);
-      window.ado.refresh(masterTvNyito);
     }
   }
 
@@ -576,8 +569,7 @@ const AllChannelMobile = ({
       timelineActualTime: parseInt(attr[0].value, 10),
     }));
     if (listToShow && listToShow.timelineActualTime && listToShow.timelineActualTime !== parseInt(attr[0].value, 10)) {
-      gemiusHit(false);
-      adoRefresh();
+      gemiusHit(false, 'timeline');
     }
   };
 
@@ -586,8 +578,7 @@ const AllChannelMobile = ({
       ...prev,
       timelineActualTime: listToShow.timelineActualTime - 3600,
     }));
-    gemiusHit(false);
-    adoRefresh();
+    gemiusHit(false, 'timeline-left');
   };
 
   const timeHandlerRight = () => {
@@ -595,8 +586,7 @@ const AllChannelMobile = ({
       ...prev,
       timelineActualTime: listToShow.timelineActualTime + 3600,
     }));
-    gemiusHit(false);
-    adoRefresh();
+    gemiusHit(false, 'timeline-right');
   };
 
   const urlIndexHandler = () => {
@@ -604,8 +594,7 @@ const AllChannelMobile = ({
       ...prevData,
       urlIndex: prevData.urlIndex + 1,
     }));
-    gemiusHit(false);
-    adoRefresh();
+    gemiusHit(false, 'channel-next');
   };
 
   const toShow = (data) => {

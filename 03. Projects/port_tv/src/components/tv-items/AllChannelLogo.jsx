@@ -62,6 +62,10 @@ const AllChannelLogo = ({
       const filteredFavorite = tvData["favorite"].filter(
         (removeId) => removeId !== id
       );
+      setTvData((prevData) => ({
+        ...prevData,
+        favorite: filteredFavorite,
+      }));
       let newFavorite = "i_channels=";
       filteredFavorite.map((favId) => (newFavorite += favId + "%2C"));
 

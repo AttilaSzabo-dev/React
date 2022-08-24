@@ -60,16 +60,17 @@ const AllChannelsList = ({
 
   //**************************************** */
   const calculateMarkerX = () => {
-    let today = new Date(); // meghagytam, ha nem lenne valamiert valamikor erteke az initdata.time -nak akkor ezt hasznaljuk
-    let staticOffset = 186; // pontos pozicionalashoz
     let markerX = 0;
 
     if (
       typeof marginLeftValue !== "undefined" &&
       marginLeftValue.hasOwnProperty("marginLeft")
     ) {
+      let today = new Date();
+      let staticOffset = 186; // pontos pozicionalashoz
+
       let widthCalc =
-        (Math.floor(new Date(initData.date).getTime()) -
+        (Math.floor(new Date(today).getTime()) -
           timelineTimes.startTimestamp) /
         12000;
 
@@ -97,7 +98,7 @@ const AllChannelsList = ({
     return () => clearInterval(interval);
   }, []);
 
-  const gemiusHit = (checkGemiusId) => {
+  const gemiusHit = (checkGemiusId, extra) => {
     if (
       typeof window.pp_gemius_hit === "function" &&
       typeof window.gemius_identifier === "string" &&
@@ -108,13 +109,21 @@ const AllChannelsList = ({
       let code = window.port_gemius_identifiers[sectionType];
       if (checkGemiusId) {
         if (window.gemius_identifier !== code) {
-          console.log("pp_gemius_hit", sectionType, code);
-          window.pp_gemius_hit(code);
+          console.log('pp_gemius_hit', sectionType, code, extra);
+          if (extra !== undefined) {
+            window.pp_gemius_hit(code, `portevent=${extra}`);
+          } else {
+            window.pp_gemius_hit(code);
+          }
           window.gemius_identifier = "";
         }
       } else {
-        console.log("pp_gemius_hit", sectionType, code);
-        window.pp_gemius_hit(code);
+        console.log('pp_gemius_hit', sectionType, code, extra);
+        if (extra !== undefined) {
+          window.pp_gemius_hit(code, `portevent=${extra}`);
+        } else {
+          window.pp_gemius_hit(code);
+        }
       }
     }
   };
@@ -394,7 +403,7 @@ const AllChannelsList = ({
         activeFilters: { ...prev.activeFilters, channel: false } 
       }));
     }
-    gemiusHit(false);
+    gemiusHit(false, "filter-channel");
   };
 
   useEffect(() => {
@@ -458,7 +467,7 @@ const AllChannelsList = ({
       urlIndex: prevData.urlIndex + 1 <= 3 ? prevData.urlIndex + 1 : 3,
     }));
     window.scrollTo({top: 0, behavior: 'smooth'})
-    gemiusHit(false);
+    gemiusHit(false, "channel-next");
   };
 
   const urlIndexHandlerDecrese = () => {
@@ -467,7 +476,7 @@ const AllChannelsList = ({
       ...prevData,
       urlIndex: prevData.urlIndex - 1 >= 0 ? prevData.urlIndex - 1 : 0,
     }));
-    gemiusHit(false);
+    gemiusHit(false, "channel-prev");
   };
 
   useEffect(() => {

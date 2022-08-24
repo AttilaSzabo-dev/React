@@ -62,7 +62,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
 
   const isSingleChannel = () => window.location.pathname.match('/csatorna\/tv/') !== null;
 
-  const gemiusHit = (checkGemiusId) => {
+  const gemiusHit = (checkGemiusId, extra) => {
     if (
       typeof window.pp_gemius_hit === "function" &&
       typeof window.gemius_identifier === "string" &&
@@ -73,13 +73,21 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
       let code = window.port_gemius_identifiers[sectionType];
       if (checkGemiusId) {
         if (window.gemius_identifier !== code) {
-          console.log('pp_gemius_hit', sectionType, code);
-          window.pp_gemius_hit(code);
+          console.log('pp_gemius_hit', sectionType, code, extra);
+          if (extra !== undefined) {
+            window.pp_gemius_hit(code, `portevent=${extra}`);
+          } else {
+            window.pp_gemius_hit(code);
+          }
           window.gemius_identifier = "";
         }
       } else {
-        console.log('pp_gemius_hit', sectionType, code);
-        window.pp_gemius_hit(code);
+        console.log('pp_gemius_hit', sectionType, code, extra);
+        if (extra !== undefined) {
+          window.pp_gemius_hit(code, `portevent=${extra}`);
+        } else {
+          window.pp_gemius_hit(code);
+        }
       }
     }
   }
@@ -107,7 +115,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
       }));
     }
     setDaysSelectorDropdown(false);
-    gemiusHit(false);
+    gemiusHit(false, 'filter-date');
   };
 
   const programFilterHandler = (e) => {
@@ -128,7 +136,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
       }));
     }
     if (isMobile) {
-      gemiusHit(false);
+      gemiusHit(false, 'filter-program');
     }
   };
 
@@ -137,7 +145,7 @@ const FilterList = ({ initData, introCb = () => {}, introKey = {} }) => {
       ...prev,
       channelFilter: e.target.value,
     }));
-    gemiusHit(false);
+    gemiusHit(false, 'filter-channel');
   };
 
   useEffect(() => {
