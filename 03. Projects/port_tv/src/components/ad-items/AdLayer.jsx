@@ -1,3 +1,4 @@
+import ReactDOM from "react-dom";
 import { useEffect, useRef } from "react";
 import "./ad.css";
 
@@ -5,17 +6,19 @@ const AdLayer = () => {
   const adRef = useRef();
   const zones = window.zonesToLoad;
 
+  const portalElement = document.getElementById("layerAd");
+
   useEffect(()=> {
     const zone = {
       "id": zones.layer.id,
       "empty": true,
       "lazy": false,
       "quality": zones.layer.quality,
-      "masterless": zones.layer.masterless, 
+      "masterless": zones.layer.masterless,
       "area": zones.layer.area, /* Layer */
       "node": adRef.current,
       "events": {
-        "loaded": false, 
+        "loaded": false,
         "visible": false,
         "viewed": false
       },
@@ -29,14 +32,14 @@ const AdLayer = () => {
     window.iap_zones = window.iap_zones || [];
     window.iap_zones.push(zone);
   }, [])
-  
+
 
   return (
-    <div className={"adItem"}>
+    ReactDOM.createPortal(<div className={"adItem"}>
       <div className={"adContent"}>
         <div ref={adRef} className="iap iap--ado empty bg--transparent ad-label--hidden no-margin" id={zones.layer.id} data-id={zones.layer.id}></div>
       </div>
-    </div>
+    </div>, portalElement)
   );
 };
 
