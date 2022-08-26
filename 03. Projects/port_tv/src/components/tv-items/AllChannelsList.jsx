@@ -291,7 +291,7 @@ console.log("url: ", url);
       endDateFormatMinute + endDateFormatMinuteModulo;
 
     const newEndDate = endDateObject.setMinutes(endDateFormatMinuteFinal);
-    
+
     setTimelineTimes({
       startTimestamp: newStartDate,
       endTimestamp: newEndDate,
@@ -313,7 +313,9 @@ console.log("url: ", url);
   useEffect(()=>{
     if (listToShow.channelsShow.length > 0) {
       console.log("dispatch hívás");
-      window.dispatchEvent(new Event('tv_nyito_desktop_loaded'));
+      setTimeout(() => {
+        window.dispatchEvent(new Event('tv_nyito_desktop_loaded'));
+      }, 1000);
     }
   },[listToShow.channelsShow]);
 
@@ -389,7 +391,7 @@ console.log("url: ", url);
       setListToShow((prev) => ({
         ...prev,
         lastUrl: filterUrl,
-        activeFilters: { ...prev.activeFilters, channel: true } 
+        activeFilters: { ...prev.activeFilters, channel: true }
       }));
     }else {
       const filterUrl = `${url[listToShow.urlIndex].split("date=")[0]}date=${listToShow.dateFilter}`;
@@ -397,7 +399,7 @@ console.log("url: ", url);
       setListToShow((prev) => ({
         ...prev,
         lastUrl: filterUrl,
-        activeFilters: { ...prev.activeFilters, channel: false } 
+        activeFilters: { ...prev.activeFilters, channel: false }
       }));
     }
     gemiusHit(false, "filter-channel");
@@ -429,7 +431,7 @@ console.log("url: ", url);
       const compareMonth = compareDate.toLocaleString("hu-HU", { month: "2-digit" });
       const compareDay = compareDate.toLocaleString("hu-HU", { day: "2-digit" });
       const finalCompareDate = `${compareYear}-${compareMonth}-${compareDay}`;
-      
+
       if (finalCompareDate !== finalDate) {
         setListToShow((prev) => ({
           ...prev,
@@ -453,7 +455,7 @@ console.log("url: ", url);
       fetchUrl(`${listToShow.lastUrl.split("date=")[0]}date=${listToShow.dateFilter}`);
     }
   },[listToShow.dateFilter]);
-  
+
 
   //********************************************* */
 

@@ -9,7 +9,7 @@ const AllChannelPrograms = ({ channel, actualTime, timelineTimes, index, date, i
 
   return (
     <>
-      {index === 13 ? <SlickSlider/> : ""}
+      {index === 13 ? <SlickSlider key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)}/> : ""}
       {channel.ad && channel.content}
       {!channel.ad && <ProgramsWrapper timelineTimes={timelineTimes} index={index} channelStartTs={channel.channelStartTs}>
         <AllChannelLogo channel={channel} key={channel.id} id={channel.id} actualDate={date} introCb={index === 0 ? introCb : null} introKey={introKey} />

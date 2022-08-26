@@ -108,7 +108,7 @@ const SlickSlider = () => {
           sliderData.map((item, index) => (
             <>
               {index === 2 && zones.medium_rectangle_b !== undefined && (
-                <AdMR key={index} />
+                <AdMR key={Math.floor(Math.random() * (3000000 - 1000000) + 1000000)} />
               )}
               {index !== 2 && (
                 <a
