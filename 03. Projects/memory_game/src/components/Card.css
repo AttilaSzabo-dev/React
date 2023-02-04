@@ -1,0 +1,36 @@
+.card-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.card-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+}
+
+.hide-active {
+  background-color: black;
+  z-index: 200;
+}
+
+.hide-disabled {
+  background-color: transparent;
+  z-index: 200;
+}
+
+.show {
+  z-index: 100;
+}
+
+.show img {
+  width: 100%;
+  height: auto;
+}
+
+.fade {
+    opacity: .6;
+}

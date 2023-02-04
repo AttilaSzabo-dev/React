@@ -1,1 +1,23 @@
+.mainBackground {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: black;
+}
 
+.mainTable {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 800px;
+  height: 800px;
+  background-color: gray;
+  padding: 20px;
+}
+
+.mainGrid {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(7, 1fr);
+}
