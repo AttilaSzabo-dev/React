@@ -12,6 +12,10 @@
   height: 100px;
 }
 
+.cover {
+  border: 0;
+}
+
 .hide-active {
   background-color: black;
   z-index: 200;

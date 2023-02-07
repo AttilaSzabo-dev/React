@@ -26,18 +26,29 @@ const Card = ({ item, onSendId, onSendConfirmation, matchConfirmation }) => {
         setDisabled(true);
         setMatchDone(true);
         sendConfirmation();
-    } else {
-        setHide(true);
-        setDisabled(false);
+      } else {
+        setDisabled(true);
         sendConfirmation();
+        setTimeout(() => {
+          setHide(true);
+          setDisabled(false);
+        }, 1500);
       }
+    } else if (
+      matchConfirmation.counter === 2 &&
+      !matchConfirmation.id.includes(item.id)
+    ) {
+      setDisabled(true);
+      setTimeout(() => {
+        setDisabled(false);
+      }, 1500);
     }
   }, [matchConfirmation]);
 
   return (
     <div className="card-container">
       <button
-        className={`card-item ${hide ? "hide-active" : "hide-disabled"}`}
+        className={`card-item cover ${hide ? "hide-active" : "hide-disabled"}`}
         disabled={disabled}
         onClick={sendId}
       ></button>
