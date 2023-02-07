@@ -4,7 +4,7 @@ import "./App.css";
 import Card from "./components/Card";
 
 function App() {
-  const [data, setData] = useState(null);
+  const [numberOfCards, setNumberOfCards] = useState(22);
   const [playField, setPlayField] = useState(null);
   const [compareId, setCompareId] = useState(null);
   const [confirmedMatchId, setConfirmedMatchId] = useState({
@@ -14,44 +14,25 @@ function App() {
   });
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/photos")
-      .then((response) => response.json())
-      .then((json) => setData(json));
+    createBlocks();
   }, []);
 
-  useEffect(() => {
-    if (data !== null) {
-      createBlocks();
-    }
-  }, [data]);
-
-  useEffect(() => {
-    console.log("comapreId: ", compareId);
-  }, [compareId]);
-  useEffect(() => {
-    console.log("confirmedMatchId: ", confirmedMatchId);
-  }, [confirmedMatchId]);
-
   const createBlocks = () => {
-    const baseData = data.map((card) => card).filter((card) => card.id <= 21);
-    console.log(baseData);
     let finalData = [];
 
-    for (let i = 0; i < baseData.length; i++) {
+    for (let i = 1; i < numberOfCards; i++) {
       for (let y = 0; y < 2; y++) {
         let card = {
-          id: baseData[i].id,
-          url: baseData[i].url,
-          name: baseData[i].id + (y === 0 ? "a" : "b"),
+          id: i,
+          key: i + (y === 0 ? "a" : "b"),
         };
-        finalData.splice(Math.floor(Math.random() * (21 * 2)), 0, card);
+        finalData.splice(Math.floor(Math.random() * (numberOfCards * 2)), 0, card);
       }
     }
     setPlayField(finalData);
   };
 
   const receiveId = (incomingId) => {
-    console.log(incomingId);
     if (compareId === null) {
       setCompareId(incomingId);
       setConfirmedMatchId((prev) => ({
@@ -90,7 +71,7 @@ function App() {
           {playField !== null &&
             playField.map((item) => (
               <Card
-                key={item.name}
+                key={item.key}
                 item={item}
                 onSendId={receiveId}
                 matchConfirmation={confirmedMatchId}

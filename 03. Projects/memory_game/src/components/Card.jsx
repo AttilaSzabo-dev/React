@@ -16,6 +16,9 @@ const Card = ({ item, onSendId, onSendConfirmation, matchConfirmation }) => {
     onSendConfirmation();
   };
 
+  const cardImage = require(`../assets/images/card-images/${item.id}.png`);
+  const coverImage = require("../assets/images/cover-images/bg_01.png");
+
   useEffect(() => {
     if (
       matchConfirmation.counter === 2 &&
@@ -51,9 +54,11 @@ const Card = ({ item, onSendId, onSendConfirmation, matchConfirmation }) => {
         className={`card-item cover ${hide ? "hide-active" : "hide-disabled"}`}
         disabled={disabled}
         onClick={sendId}
-      ></button>
-      <div className={`card-item show ${matchDone ? "fade" : ""}`}>
-        <img src={item.url} alt="" />
+      >
+        <img src={coverImage} alt="" />
+      </button>
+      <div className={`card-item card ${matchDone ? "fade" : ""}`}>
+        <img src={cardImage} alt="" />
       </div>
     </div>
   );

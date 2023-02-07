@@ -14,27 +14,34 @@
 
 .cover {
   border: 0;
+  padding: 0;
+}
+
+.cover img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.card {
+  background-color: bisque;
+  z-index: 100;
+}
+
+.card img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
 }
 
 .hide-active {
-  background-color: black;
   z-index: 200;
 }
 
 .hide-disabled {
-  background-color: transparent;
-  z-index: 200;
-}
-
-.show {
-  z-index: 100;
-}
-
-.show img {
-  width: 100%;
-  height: auto;
+  z-index: -1;
 }
 
 .fade {
-    opacity: .6;
+  opacity: 0.6;
 }
