@@ -6,6 +6,9 @@ const Card = ({ item, onSendId, onSendConfirmation, matchConfirmation }) => {
   const [disabled, setDisabled] = useState(false);
   const [matchDone, setMatchDone] = useState(false);
 
+  const cardImage = require(`../assets/images/card-images/${item.id}.png`);
+  const coverImage = require("../assets/images/cover-images/bg_01.png");
+
   const sendId = () => {
     onSendId(item.id);
     setDisabled(true);
@@ -15,9 +18,6 @@ const Card = ({ item, onSendId, onSendConfirmation, matchConfirmation }) => {
   const sendConfirmation = () => {
     onSendConfirmation();
   };
-
-  const cardImage = require(`../assets/images/card-images/${item.id}.png`);
-  const coverImage = require("../assets/images/cover-images/bg_01.png");
 
   useEffect(() => {
     if (

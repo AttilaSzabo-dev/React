@@ -18,7 +18,7 @@ function App() {
   }, []);
 
   const createBlocks = () => {
-    let finalData = [];
+    const finalData = [];
 
     for (let i = 1; i < numberOfCards; i++) {
       for (let y = 0; y < 2; y++) {
@@ -66,6 +66,9 @@ function App() {
 
   return (
     <div className="mainBackground">
+      <div className="scoreDisplay">
+
+      </div>
       <div className="mainTable">
         <div className="mainGrid">
           {playField !== null &&

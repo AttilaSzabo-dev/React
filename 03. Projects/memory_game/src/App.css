@@ -1,17 +1,26 @@
 .mainBackground {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
   height: 100vh;
   background-color: black;
+}
+
+.scoreDisplay {
+  width: 800px;
+  height: 60px;
+  margin-bottom: 20px;
+  background-color: gray;
+  padding: 20px;
 }
 
 .mainTable {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 800px;
-  height: 800px;
+  width: 1200px;
+  height: 600px;
   background-color: gray;
   padding: 20px;
 }
@@ -19,5 +28,5 @@
 .mainGrid {
     display: grid;
     gap: 15px;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(10, 1fr);
 }
