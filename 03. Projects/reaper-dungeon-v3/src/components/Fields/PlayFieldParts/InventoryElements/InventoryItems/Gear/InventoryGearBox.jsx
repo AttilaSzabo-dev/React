@@ -1,9 +1,13 @@
 import "./InventoryGearBox.scss";
 
-const InventoryGearBox = (props) => {
+const InventoryGearBox = ({ image }) => {
   return (
     <div className="gearContainer">
-      <div className={`gearImageWrapper ${props.image}`}></div>
+      <img
+        className="gearImageWrapper"
+        src={require(`../../../../../../images/gear/${image}.png`)}
+        alt=""
+      />
     </div>
   );
 };
