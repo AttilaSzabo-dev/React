@@ -18,9 +18,9 @@ const PlayField = () => {
       imagePath: "head/basic_head_1",
     },
     {
-      id: "basic_shield_1",
+      id: "set_shield_1",
       type: 7,
-      imagePath: "shield/basic_shield_1",
+      imagePath: "shield/set_shield_1",
     },
     {
       id: "basic_hand_1",
@@ -88,8 +88,6 @@ const PlayField = () => {
       uniqueId: Math.floor(Math.random() * (10000000 - 1 + 1)) + 1,
     },
   ]);
-  const [fromBackpack, setFromBackpack] = useState();
-  const [toBackpack, setToBackpack] = useState();
 
   const sendFromBackpackHandler = (transferedItem) => {
     let itemArrivingToBackpack;
@@ -114,9 +112,6 @@ const PlayField = () => {
 
     setBackpackItems(updatedBackpackItems);
     setCharItems(updatedCharItems);
-  };
-  const sendToBackpackHandler = (item) => {
-    setToBackpack(item);
   };
 
   return (
