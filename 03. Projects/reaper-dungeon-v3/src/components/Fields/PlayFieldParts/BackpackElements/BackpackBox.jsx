@@ -1,58 +1,67 @@
 import { useState } from "react";
-import BackpackItem from "./BackpackItem";
 
-import { gearStore } from "../../../Stores/GearStore.js";
+import BackpackItem from "./BackpackItem";
 import classes from "./BackpackBox.module.scss";
 
-const BackpackBox = (props) => {
-  const [backpackItems, setBackpackItems] = useState([
-    {
-      type: "weapon",
-      id: "basic_weapon_2",
-    },
-    {
-      type: "head",
-      id: "basic_head_2",
-    },
-    {
-      type: "shield",
-      id: "basic_shield_2",
-    },
-    {
-      type: "hand",
-      id: "basic_hand_2",
-    },
-    {
-      type: "leg",
-      id: "basic_leg_2",
-    },
-    {
-      type: "feet",
-      id: "basic_feet_2",
-    },
-    {
-      type: "weapon",
-      id: "basic_weapon_2",
-    },
-    {
-      type: "head",
-      id: "basic_head_2",
-    },
-    {
-      type: "shield",
-      id: "basic_shield_2",
-    },
-  ]);
+const BackpackBox = ({
+  sendFromBackpackHandler,
+  backpackItems,
+  setBackpackItems,
+}) => {
+  const [statPanel, setStatPanel] = useState(false);
+
+  // when adding a new item to the backpack
+  const addNewItemHandler = (type, id) => {
+    const itemBlueprint = {
+      type: type,
+      id: id,
+      uniqueId: Math.floor(Math.random() * (10000000 - 1 + 1)) + 1,
+    };
+
+    setBackpackItems([...backpackItems, itemBlueprint]);
+  };
+
+  // when adding an item from the backpack to the char inventory
+  const transferItemToCharHandler = (uniqueId) => {
+    const selectedItem = backpackItems.find(
+      (item) => item.uniqueId === uniqueId
+    );
+    sendFromBackpackHandler(selectedItem);
+    setStatPanel(false);
+  };
+
+  // removing an item from the backpack
+  const removeCurrentItemHandler = (uniqueId) => {
+    const updatedItems = backpackItems.filter(
+      (item) => item.uniqueId !== uniqueId
+    );
+    setBackpackItems(updatedItems);
+    setStatPanel(false);
+  };
+
+  // show stats of the item
+  const statPanelHandler = (status) => {
+    setStatPanel(status);
+  };
+
   return (
     <div className={classes.section}>
       {backpackItems.map((item) => (
         <BackpackItem
-          key={item.id}
-          image={
-            gearStore.find((storeItem) => item.id === storeItem.id).imagePath
-          }
+          key={item.uniqueId}
+          image={item.imagePath}
+          uniqueId={item.uniqueId}
+          statPanel={statPanelHandler}
+          removeItem={removeCurrentItemHandler}
+          transferItemToChar={transferItemToCharHandler}
         />
       ))}
+      {statPanel && (
+        <div className={classes.statPanelWrapper}>
+          <div className={classes.newItemStat}></div>
+          <div className={classes.equippedItemStat}></div>
+        </div>
+      )}
     </div>
   );
 };

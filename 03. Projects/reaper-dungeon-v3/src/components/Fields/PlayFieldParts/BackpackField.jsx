@@ -3,10 +3,18 @@ import BackpackBox from "./BackpackElements/BackpackBox";
 
 import "./BackpackField.scss";
 
-const BackpackField = () => {
+const BackpackField = ({
+  sendFromBackpackHandler,
+  backpackItems,
+  setBackpackItems,
+}) => {
   return (
     <Field className="backpack-field">
-      <BackpackBox />
+      <BackpackBox
+        sendFromBackpackHandler={sendFromBackpackHandler}
+        backpackItems={backpackItems}
+        setBackpackItems={setBackpackItems}
+      />
     </Field>
   );
 };
