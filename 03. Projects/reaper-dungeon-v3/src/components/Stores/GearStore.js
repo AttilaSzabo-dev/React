@@ -7,6 +7,7 @@
 // type: 6 = leg
 // type: 7 = shield
 // type: 8 = sword
+// type: 9 = belt
 
 export const gearStore = [
   {
@@ -73,5 +74,15 @@ export const gearStore = [
     id: "basic_feet_2",
     type: 3,
     imagePath: "feet/basic_feet_2",
+  },
+  {
+    id: "basic_belt_1",
+    type: 9,
+    imagePath: "belt/basic_belt_1",
+  },
+  {
+    id: "basic_belt_2",
+    type: 9,
+    imagePath: "belt/basic_belt_2",
   },
 ];

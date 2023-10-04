@@ -1,12 +1,12 @@
 .gearContainer {
-  padding: 10px;
-  border-bottom: 1px solid var(--inventory-skill-border);
-  border-right: 1px solid var(--inventory-skill-border);
+  padding: 3px;
+  // border-bottom: 1px solid var(--inventory-skill-border);
+  // border-right: 1px solid var(--inventory-skill-border);
 
   .gearImageWrapper {
     display: block;
-    width: auto;
-    height: 100%;
+    width: 85px;
+    height: auto;
     object-fit: contain;
     margin: 0 auto;
   }

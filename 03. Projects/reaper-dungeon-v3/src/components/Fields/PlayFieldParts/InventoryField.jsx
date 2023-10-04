@@ -93,7 +93,7 @@ const IventoryField = ({ charItems }) => {
       <SkillBox boxData={DEFENSE_DATA} />
       <SkillBox boxData={MAGIC_DATA} />
       <GearBox charItems={charItems} />
-      <CharacterBox />
+      {/* <CharacterBox /> */}
     </Field>
   );
 };

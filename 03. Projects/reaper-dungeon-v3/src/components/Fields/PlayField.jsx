@@ -8,14 +8,27 @@ import "./PlayField.scss";
 const PlayField = () => {
   const [charItems, setCharItems] = useState([
     {
-      id: "basic_sword_1",
-      type: 8,
-      imagePath: "sword/basic_sword_1",
+      id: "corner_t_l",
+      nonItem: true,
     },
     {
       id: "basic_head_1",
       type: 5,
       imagePath: "head/basic_head_1",
+    },
+    {
+      id: "corner_t_r",
+      nonItem: true,
+    },
+    {
+      id: "basic_sword_1",
+      type: 8,
+      imagePath: "sword/basic_sword_1",
+    },
+    {
+      id: "basic_body_1",
+      type: 1,
+      imagePath: "body/basic_body_1",
     },
     {
       id: "set_shield_1",
@@ -28,14 +41,27 @@ const PlayField = () => {
       imagePath: "hand/basic_hand_1",
     },
     {
-      id: "basic_leg_1",
-      type: 6,
-      imagePath: "leg/basic_leg_1",
+      id: "basic_belt_1",
+      type: 9,
+      imagePath: "belt/basic_belt_1",
     },
     {
       id: "basic_feet_1",
       type: 3,
       imagePath: "feet/basic_feet_1",
+    },
+    {
+      id: "corner_b_l",
+      nonItem: true,
+    },
+    {
+      id: "basic_leg_1",
+      type: 6,
+      imagePath: "leg/basic_leg_1",
+    },
+    {
+      id: "corner_b_r",
+      nonItem: true,
     },
   ]);
   const [backpackItems, setBackpackItems] = useState([
