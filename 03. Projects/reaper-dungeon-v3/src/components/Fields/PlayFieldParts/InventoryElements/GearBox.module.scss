@@ -1,38 +1,41 @@
 .section {
+  position: relative;
   height: 49%;
   background-color: #000;
-  // background-color: white;
   opacity: 0.9;
-  background-image: url(../../../../images/backgrounds/body_bg4.png);
+  background-image: url(../../../../images/backgrounds/body_bg.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top;
-  border-bottom: 2px solid var(--inventory-section-border);
 
   display: grid;
   grid-template-rows: repeat(4, 1fr);
   grid-template-columns: repeat(3, 1fr);
 
-  .corner_t_l {
-    background-image: url(../../../../images/backgrounds/corner_t_l.png);
+  .imageCommon {
     background-size: contain;
     background-repeat: no-repeat;
   }
+  .corner_t_l {
+    background-image: url(../../../../images/backgrounds/corner_t_l.png);
+  }
   .corner_t_r {
     background-image: url(../../../../images/backgrounds/corner_t_r.png);
-    background-size: contain;
-    background-repeat: no-repeat;
     background-position: right;
   }
   .corner_b_l {
     background-image: url(../../../../images/backgrounds/corner_b_l.png);
-    background-size: contain;
-    background-repeat: no-repeat;
   }
   .corner_b_r {
     background-image: url(../../../../images/backgrounds/corner_b_r.png);
-    background-size: contain;
-    background-repeat: no-repeat;
     background-position: right;
+  }
+
+  .buttonTab {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    border: 1px solid red;
   }
 }

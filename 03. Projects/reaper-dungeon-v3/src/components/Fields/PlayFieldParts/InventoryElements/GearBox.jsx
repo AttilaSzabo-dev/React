@@ -6,11 +6,17 @@ const GearBox = ({ charItems }) => {
     <div className={classes.section}>
       {charItems.map((item) =>
         item.nonItem ? (
-          <div key={item.id} className={classes[item.id]}></div>
+          <div
+            key={item.id}
+            className={`${classes.imageCommon} ${classes[item.id]}`}
+          ></div>
         ) : (
           <GearBoxItem key={item.id} image={item.imagePath} />
         )
       )}
+      <div className={classes.buttonTab}>
+        <button type="button">test</button>
+      </div>
     </div>
   );
 };
