@@ -24,6 +24,7 @@ module.exports = {
       components: path.resolve("./src/components"),
       interfaces: path.resolve("./src/interfaces"),
       pages: path.resolve("./src/pages"),
+      store: path.resolve("./src/store"),
       utils: path.resolve("./src/utils"),
     },
   },
