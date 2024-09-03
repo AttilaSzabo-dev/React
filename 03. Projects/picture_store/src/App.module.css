@@ -1,0 +1,7 @@
+.appShellRoot {
+  background-color: var(--mantine-color-background);
+}
+
+.anchorRoot {
+  color: var(--mantine-color-red);
+}

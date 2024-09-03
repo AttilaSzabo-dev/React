@@ -3,8 +3,10 @@ import {
   type CSSVariablesResolver,
   DEFAULT_THEME,
   mergeMantineTheme,
+  AppShell,
+  Anchor,
 } from "@mantine/core";
-//import classes from "./App.module.css";
+import * as c from "./App.module.css";
 
 const themeOverride = createTheme({
   fontFamily: "Open Sans, sans-serif",
@@ -18,6 +20,18 @@ const themeOverride = createTheme({
     focusedInputColor: "#EAEAEA",
     iconGreenColor: "#2BB673",
     minButtonWidthInPixels: "100px",
+  },
+  components: {
+    AppShell: AppShell.extend({
+      classNames: {
+        root: c.appShellRoot,
+      },
+    }),
+    Anchor: Anchor.extend({
+      classNames: {
+        root: c.anchorRoot,
+      },
+    }),
   },
 });
 
